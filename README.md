@@ -30,17 +30,13 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 ## 📦 Entregas do Projeto
 
 ### ✅ Entrega 01
-- **Descrição:** [Adicionar descrição da entrega 01]
-- **Artefatos:** [Link para artefatos/screenshots]
+- **Descrição:** Analise de concorrencia
+- **Link:** https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md
+- **Artefatos:** <img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
 - **Data:** 31/08/2026
 
 ### ✅ Entrega 02
 - **Descrição:** [Adicionar descrição da entrega 02]
-- **Artefatos:** [Link para artefatos/screenshots]
-- **Data:** DD/MM/YYYY
-
-### ✅ Entrega 03
-- **Descrição:** [Adicionar descrição da entrega 03]
 - **Artefatos:** [Link para artefatos/screenshots]
 - **Data:** DD/MM/YYYY
 
@@ -120,9 +116,9 @@ projeto-impacta/
 
 # ENTREGA 01
 
-https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md
 
-<img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
+
+
 
 
 ## 📞 Contato
