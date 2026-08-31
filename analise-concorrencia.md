@@ -48,7 +48,7 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 - **Descrição do Funcionamento:** Ferramenta SaaS para acompanhamento diário de indicadores de governança e métricas de desempenho socioambiental.
 - **Capturas de Tela/Interface:**
   
-  ![Interface Moka ESG](https://paresi.social/img/dashboard-paresi.webp)
+  ![Interface Moka ESG](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmXa5YNTjrNAh7VDG7cxx0Ao1y-z0VqPCtEVleR2BvcntbrCi7mWAgOwk&s=10)
 - **Pontos Fortes:**
   - Dashboards visuais bem estruturados.
   - Canal de denúncias e módulo de governança integrados.
