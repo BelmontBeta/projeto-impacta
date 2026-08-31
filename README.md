@@ -118,6 +118,13 @@ projeto-impacta/
 
 ---
 
+# ENTREGA 01
+
+
+
+<img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
+
+
 ## 📞 Contato
 
 Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
