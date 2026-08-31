@@ -31,7 +31,7 @@ Este repositório concentra os esforços de desenvolvimento, documentação e en
 
 <!-- Adicione as tecnologias utilizadas no projeto -->
 - Python
-- Jangp
+- Jango
 - MySQL
 
 ---
