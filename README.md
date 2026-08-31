@@ -120,7 +120,7 @@ projeto-impacta/
 
 # ENTREGA 01
 
-
+https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md
 
 <img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
 
