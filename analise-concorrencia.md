@@ -12,7 +12,7 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 - **Descrição do Funcionamento:** Sistema SaaS focado em diagnósticos de impacto socioambiental para empresas em crescimento via formulários de consumo energético e resíduos.
 - **Capturas de Tela/Interface:**
   
-  ![Interface Sustentase](https://www.sustentaresaneamento.com.br/wp-content/uploads/2026/01/l3.png)
+  ![Interface Sustentase](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxz_PU7tIQpA5U4FGWiLwRc1VZulTBJcs-bN06bJmFCG2HeMOrKLc8fss&s=10)
 - **Pontos Fortes:**
   - Interface simples voltada para PMEs.
   - Relatórios executivos prontos para download.
