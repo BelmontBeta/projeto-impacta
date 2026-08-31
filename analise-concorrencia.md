@@ -11,7 +11,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 ### 2.1 Sustentase
 - **Descrição do Funcionamento:** Sistema SaaS focado em diagnósticos de impacto socioambiental para empresas em crescimento via formulários de consumo energético e resíduos.
 - **Capturas de Tela/Interface:**
-  ![Interface Sustentase](https://raw.githubusercontent.com/placeholder/sustentase-ui.png)
+  
+  ![Interface Sustentase](https://dssbr.ensp.fiocruz.br/wp-content/uploads/2020/10/Mandala_5P._Vetorizada._PNG._Colorida-mandala-agenda-2030.png)
 - **Pontos Fortes:**
   - Interface simples voltada para PMEs.
   - Relatórios executivos prontos para download.
@@ -22,7 +23,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 ### 2.2 Resultante ESG
 - **Descrição do Funcionamento:** Plataforma de consultoria e cálculo de pegada de carbono focada em diagnósticos corporativos avançados.
 - **Capturas de Tela/Interface:**
-  ![Interface Resultante](https://raw.githubusercontent.com/placeholder/resultante-ui.png)
+  
+  ![Interface Resultante](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdMQFy6N7niGOSEDE8_3m2Etkr7Y-3RQANixFtRQMM9sDVHW7keSbU6WM&s=10)
 - **Pontos Fortes:**
   - Alinhamento rigoroso aos padrões internacionais (GHG Protocol e GRI).
   - Alta credibilidade de relatórios corporativos.
@@ -45,7 +47,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 ### 2.4 Moka ESG
 - **Descrição do Funcionamento:** Ferramenta SaaS para acompanhamento diário de indicadores de governança e métricas de desempenho socioambiental.
 - **Capturas de Tela/Interface:**
-  ![Interface Moka ESG](https://raw.githubusercontent.com/placeholder/moka-ui.png)
+  
+  ![Interface Moka ESG](https://paresi.social/img/dashboard-paresi.webp)
 - **Pontos Fortes:**
   - Dashboards visuais bem estruturados.
   - Canal de denúncias e módulo de governança integrados.
