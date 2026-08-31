@@ -56,7 +56,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 ### 2.5 Greenly
 - **Descrição do Funcionamento:** Software de contabilidade de carbono que calcula emissões a partir de dados financeiros e de compras.
 - **Capturas de Tela/Interface:**
-  ![Interface Greenly](https://raw.githubusercontent.com/placeholder/greenly-ui.png)
+  
+  ![Interface Greenly](https://tse3.mm.bing.net/th/id/OIP.o8HYIM2BmcY2rOuwwcy-HAHaE7?r=0&pid=Api)
 - **Pontos Fortes:**
   - Coleta e classificação automatizada de gastos.
   - Interface moderna e plano de ação gamificado.
