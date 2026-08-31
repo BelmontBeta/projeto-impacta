@@ -33,6 +33,7 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 ### 2.3 EcoVadis
 - **Descrição do Funcionamento:** Plataforma global de classificação de sustentabilidade na cadeia de suprimentos corporativa.
 - **Capturas de Tela/Interface:**
+  
   ![Interface EcoVadis](https://destraconsultoria.com.br/wp-content/uploads/2023/02/ecovadis.png)
 - **Pontos Fortes:**
   - Reconhecimento internacional e selo auditado.
