@@ -1,8 +1,6 @@
 # Projeto Impacta 🚀
 
-## 📌 Nome do Projeto
-
-**Projeto Impacta** - Solução de Impacto e Inovação para Deloitte
+- Solução de Impacto e Inovação inspirado na Deloitte
 
 ---
 
@@ -21,11 +19,11 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Tecnologia | Descrição |
-|-----------|-----------|
-| Python | Linguagem principal de desenvolvimento |
-| Django | Framework web para Python |
-| MySQL | Banco de dados relacional |
+| Tecnologia | Descrição                              |
+|------------|----------------------------------------|
+| Python     | Linguagem principal de desenvolvimento |
+| Django     | Framework web para Python              |
+| MySQL      | Banco de dados relacional              |   
 
 ---
 
@@ -34,7 +32,7 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 ### ✅ Entrega 01
 - **Descrição:** [Adicionar descrição da entrega 01]
 - **Artefatos:** [Link para artefatos/screenshots]
-- **Data:** DD/MM/YYYY
+- **Data:** 31/08/2026
 
 ### ✅ Entrega 02
 - **Descrição:** [Adicionar descrição da entrega 02]
@@ -95,16 +93,6 @@ python manage.py runserver
 | Gabriel Cassemiro Romualdo Filgueira Pino | gabriel.pino@cesar.school | - |
 | Gabriel Furtado Correia Miller | gabriel.miller@cesar.school | - |
 | Jose Henrique Carneiro Lapa | jose.lapa@cesar.school | - |
-
----
-
-## 📋 Membros Anteriores
-
-| Nome Completo | Email CESAR SCHOOL | Data Entrada | Data Saída |
-|--------------|------------------|--------------|-----------|
-| [Nome Completo] | [email@cesar.school] | DD/MM/YYYY | DD/MM/YYYY |
-
-*Tabela vazia - adicione membros anteriores conforme houver alterações no grupo*
 
 ---
 
