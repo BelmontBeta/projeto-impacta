@@ -92,35 +92,6 @@ python manage.py runserver
 
 ---
 
-## 📂 Estrutura do Projeto
-
-```
-projeto-impacta/
-├── README.md
-├── requirements.txt
-├── manage.py
-├── projeto_impacta/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── app_principal/
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   └── templates/
-├── docs/
-└── static/
-```
-
----
-
-# ENTREGA 01
-
-
-
-
-
-
 ## 📞 Contato
 
 Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
