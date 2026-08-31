@@ -53,35 +53,6 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 - MySQL 5.7+
 - pip (gerenciador de pacotes Python)
 
-### Instalação
-
-```bash
-# 1. Clone o repositório
-git clone https://github.com/BelmontBeta/projeto-impacta.git
-cd projeto-impacta
-
-# 2. Crie um ambiente virtual
-python -m venv venv
-
-# 3. Ative o ambiente virtual
-# No Windows:
-venv\Scripts\activate
-# No macOS/Linux:
-source venv/bin/activate
-
-# 4. Instale as dependências
-pip install -r requirements.txt
-
-# 5. Configure o banco de dados
-# Adicione suas configurações em settings.py
-
-# 6. Execute as migrações
-python manage.py migrate
-
-# 7. Inicie o servidor
-python manage.py runserver
-```
-
 ---
 
 ## 👥 Membros Atuais
