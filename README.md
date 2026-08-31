@@ -88,11 +88,11 @@ python manage.py runserver
 
 | Nome Completo | Email CESAR SCHOOL | Função |
 |--------------|------------------|--------|
-| Caio Henrique de Sena Belmont | caio.belmont@cesar.school | - |
-| Caio Freitas de Andrade Medeiros | caio.medeiros@cesar.school | - |
-| Gabriel Cassemiro Romualdo Filgueira Pino | gabriel.pino@cesar.school | - |
-| Gabriel Furtado Correia Miller | gabriel.miller@cesar.school | - |
-| Jose Henrique Carneiro Lapa | jose.lapa@cesar.school | - |
+| Caio Henrique de Sena Belmont | chsb@cesar.school | - |
+| Caio Freitas de Andrade Medeiros |  cfam@cesar.school | - |
+| Gabriel Cassemiro Romualdo Filgueira Pino | gcrfl@cesar.school | - |
+| Gabriel Furtado Correia Miller | gfcm@cesar.school | - |
+| Jose Henrique Carneiro Lapa | jhcl@cesar.school | - |
 
 ---
 
