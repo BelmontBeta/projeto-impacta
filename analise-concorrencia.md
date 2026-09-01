@@ -36,7 +36,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 - **Descrição do Funcionamento:** Plataforma global de classificação de sustentabilidade na cadeia de suprimentos corporativa.
 - **Capturas de Tela/Interface:**
   
-  ![Interface EcoVadis](https://destraconsultoria.com.br/wp-content/uploads/2023/02/ecovadis.png)
+<img width="634" height="375" alt="image" src="https://github.com/user-attachments/assets/6ee8cb41-4a61-425b-9067-ec31e8c5d848" />
+
 - **Pontos Fortes:**
   - Reconhecimento internacional e selo auditado.
   - Avaliação rigorosa da cadeia de suprimentos.
@@ -60,7 +61,8 @@ Este documento apresenta a análise de mercado para o **Projeto Impacta**, uma a
 - **Descrição do Funcionamento:** Software de contabilidade de carbono que calcula emissões a partir de dados financeiros e de compras.
 - **Capturas de Tela/Interface:**
   
-  ![Interface Greenly](https://mma.prnewswire.com/media/2042514/Greenly_Logo_1.jpg?p=facebook)
+<img width="1600" height="900" alt="image" src="https://github.com/user-attachments/assets/2877070f-f4f3-4f57-9f9c-1d8472615f0e" />
+
 - **Pontos Fortes:**
   - Coleta e classificação automatizada de gastos.
   - Interface moderna e plano de ação gamificado.
