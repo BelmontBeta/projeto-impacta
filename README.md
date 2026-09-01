@@ -64,6 +64,7 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 | Gabriel Cassemiro Romualdo Filgueira Pino | gcrfl@cesar.school | - |
 | Gabriel Furtado Correia Miller | gfcm@cesar.school | - |
 | Jose Henrique Carneiro Lapa | jhcl@cesar.school | - |
+| João Pedro Guedes Alcoforado Carneiro Leão | jpgacl@cesar.school | - |
 
 ---
 
