@@ -6,7 +6,7 @@
 
 ## 📝 Descrição do Projeto
 
-Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da instituição CESAR SCHOOL, focado em criar soluções de impacto e inovação através de processos metodológicos aplicados ao contexto de micro e médias empresas. Este repositório concentra os esforços de desenvolvimento, documentação e entrega de uma solução que visa gerar valor significativo aos stakeholders, com foco no cliente Deloitte.
+Projeto Impacta é uma iniciativa desenvolvida como parte da disciplina **Projetos 2** da instituição CESAR School, focado em criar soluções de impacto e inovação através de processos metodológicos aplicados ao contexto de micro e médias empresas. Este repositório concentra os esforços de desenvolvimento, documentação e entrega de uma solução que visa gerar valor significativo aos stakeholders, com foco no cliente Deloitte.
 
 ### Objetivos Principais
 
@@ -30,7 +30,7 @@ Projeto Impacta é uma iniciativa desenvolvida como parte do **Projetos 2** da i
 ## 📦 Entregas do Projeto
 
 ### ✅ Entrega 01
-- **Descrição:** Analise de concorrencia
+- **Descrição:** Análise de concorrência
 - **Link:** https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md
 - **Artefatos:**
 - Painel inicial
