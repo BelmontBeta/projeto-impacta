@@ -1,11 +1,11 @@
 :root {
-    --verde-principal: #276749;
-    --verde-escuro: #1f5139;
-    --verde-claro: #e8f5e9;
-    --texto: #24332a;
-    --cinza: #f5f7f5;
+    --azul-principal: #155e9e;
+    --azul-escuro: #0b3d6e;
+    --azul-claro: #eaf4fc;
+    --texto: #1e293b;
+    --cinza: #f4f7fb;
     --branco: #ffffff;
-    --borda: #dce5de;
+    --borda: #d8e3ef;
 }
 
 * {
@@ -26,7 +26,7 @@ body {
 }
 
 .site-header {
-    background-color: var(--verde-principal);
+    background-color: var(--azul-principal);
     color: var(--branco);
 }
 
@@ -67,7 +67,7 @@ main {
 
 .site-footer {
     padding: 28px 0;
-    background-color: var(--verde-escuro);
+    background-color: var(--azul-escuro);
     color: var(--branco);
     text-align: center;
 }
@@ -76,7 +76,7 @@ main {
     padding: 100px 0;
     background: linear-gradient(
         135deg,
-        #e8f5e9,
+        #eaf4fc,
         #ffffff
     );
 }
@@ -84,7 +84,7 @@ main {
 .hero h1 {
     max-width: 800px;
     margin-top: 0;
-    color: var(--verde-escuro);
+    color: var(--azul-escuro);
     font-size: clamp(2rem, 5vw, 4rem);
     line-height: 1.1;
 }
@@ -104,7 +104,7 @@ main {
 
 .section-title {
     margin-top: 0;
-    color: var(--verde-escuro);
+    color: var(--azul-escuro);
     font-size: 2rem;
 }
 
@@ -124,7 +124,7 @@ main {
 
 .card h3 {
     margin-top: 0;
-    color: var(--verde-principal);
+    color: var(--azul-principal);
 }
 
 .botao {
@@ -132,7 +132,7 @@ main {
     margin-top: 20px;
     padding: 12px 20px;
     border-radius: 8px;
-    background-color: var(--verde-principal);
+    background-color: var(--azul-principal);
     color: var(--branco);
     text-decoration: none;
     font-weight: bold;
@@ -150,7 +150,7 @@ main {
 
 .etapa {
     padding: 20px;
-    border-left: 4px solid var(--verde-principal);
+    border-left: 4px solid var(--azul-principal);
     background-color: var(--branco);
 }
 
@@ -173,7 +173,7 @@ form {
 .form-grupo select {
     width: 100%;
     padding: 12px;
-    border: 1px solid #b8c8bb;
+    border: 1px solid #b8c8d3;
     border-radius: 6px;
     font: inherit;
 }
@@ -187,7 +187,7 @@ form {
     padding: 12px 22px;
     border: 0;
     border-radius: 8px;
-    background-color: var(--verde-principal);
+    background-color: var(--azul-principal);
     color: var(--branco);
     font-weight: bold;
     cursor: pointer;
@@ -197,8 +197,8 @@ form {
     max-width: 700px;
     padding: 14px;
     border-radius: 8px;
-    background-color: #d9f2df;
-    color: #205c2d;
+    background-color: #d9e9f2;
+    color: #0b3d6e;
 }
 
 .erros {
