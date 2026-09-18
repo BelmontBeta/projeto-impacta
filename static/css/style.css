@@ -153,3 +153,55 @@ main {
     border-left: 4px solid var(--verde-principal);
     background-color: var(--branco);
 }
+
+form {
+    max-width: 700px;
+}
+
+.form-grupo {
+    margin-bottom: 18px;
+}
+
+.form-grupo label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.form-grupo input,
+.form-grupo textarea,
+.form-grupo select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #b8c8bb;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.form-grupo textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.botao-formulario {
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 8px;
+    background-color: var(--verde-principal);
+    color: var(--branco);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.mensagem-sucesso {
+    max-width: 700px;
+    padding: 14px;
+    border-radius: 8px;
+    background-color: #d9f2df;
+    color: #205c2d;
+}
+
+.erros {
+    margin: 8px 0;
+    color: #a22a2a;
+}

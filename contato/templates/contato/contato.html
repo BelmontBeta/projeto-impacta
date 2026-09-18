@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Contato - ESG no Ramo Alimentício
+{% endblock %}
+
+{% block content %}
+
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Entre em contato</h1>
+
+        <p>
+            Envie uma dúvida, sugestão ou feedback sobre o projeto.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="mensagem-sucesso">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="erros">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grupo">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+
+                {% for erro in form.nome.errors %}
+                    <div class="erros">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-grupo">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+
+                {% for erro in form.email.errors %}
+                    <div class="erros">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-grupo">
+                {{ form.assunto.label_tag }}
+                {{ form.assunto }}
+
+                {% for erro in form.assunto.errors %}
+                    <div class="erros">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-grupo">
+                {{ form.mensagem.label_tag }}
+                {{ form.mensagem }}
+
+                {% for erro in form.mensagem.errors %}
+                    <div class="erros">{{ erro }}</div>
+                {% endfor %}
+            </div>
+
+            <button class="botao-formulario" type="submit">
+                Enviar mensagem
+            </button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}
