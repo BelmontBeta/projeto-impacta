@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Início - ESG no Ramo Alimentício
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="container">
+        <h1>ESG aplicado ao ramo alimentício</h1>
+
+        <p>
+            Este projeto acadêmico busca estudar como os princípios
+            ambientais, sociais e de governança podem ser compreendidos
+            dentro da cadeia alimentícia.
+        </p>
+
+        <p>
+            Nosso objetivo inicial é apresentar conceitos, desafios e
+            impactos relacionados ao tema.
+        </p>
+
+        <a class="botao" href="{% url 'sobre' %}">
+            Conheça o projeto
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">O que é ESG?</h2>
+
+        <p>
+            ESG é uma sigla em inglês para Environmental, Social and
+            Governance. O conceito está relacionado às práticas ambientais,
+            sociais e de governança de uma organização.
+        </p>
+
+        <div class="cards">
+            <article class="card">
+                <h3>Ambiental</h3>
+
+                <p>
+                    Relaciona-se aos impactos sobre o meio ambiente, como
+                    consumo de água, energia, matérias-primas e produção
+                    de resíduos.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Social</h3>
+
+                <p>
+                    Considera as relações com trabalhadores, consumidores,
+                    fornecedores, comunidades e demais envolvidos.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Governança</h3>
+
+                <p>
+                    Está relacionada à ética, transparência,
+                    responsabilidade e tomada de decisões.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alternativa">
+    <div class="container">
+        <h2 class="section-title">
+            Por que estudar ESG no setor alimentício?
+        </h2>
+
+        <p>
+            O setor alimentício está presente em diversas etapas da sociedade,
+            desde a produção dos ingredientes até o consumo e o descarte.
+        </p>
+
+        <ul class="lista-destaques">
+            <li>Desperdício de alimentos;</li>
+            <li>Consumo de água e energia;</li>
+            <li>Uso de embalagens;</li>
+            <li>Condições de trabalho;</li>
+            <li>Relação com fornecedores;</li>
+            <li>Segurança e qualidade dos alimentos.</li>
+        </ul>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Objetivos do projeto</h2>
+
+        <div class="cards">
+            <article class="card">
+                <h3>Pesquisar</h3>
+                <p>
+                    Compreender os conceitos de ESG e sua relação com o
+                    ramo alimentício.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Analisar</h3>
+                <p>
+                    Identificar os principais desafios ambientais, sociais
+                    e organizacionais do setor.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Conscientizar</h3>
+                <p>
+                    Apresentar informações de forma clara e acessível.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Desenvolver</h3>
+                <p>
+                    Criar uma base para futuras soluções relacionadas ao tema.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alternativa">
+    <div class="container">
+        <h2 class="section-title">Etapas do projeto</h2>
+
+        <div class="etapas">
+            <div class="etapa">
+                <strong>1. Conhecer</strong>
+                <p>Estudar o conceito de ESG.</p>
+            </div>
+
+            <div class="etapa">
+                <strong>2. Observar</strong>
+                <p>Compreender os impactos do setor.</p>
+            </div>
+
+            <div class="etapa">
+                <strong>3. Analisar</strong>
+                <p>Identificar problemas e oportunidades.</p>
+            </div>
+
+            <div class="etapa">
+                <strong>4. Desenvolver</strong>
+                <p>Pensar em propostas futuras.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

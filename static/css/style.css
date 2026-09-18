@@ -71,3 +71,85 @@ main {
     color: var(--branco);
     text-align: center;
 }
+
+.hero {
+    padding: 100px 0;
+    background: linear-gradient(
+        135deg,
+        #e8f5e9,
+        #ffffff
+    );
+}
+
+.hero h1 {
+    max-width: 800px;
+    margin-top: 0;
+    color: var(--verde-escuro);
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.1;
+}
+
+.hero p {
+    max-width: 760px;
+    font-size: 1.15rem;
+}
+
+.section {
+    padding: 70px 0;
+}
+
+.section-alternativa {
+    background-color: var(--cinza);
+}
+
+.section-title {
+    margin-top: 0;
+    color: var(--verde-escuro);
+    font-size: 2rem;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.card {
+    padding: 24px;
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: var(--verde-principal);
+}
+
+.botao {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    background-color: var(--verde-principal);
+    color: var(--branco);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.lista-destaques {
+    padding-left: 20px;
+}
+
+.etapas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.etapa {
+    padding: 20px;
+    border-left: 4px solid var(--verde-principal);
+    background-color: var(--branco);
+}
