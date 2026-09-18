@@ -7,3 +7,7 @@ def home(request):
 
 def sobre(request):
     return render(request, 'core/sobre.html')
+
+
+def desafios(request):
+    return render(request, 'core/desafios.html')
