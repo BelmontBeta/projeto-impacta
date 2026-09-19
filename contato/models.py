@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Feedback(models.Model):
     nome = models.CharField(max_length=100)
     email = models.EmailField()
@@ -12,5 +13,5 @@ class Feedback(models.Model):
         verbose_name = 'Feedback'
         verbose_name_plural = 'Feedbacks'
 
-        def __str__(self):
-            return f"{self.nome} - {self.assunto}"
+    def __str__(self):
+        return f"{self.nome} - {self.assunto}"

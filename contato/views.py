@@ -1,30 +1,39 @@
-from django.contrib import messages
-from django.shortcuts import redirect, render
-
-from .forms import FeedbackForm
+from django.shortcuts import render
+from .models import Feedback
 
 
 def contato(request):
+    sucesso = False
+    erros = []
+
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
+        nome = request.POST.get('nome', '').strip()
+        email = request.POST.get('email', '').strip()
+        assunto = request.POST.get('assunto', '').strip()
+        mensagem = request.POST.get('mensagem', '').strip()
 
-        if form.is_valid():
-            form.save()
+        if not nome:
+            erros.append('O campo nome é obrigatório.')
 
-            messages.success(
-                request,
-                'Obrigado! Sua mensagem foi enviada com sucesso.'
+        if not email:
+            erros.append('O campo e-mail é obrigatório.')
+
+        if not mensagem:
+            erros.append('O campo mensagem é obrigatório.')
+
+        if not erros:
+            Feedback.objects.create(
+                nome=nome,
+                email=email,
+                assunto=assunto,
+                mensagem=mensagem,
             )
+            sucesso = True
+            nome = email = assunto = mensagem = ''
 
-            return redirect('contato')
+    contexto = {
+        'sucesso': sucesso,
+        'erros': erros,
+    }
 
-    else:
-        form = FeedbackForm()
-
-    return render(
-        request,
-        'contato/contato.html',
-        {
-            'form': form,
-        }
-    )
+    return render(request, 'contato/contato.html', contexto)
