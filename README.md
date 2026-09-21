@@ -385,7 +385,7 @@ A Sprint 02 foi utilizada para organizar as atividades de desenvolvimento, teste
 
 ### Quadro da Sprint
 
-[Quadro da Sprint 02 no Jira](COLE_AQUI_O_LINK_DO_JIRA)
+[Quadro da Sprint 02 no Jira](https://projetos-fds-cesar.atlassian.net/jira/software/projects/IMP26/boards/34/backlog)
 
 ### Evidência
 
