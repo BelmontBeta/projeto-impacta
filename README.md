@@ -407,7 +407,7 @@ O vídeo demonstra:
 - Acesso ao painel administrativo;
 - Visualização do feedback armazenado.
 
-[Vídeo de utilização do sistema](COLE_AQUI_O_LINK_DO_VIDEO_DE_UTILIZACAO)
+[Vídeo de utilização do sistema](https://youtu.be/WyNH5URHsVQ)
 
 ### Vídeo de explicação do código
 
@@ -425,7 +425,7 @@ O vídeo explica:
 - Configuração do deploy;
 - Acesso ao painel administrativo.
 
-[Vídeo de explicação do código](COLE_AQUI_O_LINK_DO_VIDEO_DO_CODIGO)
+[Vídeo de explicação do código](https://youtu.be/1NUkU0zcdG0)
 
 ---
 
