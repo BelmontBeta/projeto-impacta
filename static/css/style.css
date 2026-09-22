@@ -205,3 +205,77 @@ form {
     margin: 8px 0;
     color: #a22a2a;
 }
+
+@media (max-width: 768px) {
+    .container {
+        width: min(92%, 100%);
+    }
+
+    .header-content {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 18px 0;
+    }
+
+    .main-nav {
+        justify-content: center;
+        gap: 10px 16px;
+    }
+
+    .hero {
+        padding: 64px 0;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+        max-width: 100%;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .cards,
+    .etapas {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 52px 0;
+    }
+
+    .section-title {
+        font-size: 1.7rem;
+    }
+
+    .botao,
+    .botao-formulario {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    form {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .main-nav {
+        font-size: 0.95rem;
+    }
+
+    .card,
+    .etapa {
+        padding: 18px;
+    }
+
+    .site-footer {
+        padding: 22px 0;
+    }
+}
