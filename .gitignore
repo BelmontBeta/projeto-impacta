@@ -2,3 +2,40 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+
+# Variáveis de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Banco de dados local
+*.sqlite3
+
+# Arquivos estáticos gerados pelo Django (collectstatic)
+staticfiles/
+
+# Uploads gerados localmente
+media/
+
+# Ferramentas de desenvolvimento
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Cobertura e testes
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
