@@ -287,12 +287,15 @@ A alteração foi aplicada ao:
 
 | Nome completo | E-mail CESAR School | Função |
 |---|---|---|
-| Caio Henrique de Sena Belmont | chsb@cesar.school | Desenvolvimento e documentação |
+| Caio Henrique de Sena Belmont | chsb@cesar.school | Desenvolvimento |
 | Caio Freitas de Andrade Medeiros | cfam@cesar.school | Desenvolvimento |
 | Gabriel Cassemiro Romualdo Filgueira Pino | gcrfl@cesar.school | Desenvolvimento |
 | Gabriel Furtado Correia Miller | gfcm@cesar.school | Desenvolvimento |
 | Jose Henrique Carneiro Lapa | jhcl@cesar.school | Desenvolvimento |
 | João Pedro Guedes Alcoforado Carneiro Leão | jpgacl@cesar.school | Desenvolvimento |
+| Mariana Moreira de Andrade Lima | mmal@cesar.school | Modelagem |
+| Geovanna Eduarda Da Silva França | ge@cesar.school | Modelagem |
+| Tainá Wanderley Carneiro Leão | twcl@cesar.school | Modelagem |
 
 ---
 
