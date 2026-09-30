@@ -80,7 +80,7 @@ O acesso é restrito ao usuário administrador configurado no ambiente de produ�
 
 Por motivos de segurança, a senha não é disponibilizada neste documento.
 
-### 💻 google sites
+### google sites
 
 O acompanhamento ao nosso projeto pode ser feita pelo:
 
