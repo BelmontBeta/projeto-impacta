@@ -22,6 +22,8 @@ staticfiles/
 
 # Uploads gerados localmente
 media/
+gerar_documentacao.py
+DOCUMENTACAO_COMPLETA.txt
 
 # Ferramentas de desenvolvimento
 .vscode/
