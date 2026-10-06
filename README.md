@@ -6,7 +6,7 @@ Solução web de impacto e inovação voltada à gestão ESG para pequenas e mé
 
 ## 📝 Descrição do Projeto
 
-O Projeto Impacta é uma aplicação web desenvolvida na disciplina **Projetos 2**, da **CESAR School**, com o objetivo de apresentar soluções relacionadas à sustentabilidade, impacto social e inovação no setor alimentício.
+O Projeto Impacta é uma aplicação web desenvolvida na disciplina **Projetos 2**, da **CESAR School**, com o objetivo de apresentar soluções relacionadas à sustentabilidade, impacto social e inovação.
 
 A aplicação foi desenvolvida utilizando o framework Django e possui páginas informativas sobre ESG, desafios do setor, equipe do projeto e um formulário de contato para envio de feedbacks.
 
@@ -60,7 +60,7 @@ O projeto também foi publicado em ambiente de produção utilizando o Render.
 - Paleta de cores em tons de azul;
 - Aplicação publicada em ambiente de produção.
 
-A aplicação foi desenvolvida sem o uso de Generic Views e sem Django Forms, conforme orientação da disciplina. O formulário utiliza HTML, `request.POST` e validações implementadas manualmente na view.
+A aplicação foi desenvolvida sem o uso de Generic Views e sem Django Forms, conforme orientação da disciplina. O formulário utiliza HTML, `request.POST` e validações implementadas manualmente.
 
 ---
 
@@ -79,6 +79,12 @@ O painel administrativo pode ser acessado em:
 O acesso é restrito ao usuário administrador configurado no ambiente de produção.
 
 Por motivos de segurança, a senha não é disponibilizada neste documento.
+
+### Google Sites
+
+O acompanhamento ao nosso projeto pode ser feita pelo:
+
+[https://sites.google.com/cesar.school/impacta/home](https://sites.google.com/cesar.school/impacta/home)
 
 ---
 
@@ -250,24 +256,6 @@ Foram realizados testes locais e em ambiente de produção.
 
 ---
 
-## 🎨 Alterações Visuais
-
-A paleta de cores original foi alterada de tons verdes para tons de azul.
-
-As principais variáveis utilizadas no CSS são:
-
-```css
-:root {
-    --azul-principal: #155e9e;
-    --azul-escuro: #0b3d6e;
-    --azul-claro: #eaf4fc;
-    --texto: #1e293b;
-    --cinza: #f4f7fb;
-    --branco: #ffffff;
-    --borda: #d8e3ef;
-}
-```
-
 A alteração foi aplicada ao:
 
 - Cabeçalho;
@@ -287,12 +275,15 @@ A alteração foi aplicada ao:
 
 | Nome completo | E-mail CESAR School | Função |
 |---|---|---|
-| Caio Henrique de Sena Belmont | chsb@cesar.school | Desenvolvimento e documentação |
+| Caio Henrique de Sena Belmont | chsb@cesar.school | Desenvolvimento |
 | Caio Freitas de Andrade Medeiros | cfam@cesar.school | Desenvolvimento |
 | Gabriel Cassemiro Romualdo Filgueira Pino | gcrfl@cesar.school | Desenvolvimento |
 | Gabriel Furtado Correia Miller | gfcm@cesar.school | Desenvolvimento |
 | Jose Henrique Carneiro Lapa | jhcl@cesar.school | Desenvolvimento |
 | João Pedro Guedes Alcoforado Carneiro Leão | jpgacl@cesar.school | Desenvolvimento |
+| Mariana Moreira de Andrade Lima | mmal@cesar.school | Modelagem |
+| Geovanna Eduarda Da Silva França | ge@cesar.school | Modelagem |
+| Tainá Wanderley Carneiro Leão | twcl@cesar.school | Modelagem |
 
 ---
 
@@ -305,6 +296,13 @@ Análise de concorrência e benchmarking de soluções relacionadas à gestão E
 ### Documento
 
 [Análise de concorrência](https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md)
+
+### Registros visuais
+
+- Painel inicial
+  <img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
+- Painel Backlog
+  <img width="1093" height="501" alt="image" src="https://github.com/user-attachments/assets/401efda4-a7b3-4f27-879b-713e4dadab2d" />
 
 ### Data
 
@@ -356,11 +354,21 @@ Acesse o bug tracker:
 
 ---
 
-## 📅 Sprint 02
+## 📅 Gerenciamento de Atividades
+
+### Jira
+
+O projeto utiliza Jira para organização das atividades, sprints e acompanhamento do progresso do desenvolvimento.
+
+Acesse o quadro do Jira:
+
+[Quadro do Projeto Impacta no Jira](https://projetos-fds-cesar.atlassian.net/jira/software/projects/IMP26/summary?atlOrigin=eyJpIjoiZDQwNTFiODg5NDlmNDhhZWE2MTdjYjYyNjVhM2NlZjUiLCJwIjoiaiJ9)
+
+### Sprint 02
 
 A Sprint 02 foi utilizada para organizar as atividades de desenvolvimento, testes, documentação e publicação do sistema.
 
-### Principais tarefas
+#### Principais tarefas
 
 - Finalizar a infraestrutura Django;
 - Atualizar as informações da equipe;
@@ -376,11 +384,11 @@ A Sprint 02 foi utilizada para organizar as atividades de desenvolvimento, teste
 - Atualizar a documentação;
 - Gravar os vídeos da entrega.
 
-### Quadro da Sprint
+#### Quadro da Sprint
 
-[Quadro da Sprint 02 no Jira](COLE_AQUI_O_LINK_DO_JIRA)
+[Quadro da Sprint 02 no Jira](https://projetos-fds-cesar.atlassian.net/jira/software/projects/IMP26/boards/34/backlog)
 
-### Evidência
+#### Evidência
 
 ![Quadro da Sprint 02](docs/sprint-02.png)
 
@@ -400,7 +408,7 @@ O vídeo demonstra:
 - Acesso ao painel administrativo;
 - Visualização do feedback armazenado.
 
-[Vídeo de utilização do sistema](COLE_AQUI_O_LINK_DO_VIDEO_DE_UTILIZACAO)
+[Vídeo de utilização do sistema](https://youtu.be/WyNH5URHsVQ)
 
 ### Vídeo de explicação do código
 
@@ -418,7 +426,7 @@ O vídeo explica:
 - Configuração do deploy;
 - Acesso ao painel administrativo.
 
-[Vídeo de explicação do código](COLE_AQUI_O_LINK_DO_VIDEO_DO_CODIGO)
+[Vídeo de explicação do código](https://youtu.be/1NUkU0zcdG0)
 
 ---
 
@@ -475,4 +483,4 @@ Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros
 
 ---
 
-**Última atualização:** 18/09/2026
+**Última atualização:** 06/10/2026
