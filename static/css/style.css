@@ -25,6 +25,22 @@ body {
     margin: 0 auto;
 }
 
+/* ACESSIBILIDADE */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* CABEÇALHO */
+
 .site-header {
     background-color: var(--azul-principal);
     color: var(--branco);
@@ -61,9 +77,33 @@ body {
     text-decoration: underline;
 }
 
+/* BOTÃO DO MENU (oculto no desktop, visível só no mobile) */
+
+.nav-toggle {
+    display: none;
+    padding: 8px 12px;
+    border: 1px solid var(--branco);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--branco);
+    cursor: pointer;
+}
+
+.nav-toggle-line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    margin: 4px 0;
+    background-color: var(--branco);
+}
+
+/* CONTEÚDO PRINCIPAL */
+
 main {
     min-height: 70vh;
 }
+
+/* RODAPÉ */
 
 .site-footer {
     padding: 28px 0;
@@ -71,6 +111,8 @@ main {
     color: var(--branco);
     text-align: center;
 }
+
+/* HERO */
 
 .hero {
     padding: 100px 0;
@@ -94,6 +136,8 @@ main {
     font-size: 1.15rem;
 }
 
+/* SEÇÕES */
+
 .section {
     padding: 70px 0;
 }
@@ -102,11 +146,23 @@ main {
     background-color: var(--cinza);
 }
 
+/* Título centralizado */
 .section-title {
     margin-top: 0;
+    margin-bottom: 25px;
     color: var(--azul-escuro);
     font-size: 2rem;
+    text-align: center;
 }
+
+/* Textos introdutórios centralizados */
+.section > .container > p {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 15px;
+}
+
+/* CARDS */
 
 .cards {
     display: grid;
@@ -127,6 +183,8 @@ main {
     color: var(--azul-principal);
 }
 
+/* BOTÕES */
+
 .botao {
     display: inline-block;
     margin-top: 20px;
@@ -138,9 +196,13 @@ main {
     font-weight: bold;
 }
 
+/* LISTAS */
+
 .lista-destaques {
     padding-left: 20px;
 }
+
+/* ETAPAS */
 
 .etapas {
     display: grid;
@@ -153,6 +215,8 @@ main {
     border-left: 4px solid var(--azul-principal);
     background-color: var(--branco);
 }
+
+/* FORMULÁRIOS */
 
 form {
     max-width: 700px;
@@ -193,6 +257,8 @@ form {
     cursor: pointer;
 }
 
+/* MENSAGENS */
+
 .mensagem-sucesso {
     max-width: 700px;
     padding: 14px;
@@ -204,4 +270,162 @@ form {
 .erros {
     margin: 8px 0;
     color: #a22a2a;
+}
+
+/* EQUIPE */
+
+.equipe {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.membro {
+    text-align: center;
+    padding: 30px 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.membro:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Fotos redondas */
+.foto-membro {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 20px;
+    border: 4px solid var(--branco);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.membro h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.membro p {
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    .equipe {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* CELULAR / TABLET PEQUENO */
+
+@media (max-width: 768px) {
+
+    .container {
+        width: min(92%, 100%);
+    }
+
+    .header-content {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 18px 0;
+        gap: 12px;
+    }
+
+    /* Mostra o botão do menu apenas no mobile */
+    .nav-toggle {
+        display: block;
+    }
+
+    /* Menu recolhido por padrão no mobile */
+    .main-nav {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 10px 16px;
+    }
+
+    /* Menu aberto ao clicar no botão */
+    .main-nav.is-open {
+        display: flex;
+    }
+
+    .hero {
+        padding: 64px 0;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+        max-width: 100%;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .cards,
+    .etapas {
+        grid-template-columns: 1fr;
+    }
+
+    .section {
+        padding: 52px 0;
+    }
+
+    .section-title {
+        font-size: 25px;
+    }
+
+    .botao,
+    .botao-formulario {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    form {
+        max-width: 100%;
+    }
+
+}
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+    .equipe {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .main-nav {
+        font-size: 0.95rem;
+    }
+
+    .card,
+    .etapa {
+        padding: 18px;
+    }
+
+    .site-footer {
+        padding: 22px 0;
+    }
+
 }
