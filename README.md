@@ -256,24 +256,6 @@ Foram realizados testes locais e em ambiente de produção.
 
 ---
 
-## 🎨 Alterações Visuais
-
-A paleta de cores original foi alterada de tons verdes para tons de azul.
-
-As principais variáveis utilizadas no CSS são:
-
-```css
-:root {
-    --azul-principal: #155e9e;
-    --azul-escuro: #0b3d6e;
-    --azul-claro: #eaf4fc;
-    --texto: #1e293b;
-    --cinza: #f4f7fb;
-    --branco: #ffffff;
-    --borda: #d8e3ef;
-}
-```
-
 A alteração foi aplicada ao:
 
 - Cabeçalho;
