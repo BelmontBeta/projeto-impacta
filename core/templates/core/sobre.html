@@ -1,408 +1,85 @@
 {% extends 'base.html' %}
 
 {% block title %}
-O Projeto - ESG no Ramo Alimentício
+    O Projeto - ESG no Ramo Alimentício
 {% endblock %}
 
 {% block content %}
 
-<!-- Estilos da Barra Lateral e Layout -->
-<style>
-html {
-scroll-behavior: smooth;
-}
+<section class="section">
+    <div class="container">
+        <h1 class="section-title">Sobre o projeto</h1>
 
-/* Recuo para o conteúdo principal não ficar sob a barra */
-.main-content-wrapper {
-margin-left: 80px;
-transition: margin-left 0.3s ease;
-}
+        <p>
+            O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
+            com o propósito de pesquisar e apresentar a relação entre os
+            princípios de sustentabilidade, responsabilidade social e
+            governança com o setor de alimentos.
+        </p>
 
-/* Sidebar Fixa Estilo CentralDesk */
-.sidebar-desk {
-position: fixed;
-top: 0;
-left: 0;
-height: 100vh;
-width: 72px;
-background-color: #0f172a; /* Slate escuro elegante */
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 24px 0;
-z-index: 1000;
-box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
-}
-
-.sidebar-brand {
-font-size: 22px;
-color: #10b981; /* Verde ESG */
-margin-bottom: 32px;
-}
-
-.sidebar-nav {
-display: flex;
-flex-direction: column;
-gap: 12px;
-width: 100%;
-align-items: center;
-}
-
-/* Item do Menu */
-.nav-item {
-position: relative;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-width: 48px;
-height: 48px;
-border-radius: 12px;
-color: #94a3b8;
-text-decoration: none;
-transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-font-size: 18px;
-}
-
-/* Hover nos ícones */
-.nav-item:hover {
-color: #f8fafc;
-background-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Estado Ativo (Sessão visível na tela) */
-.nav-item.active {
-color: #ffffff;
-background-color: #10b981; /* Destaque verde */
-box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-}
-
-/* Tooltip com nome da seção ao passar o mouse */
-.nav-label {
-position: absolute;
-left: 62px;
-background-color: #1e293b;
-color: #ffffff;
-font-size: 12px;
-font-weight: 500;
-padding: 6px 12px;
-border-radius: 6px;
-white-space: nowrap;
-opacity: 0;
-visibility: hidden;
-transform: translateX(-8px);
-transition: all 0.2s ease;
-pointer-events: none;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.nav-item:hover .nav-label {
-opacity: 1;
-visibility: visible;
-transform: translateX(0);
-}
-
-/* Responsividade: barra vira um menu inferior em telas de celular */
-@media (max-width: 768px) {
-.main-content-wrapper {
-margin-left: 0;
-margin-bottom: 70px;
-}
-
-.sidebar-desk {
-top: auto;
-bottom: 0;
-width: 100vw;
-height: 64px;
-flex-direction: row;
-justify-content: space-around;
-padding: 0 16px;
-box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-brand {
-display: none;
-}
-
-.sidebar-nav {
-flex-direction: row;
-justify-content: space-around;
-}
-
-.nav-label {
-display: none;
-}
-}
-</style>
-
-<!-- Sidebar Estilo CentralDesk -->
-<aside class="sidebar-desk" aria-label="Navegação principal">
-<div class="sidebar-brand">
-<i class="fas fa-leaf"></i>
-</div>
-
-<nav class="sidebar-nav">
-<a href="#sobre" class="nav-item active" data-section="sobre">
-<i class="fas fa-info-circle"></i>
-<span class="nav-label">Sobre</span>
-</a>
-<a href="#objetivos" class="nav-item" data-section="objetivos">
-<i class="fas fa-bullseye"></i>
-<span class="nav-label">Objetivos</span>
-</a>
-<a href="#metodologia" class="nav-item" data-section="metodologia">
-<i class="fas fa-project-diagram"></i>
-<span class="nav-label">Metodologia</span>
-</a>
-<a href="#quem-somos" class="nav-item" data-section="quem-somos">
-<i class="fas fa-users"></i>
-<span class="nav-label">Equipe</span>
-</a>
-<a href="#nossa-proposta" class="nav-item" data-section="nossa-proposta">
-<i class="fas fa-lightbulb"></i>
-<span class="nav-label">Proposta</span>
-</a>
-</nav>
-</aside>
-
-<!-- Conteúdo Principal com as seções identificadas por ID -->
-<main class="main-content-wrapper">
-
-<section id="sobre" class="section">
-<div class="container">
-<h1 class="section-title">Sobre o projeto</h1>
-
-<p>
-O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
-com o propósito de pesquisar e apresentar a relação entre os
-princípios de sustentabilidade, responsabilidade social e
-governança com o setor de alimentos.
-</p>
-
-<p>
-Nesta primeira etapa, o foco está na compreensão do tema,
-identificação dos principais desafios e organização das
-informações para o público.
-</p>
-</div>
+        <p>
+            Nesta primeira etapa, o foco está na compreensão do tema,
+            identificação dos principais desafios e organização das
+            informações para o público.
+        </p>
+    </div>
 </section>
 
-<section id="objetivos" class="section section-alternativa">
-<div class="container">
-<h2 class="section-title">Objetivo geral</h2>
+<section class="section section-alternativa">
+    <div class="container">
+        <h2 class="section-title">Objetivo geral</h2>
 
-<p>
-Investigar como os princípios ESG podem ser relacionados às
-atividades do ramo alimentício, considerando seus impactos
-ambientais, sociais e organizacionais.
-</p>
+        <p>
+            Investigar como os princípios ESG podem ser relacionados às
+            atividades do ramo alimentício, considerando seus impactos
+            ambientais, sociais e organizacionais.
+        </p>
 
-<h2 class="section-title">Objetivos específicos</h2>
+        <h2 class="section-title">Objetivos específicos</h2>
 
-<ul class="lista-destaques">
-<li>Apresentar o conceito de ESG;</li>
-<li>Relacionar os pilares ESG ao setor alimentício;</li>
-<li>Identificar os principais desafios da área;</li>
-<li>Promover a conscientização sobre práticas responsáveis;</li>
-<li>Estabelecer uma base para futuras soluções.</li>
-</ul>
-</div>
+        <ul class="lista-destaques">
+            <li>Apresentar o conceito de ESG;</li>
+            <li>Relacionar os pilares ESG ao setor alimentício;</li>
+            <li>Identificar os principais desafios da área;</li>
+            <li>Promover a conscientização sobre práticas responsáveis;</li>
+            <li>Estabelecer uma base para futuras soluções.</li>
+        </ul>
+    </div>
 </section>
 
-<section id="metodologia" class="section">
-<div class="container">
-<h2 class="section-title">Metodologia</h2>
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Metodologia</h2>
 
-<p>
-O desenvolvimento será realizado por meio de pesquisa, análise de
-informações e criação de uma aplicação web utilizando Django.
-</p>
+        <p>
+            O desenvolvimento será realizado por meio de pesquisa, análise de
+            informações e criação de uma aplicação web utilizando Django.
+        </p>
 
-<div class="cards">
-<article class="card">
-<h3>Pesquisa</h3>
-<p>
-Levantamento de informações sobre ESG e sustentabilidade.
-</p>
-</article>
+        <div class="cards">
+            <article class="card">
+                <h3>Pesquisa</h3>
+                <p>
+                    Levantamento de informações sobre ESG e sustentabilidade.
+                </p>
+            </article>
 
-<article class="card">
-<h3>Análise</h3>
-<p>
-Estudo dos impactos e desafios do setor alimentício.
-</p>
-</article>
+            <article class="card">
+                <h3>Análise</h3>
+                <p>
+                    Estudo dos impactos e desafios do setor alimentício.
+                </p>
+            </article>
 
-<article class="card">
-<h3>Desenvolvimento</h3>
-<p>
-Criação de uma plataforma para apresentar o conhecimento
-obtido.
-</p>
-</article>
-</div>
-</div>
+            <article class="card">
+                <h3>Desenvolvimento</h3>
+                <p>
+                    Criação de uma plataforma para apresentar o conhecimento
+                    obtido.
+                </p>
+            </article>
+        </div>
+    </div>
 </section>
-
-<section id="quem-somos" class="section">
-<div class="container">
-
-<h1 class="section-title">Quem somos</h1>
-
-<p>
-Somos uma equipe de estudantes que está desenvolvendo um projeto
-acadêmico sobre a aplicação dos princípios ESG no ramo alimentício.
-</p>
-
-<p>
-Cada integrante participa de uma etapa da pesquisa, planejamento,
-desenvolvimento ou apresentação do projeto.
-</p>
-
-<div class="cards equipe">
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/belmont.jpg' %}"
-alt="Caio Henrique de Sena Belmont"
-class="foto-membro">
-
-<h3>Caio Henrique de Sena Belmont</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/caio.jpg' %}"
-alt="Caio Freitas de Andrade Medeiros"
-class="foto-membro">
-
-<h3>Caio Freitas de Andrade Medeiros</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/mariana.jpg' %}"
-alt="Mariana Moreira de Andrade Lima"
-class="foto-membro">
-
-<h3>Mariana Moreira de Andrade Lima</h3>
-<p>
-Membro da equipe de design para desenvolvimento da identidade visual e apresentação do projeto.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
-alt="José Henrique Carneiro Lapa"
-class="foto-membro">
-
-<h3>José Henrique Carneiro Lapa</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/furtado.jpg' %}"
-alt="Gabriel Furtado Corrêa Miller"
-class="foto-membro">
-
-<h3>Gabriel Furtado Corrêa Miller</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/taina.jpg' %}"
-alt="Tainá Wanderley Carneiro Leão"
-class="foto-membro">
-
-<h3>Tainá Wanderley Carneiro Leão</h3>
-<p>
-Membro da equipe de design para desenvolvimento da identidade visual e apresentação do projeto.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/geovanna.jpg' %}"
-alt="Geovanna Eduarda da Silva França"
-class="foto-membro">
-
-<h3>Geovanna Eduarda da Silva França</h3>
-<p>
-Membro da equipe de design para desenvolvimento da identidade visual e apresentação do projeto.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/guedes.jpg' %}"
-alt="João Pedro Guedes Alcoforado Carneiro Leão"
-class="foto-membro">
-
-<h3>João Pedro Guedes Alcoforado Carneiro Leão</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-<article class="card membro">
-<img src="{% static 'imagens/equipe/cassemiro.jpg' %}"
-alt="Gabriel Cassemiro Romualdo Filgueira Pino"
-class="foto-membro">
-
-<h3>Gabriel Cassemiro Romualdo Filgueira Pino</h3>
-<p>
-Membro da equipe de Ciências da Computação para desenvolvimento da aplicação web.
-</p>
-</article>
-
-</div>
-</div>
-</section>
-
-<section id="nossa-proposta" class="section section-alternativa">
-<div class="container">
-
-<h2 class="section-title">Nossa proposta</h2>
-
-<p>
-O site foi criado para apresentar o tema de forma didática,
-aproximando os conceitos de ESG da realidade do setor alimentício.
-</p>
-</div>
-</section>
-
-</main>
-
-<!-- Script para alteração automática do ícone ativo com a rolagem (Scrollspy) -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-const sections = document.querySelectorAll('section[id]');
-const navItems = document.querySelectorAll('.nav-item');
-
-const observerOptions = {
-root: null,
-rootMargin: '-20% 0px -60% 0px', // Ativa o ícone quando a seção ocupa a parte principal da tela
-threshold: 0
-};
-
-const observer = new IntersectionObserver((entries) => {
-entries.forEach(entry => {
-if (entry.isIntersecting) {
-const currentId = entry.target.getAttribute('id');
-navItems.forEach(item => {
-item.classList.toggle('active', item.getAttribute('data-section') === currentId);
-});
-}
-});
-}, observerOptions);
-
-sections.forEach(section => observer.observe(section));
-});
-</script>
 
 {% endblock %}
