@@ -1,85 +1,475 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-    O Projeto - ESG no Ramo Alimentício
-{% endblock %}
+{% block title %}O Projeto - ESG no Ramo Alimentício{% endblock %}
 
 {% block content %}
 
-<section class="section">
+<!-- Estilos da barra lateral e do layout da página -->
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Recuo para o conteúdo principal não ficar sob a barra */
+  .main-content-wrapper {
+    margin-left: 80px;
+  }
+
+  /* ---------- Sidebar fixa ---------- */
+  .sidebar-desk {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 72px;
+    background-color: #0f172a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar-brand {
+    font-size: 22px;
+    color: #10b981;
+    margin-bottom: 32px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 18px;
+  }
+
+  .nav-item:hover {
+    color: #f8fafc;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .nav-item:focus-visible {
+    outline: 2px solid #10b981;
+    outline-offset: 2px;
+  }
+
+  .nav-item.active {
+    color: #ffffff;
+    background-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+  }
+
+  /* Tooltip com o nome da seção (mouse e teclado) */
+  .nav-label {
+    position: absolute;
+    left: 62px;
+    background-color: #1e293b;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-8px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .nav-item:hover .nav-label,
+  .nav-item:focus-visible .nav-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  /* ---------- Seções e conteúdo ---------- */
+  .section {
+    min-height: 60vh;
+    padding: 72px 24px;
+  }
+
+  .section-alternativa {
+    background-color: #f1f5f9;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    margin-bottom: 16px;
+    color: #0f172a;
+  }
+
+  .section p {
+    max-width: 70ch;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .lista-destaques {
+    padding-left: 20px;
+    line-height: 1.9;
+  }
+
+  /* ---------- Cards ---------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  }
+
+  .card h3 {
+    margin-bottom: 8px;
+    color: #0f172a;
+  }
+
+  .card p {
+    margin-bottom: 0;
+  }
+
+  /* ---------- Equipe ---------- */
+  .card.membro {
+    text-align: center;
+    padding: 24px 16px;
+  }
+
+  .foto-membro {
+    width: 120px;
+    height: 120px;
+    object-fit: cover; /* evita foto esticada */
+    border-radius: 50%;
+    margin-bottom: 12px;
+  }
+
+  .card.membro h3 {
+    font-size: 1rem;
+  }
+
+  .card.membro p {
+    font-size: 0.9rem;
+    color: #475569;
+  }
+
+  /* ---------- Respeita quem desativa animações ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    * {
+      transition: none !important;
+    }
+  }
+
+  /* ---------- Celular: a barra vira um menu inferior ---------- */
+  @media (max-width: 768px) {
+    .main-content-wrapper {
+      margin-left: 0;
+      margin-bottom: 70px;
+    }
+
+    .section {
+      padding: 48px 16px;
+    }
+
+    .sidebar-desk {
+      top: auto;
+      bottom: 0;
+      width: 100vw;
+      height: 64px;
+      flex-direction: row;
+      justify-content: space-around;
+      padding: 0 16px;
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-brand {
+      display: none;
+    }
+
+    .sidebar-nav {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+
+    .nav-label {
+      display: none;
+    }
+  }
+</style>
+
+<!-- Sidebar de navegação -->
+<nav class="sidebar-desk" aria-label="Navegação principal">
+  <div class="sidebar-brand" aria-hidden="true">
+    <i class="fas fa-leaf"></i>
+  </div>
+
+  <div class="sidebar-nav">
+    <a href="#sobre" class="nav-item active" data-section="sobre" aria-label="Sobre">
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
+      <span class="nav-label">Sobre</span>
+    </a>
+    <a href="#objetivos" class="nav-item" data-section="objetivos" aria-label="Objetivos">
+      <i class="fas fa-bullseye" aria-hidden="true"></i>
+      <span class="nav-label">Objetivos</span>
+    </a>
+    <a href="#metodologia" class="nav-item" data-section="metodologia" aria-label="Metodologia">
+      <i class="fas fa-project-diagram" aria-hidden="true"></i>
+      <span class="nav-label">Metodologia</span>
+    </a>
+    <a href="#quem-somos" class="nav-item" data-section="quem-somos" aria-label="Equipe">
+      <i class="fas fa-users" aria-hidden="true"></i>
+      <span class="nav-label">Equipe</span>
+    </a>
+    <a href="#nossa-proposta" class="nav-item" data-section="nossa-proposta" aria-label="Proposta">
+      <i class="fas fa-lightbulb" aria-hidden="true"></i>
+      <span class="nav-label">Proposta</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Conteúdo principal -->
+<main class="main-content-wrapper">
+
+  <section id="sobre" class="section">
     <div class="container">
-        <h1 class="section-title">Sobre o projeto</h1>
+      <h1 class="section-title">Sobre o projeto</h1>
 
-        <p>
-            O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
-            com o propósito de pesquisar e apresentar a relação entre os
-            princípios de sustentabilidade, responsabilidade social e
-            governança com o setor de alimentos.
-        </p>
+      <p>
+        O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
+        com o propósito de pesquisar e apresentar a relação entre os
+        princípios de sustentabilidade, responsabilidade social e
+        governança com o setor de alimentos.
+      </p>
 
-        <p>
-            Nesta primeira etapa, o foco está na compreensão do tema,
-            identificação dos principais desafios e organização das
-            informações para o público.
-        </p>
+      <p>
+        Nesta primeira etapa, o foco está na compreensão do tema,
+        identificação dos principais desafios e organização das
+        informações para o público.
+      </p>
     </div>
-</section>
+  </section>
 
-<section class="section section-alternativa">
+  <section id="objetivos" class="section section-alternativa">
     <div class="container">
-        <h2 class="section-title">Objetivo geral</h2>
+      <h2 class="section-title">Objetivo geral</h2>
 
-        <p>
-            Investigar como os princípios ESG podem ser relacionados às
-            atividades do ramo alimentício, considerando seus impactos
-            ambientais, sociais e organizacionais.
-        </p>
+      <p>
+        Investigar como os princípios ESG podem ser relacionados às
+        atividades do ramo alimentício, considerando seus impactos
+        ambientais, sociais e organizacionais.
+      </p>
 
-        <h2 class="section-title">Objetivos específicos</h2>
+      <h2 class="section-title">Objetivos específicos</h2>
 
-        <ul class="lista-destaques">
-            <li>Apresentar o conceito de ESG;</li>
-            <li>Relacionar os pilares ESG ao setor alimentício;</li>
-            <li>Identificar os principais desafios da área;</li>
-            <li>Promover a conscientização sobre práticas responsáveis;</li>
-            <li>Estabelecer uma base para futuras soluções.</li>
-        </ul>
+      <ul class="lista-destaques">
+        <li>Apresentar o conceito de ESG;</li>
+        <li>Relacionar os pilares ESG ao setor alimentício;</li>
+        <li>Identificar os principais desafios da área;</li>
+        <li>Promover a conscientização sobre práticas responsáveis;</li>
+        <li>Estabelecer uma base para futuras soluções.</li>
+      </ul>
     </div>
-</section>
+  </section>
 
-<section class="section">
+  <section id="metodologia" class="section">
     <div class="container">
-        <h2 class="section-title">Metodologia</h2>
+      <h2 class="section-title">Metodologia</h2>
 
-        <p>
-            O desenvolvimento será realizado por meio de pesquisa, análise de
-            informações e criação de uma aplicação web utilizando Django.
-        </p>
+      <p>
+        O desenvolvimento será realizado por meio de pesquisa, análise de
+        informações e criação de uma aplicação web utilizando Django.
+      </p>
 
-        <div class="cards">
-            <article class="card">
-                <h3>Pesquisa</h3>
-                <p>
-                    Levantamento de informações sobre ESG e sustentabilidade.
-                </p>
-            </article>
+      <div class="cards">
+        <article class="card">
+          <h3>Pesquisa</h3>
+          <p>Levantamento de informações sobre ESG e sustentabilidade.</p>
+        </article>
 
-            <article class="card">
-                <h3>Análise</h3>
-                <p>
-                    Estudo dos impactos e desafios do setor alimentício.
-                </p>
-            </article>
+        <article class="card">
+          <h3>Análise</h3>
+          <p>Estudo dos impactos e desafios do setor alimentício.</p>
+        </article>
 
-            <article class="card">
-                <h3>Desenvolvimento</h3>
-                <p>
-                    Criação de uma plataforma para apresentar o conhecimento
-                    obtido.
-                </p>
-            </article>
-        </div>
+        <article class="card">
+          <h3>Desenvolvimento</h3>
+          <p>Criação de uma plataforma para apresentar o conhecimento obtido.</p>
+        </article>
+      </div>
     </div>
-</section>
+  </section>
+
+  <section id="quem-somos" class="section">
+    <div class="container">
+
+      <h2 class="section-title">Quem somos</h2>
+
+      <p>
+        Somos uma equipe de estudantes que está desenvolvendo um projeto
+        acadêmico sobre a aplicação dos princípios ESG no ramo alimentício.
+      </p>
+
+      <p>
+        Cada integrante participa de uma etapa da pesquisa, planejamento,
+        desenvolvimento ou apresentação do projeto.
+      </p>
+
+      <div class="cards equipe">
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/belmont.jpg' %}"
+               alt="Foto de Caio Henrique de Sena Belmont"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Caio Henrique de Sena Belmont</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/caio.jpg' %}"
+               alt="Foto de Caio Freitas de Andrade Medeiros"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Caio Freitas de Andrade Medeiros</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/mariana.jpg' %}"
+               alt="Foto de Mariana Moreira de Andrade Lima"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Mariana Moreira de Andrade Lima</h3>
+          <p>Design · Identidade visual e apresentação do projeto.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
+               alt="Foto de José Henrique Carneiro Lapa"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>José Henrique Carneiro Lapa</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/furtado.jpg' %}"
+               alt="Foto de Gabriel Furtado Corrêa Miller"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Gabriel Furtado Corrêa Miller</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/taina.jpg' %}"
+               alt="Foto de Tainá Wanderley Carneiro Leão"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Tainá Wanderley Carneiro Leão</h3>
+          <p>Design · Identidade visual e apresentação do projeto.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/geovanna.jpg' %}"
+               alt="Foto de Geovanna Eduarda da Silva França"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Geovanna Eduarda da Silva França</h3>
+          <p>Design · Identidade visual e apresentação do projeto.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/guedes.jpg' %}"
+               alt="Foto de João Pedro Guedes Alcoforado Carneiro Leão"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>João Pedro Guedes Alcoforado Carneiro Leão</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+        <article class="card membro">
+          <img src="{% static 'imagens/equipe/cassemiro.jpg' %}"
+               alt="Foto de Gabriel Cassemiro Romualdo Filgueira Pino"
+               class="foto-membro" width="120" height="120" loading="lazy">
+          <h3>Gabriel Cassemiro Romualdo Filgueira Pino</h3>
+          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="nossa-proposta" class="section section-alternativa">
+    <div class="container">
+      <h2 class="section-title">Nossa proposta</h2>
+
+      <p>
+        O site foi criado para apresentar o tema de forma didática,
+        aproximando os conceitos de ESG da realidade do setor alimentício.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Scrollspy: muda o ícone ativo conforme a rolagem -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    function ativar(id) {
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.dataset.section === id);
+      });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          ativar(entry.target.id);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Ao chegar no fim da página, garante que o último item fique ativo
+    window.addEventListener('scroll', () => {
+      const noFim = window.innerHeight + window.scrollY >= document.body.offsetHeight - 2;
+      if (noFim) {
+        ativar(sections[sections.length - 1].id);
+      }
+    });
+  });
+</script>
 
 {% endblock %}
