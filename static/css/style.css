@@ -6,6 +6,7 @@
     --cinza: #f4f7fb;
     --branco: #ffffff;
     --borda: #d8e3ef;
+    --altura-header: 72px;
 }
 
 * {
@@ -39,6 +40,37 @@ body {
     border: 0;
 }
 
+/* Foco visível para quem navega pelo teclado */
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--azul-principal);
+    outline-offset: 2px;
+}
+
+/* No cabeçalho (fundo azul) o contorno precisa ser claro */
+.site-header a:focus-visible,
+.site-header button:focus-visible {
+    outline-color: var(--branco);
+}
+
+/* Respeita quem desativa animações no sistema */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .membro:hover {
+        transform: none;
+    }
+}
+
 /* CABEÇALHO */
 
 .site-header {
@@ -47,7 +79,7 @@ body {
 }
 
 .header-content {
-    min-height: 72px;
+    min-height: var(--altura-header);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -199,6 +231,8 @@ main {
 /* LISTAS */
 
 .lista-destaques {
+    max-width: 800px;
+    margin: 0 auto;
     padding-left: 20px;
 }
 
@@ -272,7 +306,7 @@ form {
     color: #a22a2a;
 }
 
-/* EQUIPE */
+/* EQUIPE (9 integrantes = 3 colunas x 3 linhas) */
 
 .equipe {
     display: grid;
@@ -312,6 +346,23 @@ form {
 .membro p {
     line-height: 1.6;
     margin: 0;
+}
+
+/* DESKTOP: cabeçalho fixo no topo, para a sidebar ficar sempre abaixo dele */
+
+@media (min-width: 769px) {
+
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 1100;
+    }
+
+    /* Evita que o título da seção fique escondido sob o cabeçalho ao clicar na sidebar */
+    section[id] {
+        scroll-margin-top: calc(var(--altura-header) + 8px);
+    }
+
 }
 
 /* TABLET */
@@ -397,6 +448,11 @@ form {
         max-width: 100%;
     }
 
+    /* Espaço extra no fim da página para a barra inferior (sidebar) não cobrir o rodapé */
+    .site-footer {
+        padding-bottom: 86px;
+    }
+
 }
 
 /* CELULAR */
@@ -425,30 +481,7 @@ form {
     }
 
     .site-footer {
-        padding: 22px 0;
+        padding-top: 22px;
     }
 
-}
-
-.cards.equipe {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  margin-top: 32px;
-}
-
-.card.membro {
-  text-align: center;
-  padding: 24px 16px;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-}
-
-.foto-membro {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;   /* evita foto esticada */
-  border-radius: 50%;
-  margin-bottom: 12px;
 }
