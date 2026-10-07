@@ -9,8 +9,9 @@ from django.views.decorators.http import require_POST
 
 User = get_user_model()
 
+
 def _destino(request):
-    """ Retorna o destino para onde o usuário deve ser redirecionado após o login. """
+    """Retorna o destino seguro após o login."""
     proximo = request.GET.get('next') or request.POST.get('next') or ''
 
     if proximo and url_has_allowed_host_and_scheme(
@@ -21,6 +22,7 @@ def _destino(request):
         return proximo
 
     return 'home'
+
 
 def _validar_cadastro(nome, email, senha):
     erros = []
@@ -51,49 +53,95 @@ def _validar_cadastro(nome, email, senha):
         try:
             validate_password(
                 senha,
-                user=User(username=email, email=email, first_name=nome),
+                user=User(
+                    username=email,
+                    email=email,
+                    first_name=nome,
+                ),
             )
         except ValidationError as erro:
             erros.extend(erro.messages)
 
     return erros
 
-def acesso(request):
-    if request.user.is_authenticated:
-        return redirect('home')
 
-    modo = 'cadastro' if request.GET.get('modo') == 'cadastro' else 'login'
+def acesso(request):
+
+    # Se já estiver logado, vai para o Guardião ESG
+    if request.user.is_authenticated:
+        return redirect('/guardiao/boas-vindas/')
+
+    modo = (
+        'cadastro'
+        if request.GET.get('modo') == 'cadastro'
+        else 'login'
+    )
+
     erros = []
     nome = ''
     email = ''
 
     if request.method == 'POST':
+
         acao = request.POST.get('acao')
         email = request.POST.get('email', '').strip().lower()
         senha = request.POST.get('senha', '')
 
+        # =========================
+        # CADASTRO
+        # =========================
+
         if acao == 'cadastro':
+
             modo = 'cadastro'
             nome = request.POST.get('nome', '').strip()
-            erros = _validar_cadastro(nome, email, senha)
+
+            erros = _validar_cadastro(
+                nome,
+                email,
+                senha
+            )
 
             if not erros:
+
                 usuario = User.objects.create_user(
                     username=email,
                     email=email,
                     password=senha,
                     first_name=nome,
                 )
+
                 login(request, usuario)
-                return redirect(_destino(request))
+
+                # Após cadastro → Guardião ESG
+                return redirect('/guardiao/boas-vindas/')
+
+        # =========================
+        # LOGIN
+        # =========================
+
         else:
+
             modo = 'login'
 
             if not email or not senha:
-                erros.append('O e-mail e a senha são obrigatórios.')
+
+                erros.append(
+                    'O e-mail e a senha são obrigatórios.'
+                )
+
             else:
-                conta = User.objects.filter(email__iexact=email).first()
-                username = conta.username if conta else email
+
+                conta = User.objects.filter(
+                    email__iexact=email
+                ).first()
+
+                username = (
+                    conta.username
+                    if conta
+                    else email
+                )
+
                 usuario = authenticate(
                     request,
                     username=username,
@@ -101,10 +149,17 @@ def acesso(request):
                 )
 
                 if usuario is None:
-                    erros.append('E-mail ou senha inválidos.')
+
+                    erros.append(
+                        'E-mail ou senha inválidos.'
+                    )
+
                 else:
+
                     login(request, usuario)
-                    return redirect(_destino(request))
+
+                    # Após login → Guardião ESG
+                    return redirect('/guardiao/boas-vindas/')
 
     contexto = {
         'modo': modo,
@@ -113,7 +168,12 @@ def acesso(request):
         'email': email,
     }
 
-    return render(request, 'contas/acesso.html', contexto)
+    return render(
+        request,
+        'contas/acesso.html',
+        contexto
+    )
+
 
 @require_POST
 def sair(request):

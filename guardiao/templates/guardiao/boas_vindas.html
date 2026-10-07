@@ -1,0 +1,777 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Guardião ESG</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f9fc;
+            color: #1f2937;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            width: 100%;
+            height: 64px;
+            background: white;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 0 32px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        /* LOGO */
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #174a7e;
+            white-space: nowrap;
+        }
+
+        .logo img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+
+        /* MENU CENTRAL */
+
+        .menu {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .menu button {
+            height: 100%;
+            padding: 0 18px;
+            border: none;
+            background: transparent;
+            color: #4b5563;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+
+        .menu button:hover {
+            background: #f1f5f9;
+            color: #174a7e;
+        }
+
+        .menu button.ativo {
+            background: #edf4fb;
+            color: #1769aa;
+            font-weight: 700;
+        }
+
+        /* =========================
+           CONTA
+        ========================= */
+
+        .conta-container {
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .conta-botao {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            background: transparent;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 9px 12px;
+            border-radius: 7px;
+        }
+
+        .conta-botao:hover {
+            background: #f1f5f9;
+        }
+
+        .icone-conta {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #eaf2f8;
+            color: #1769aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .seta {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* MENU DA CONTA */
+
+        .menu-conta {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 52px;
+            width: 230px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+            padding: 8px;
+            z-index: 100;
+        }
+
+        .menu-conta.aberto {
+            display: block;
+        }
+
+        .dados-conta {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 5px;
+        }
+
+        .dados-conta strong {
+            display: block;
+            color: #1f2937;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .dados-conta span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .botao-sair {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-align: left;
+            padding: 11px 12px;
+            border-radius: 7px;
+            color: #dc2626;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .botao-sair:hover {
+            background: #fef2f2;
+        }
+
+        /* =========================
+           CONTEÚDO
+        ========================= */
+
+        .conteudo {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 70px 30px;
+        }
+
+        .slide {
+            display: none;
+            animation: aparecer 0.3s ease;
+        }
+
+        .slide.ativo {
+            display: block;
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .titulo {
+            max-width: 850px;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 48px;
+            line-height: 1.15;
+            color: #202b3c;
+            margin-bottom: 25px;
+        }
+
+        .titulo span {
+            color: #1769aa;
+        }
+
+        .descricao {
+            max-width: 750px;
+            font-size: 17px;
+            line-height: 1.7;
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        .informacoes {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .botao-principal {
+            border: none;
+            background: #1769aa;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .botao-principal:hover {
+            background: #12578e;
+        }
+
+        .botao-secundario {
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            padding: 14px 24px;
+            border-radius: 7px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .botao-secundario:hover {
+            background: #f8fafc;
+        }
+
+        /* =========================
+           CARDS
+        ========================= */
+
+        .titulo-pagina {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 42px;
+            color: #202b3c;
+            margin-bottom: 15px;
+        }
+
+        .subtitulo {
+            color: #64748b;
+            font-size: 17px;
+            margin-bottom: 35px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .card h3 {
+            color: #174a7e;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* =========================
+           RODAPÉ
+        ========================= */
+
+        .rodape {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 80px;
+            padding-bottom: 25px;
+        }
+
+        /* =========================
+           RESPONSIVO
+        ========================= */
+
+        @media (max-width: 1000px) {
+
+            .navbar {
+                grid-template-columns: auto 1fr auto;
+                padding: 0 15px;
+            }
+
+            .menu button {
+                padding: 0 9px;
+                font-size: 12px;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .conta-botao span.nome-conta {
+                display: none;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+                min-height: 64px;
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                gap: 5px;
+            }
+
+            .logo {
+                position: absolute;
+                left: 15px;
+                top: 15px;
+            }
+
+            .conta-container {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+            }
+
+            .menu {
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                margin-top: 45px;
+                height: 42px;
+            }
+
+            .menu button {
+                height: 40px;
+                white-space: nowrap;
+            }
+
+            .conteudo {
+                padding: 45px 20px;
+            }
+
+            .titulo {
+                font-size: 32px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="navbar">
+
+        <!-- LOGO -->
+
+        <div class="logo">
+
+            <img
+                src="{% static 'imagens/logo.jpg' %}"
+                alt="Logo Guardião ESG"
+            >
+
+            <span>Guardião ESG</span>
+
+        </div>
+
+
+        <!-- MENU CENTRAL -->
+
+        <div class="menu">
+
+            <button
+                class="aba ativo"
+                onclick="abrirAba(0)"
+            >
+                Diagnóstico
+            </button>
+
+            <button
+                class="aba"
+                onclick="abrirAba(1)"
+            >
+                Metas
+            </button>
+
+            <button
+                class="aba"
+                onclick="abrirAba(2)"
+            >
+                Fornecedores / Doações
+            </button>
+
+            <button
+                class="aba"
+                onclick="abrirAba(3)"
+            >
+                QR CODE
+            </button>
+
+        </div>
+
+
+        <!-- CONTA -->
+
+        <div class="conta-container">
+
+            <button
+                class="conta-botao"
+                onclick="abrirConta()"
+            >
+
+                <div class="icone-conta">
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+
+                <span class="nome-conta">
+                    Minha conta
+                </span>
+
+                <span class="seta">
+                    ▼
+                </span>
+
+            </button>
+
+
+            <!-- MENU DROPDOWN -->
+
+            <div
+                id="menuConta"
+                class="menu-conta"
+            >
+
+                <div class="dados-conta">
+
+                    <strong>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </strong>
+
+                    <span>
+                        {{ request.user.email }}
+                    </span>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'sair' %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="botao-sair"
+                    >
+                        Sair da conta
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         CONTEÚDO
+    ========================= -->
+
+    <main class="conteudo">
+
+        <!-- DIAGNÓSTICO -->
+
+        <section class="slide ativo">
+
+            <h1 class="titulo">
+                Descubra como seu restaurante está em
+                <span>sustentabilidade</span>
+            </h1>
+
+            <p class="descricao">
+                Responda algumas perguntas sobre o funcionamento do seu
+                restaurante e descubra seus principais pontos fortes,
+                oportunidades de melhoria e ações que podem gerar impacto
+                positivo no seu negócio.
+            </p>
+
+            <div class="informacoes">
+                <span>Leva cerca de 3 minutos</span>
+                <span>Resultado imediato</span>
+                <span>Gratuito</span>
+            </div>
+
+            <div class="botoes">
+
+                <button
+                    class="botao-principal"
+                    onclick="alert('O diagnóstico será implementado aqui!')"
+                >
+                    Começar diagnóstico
+                </button>
+
+                <button
+                    class="botao-secundario"
+                    onclick="alert('Aqui explicaremos como funciona o diagnóstico.')"
+                >
+                    Como funciona?
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- METAS -->
+
+        <section class="slide">
+
+            <h1 class="titulo-pagina">
+                Metas
+            </h1>
+
+            <p class="subtitulo">
+                Acompanhe as metas de sustentabilidade do seu restaurante.
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Reduzir desperdício</h3>
+                    <p>
+                        Defina uma meta para reduzir o desperdício de alimentos
+                        e acompanhe sua evolução.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Economizar água</h3>
+                    <p>
+                        Crie objetivos para reduzir o consumo de água durante
+                        as atividades do restaurante.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Economizar energia</h3>
+                    <p>
+                        Acompanhe ações para diminuir o consumo de energia
+                        e reduzir custos.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FORNECEDORES / DOAÇÕES -->
+
+        <section class="slide">
+
+            <h1 class="titulo-pagina">
+                Fornecedores / Doações
+            </h1>
+
+            <p class="subtitulo">
+                Organize seus fornecedores e registre ações de doação
+                realizadas pelo restaurante.
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Fornecedores</h3>
+                    <p>
+                        Cadastre fornecedores e acompanhe práticas relacionadas
+                        à sustentabilidade.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Doações</h3>
+                    <p>
+                        Registre alimentos e outros recursos destinados
+                        para doação.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Histórico</h3>
+                    <p>
+                        Consulte as ações realizadas pelo restaurante
+                        ao longo do tempo.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- QR CODE -->
+
+        <section class="slide">
+
+            <h1 class="titulo-pagina">
+                QR CODE
+            </h1>
+
+            <p class="subtitulo">
+                Gere um QR Code para apresentar aos seus clientes as ações
+                sustentáveis realizadas pelo restaurante.
+            </p>
+
+            <div class="card">
+
+                <h3>
+                    QR Code do restaurante
+                </h3>
+
+                <p>
+                    Em breve será possível gerar um QR Code personalizado
+                    para compartilhar os resultados e iniciativas ESG
+                    do restaurante.
+                </p>
+
+                <br>
+
+                <button
+                    class="botao-principal"
+                    onclick="alert('A geração do QR Code será implementada aqui!')"
+                >
+                    Gerar QR Code
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <div class="rodape">
+            Projeto Impacta · Dados temporários para análise
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        function abrirAba(numero) {
+
+            const slides = document.querySelectorAll(".slide");
+            const abas = document.querySelectorAll(".aba");
+
+            slides.forEach(function(slide) {
+                slide.classList.remove("ativo");
+            });
+
+            abas.forEach(function(aba) {
+                aba.classList.remove("ativo");
+            });
+
+            slides[numero].classList.add("ativo");
+            abas[numero].classList.add("ativo");
+        }
+
+
+        function abrirConta() {
+
+            const menu = document.getElementById("menuConta");
+
+            menu.classList.toggle("aberto");
+
+        }
+
+
+        // Fecha o menu da conta ao clicar fora dele
+
+        document.addEventListener("click", function(event) {
+
+            const container = document.querySelector(".conta-container");
+            const menu = document.getElementById("menuConta");
+
+            if (!container.contains(event.target)) {
+                menu.classList.remove("aberto");
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
