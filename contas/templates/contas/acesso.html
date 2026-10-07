@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Entrar ou Cadastrar - Projeto Impacta
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+    <div class="auth-card auth-{{ modo }}" id="auth-card">
+
+        <!-- PAINEL AZUL -->
+        <aside class="auth-painel">
+
+            <div class="auth-painel-conteudo painel-login">
+                <h1>Bem-vindo de volta!</h1>
+                <p>
+                    Acesse sua conta para continuar acompanhando os
+                    indicadores ESG do seu estabelecimento.
+                </p>
+                <ul>
+                    <li>Registre o desperdício de alimentos</li>
+                    <li>Acompanhe métricas ambientais e sociais</li>
+                    <li>Mostre seu impacto ao cliente final</li>
+                </ul>
+            </div>
+
+            <div class="auth-painel-conteudo painel-cadastro">
+                <h1>Faça parte do Impacta</h1>
+                <p>
+                    Crie sua conta gratuitamente e comece a transformar
+                    a gestão ESG da sua empresa alimentícia.
+                </p>
+                <ul>
+                    <li>Cadastro rápido e simples</li>
+                    <li>Feito para pequenas e médias empresas</li>
+                    <li>Dados organizados em um só lugar</li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- FORMULÁRIOS -->
+        <div class="auth-formularios">
+
+            <!-- LOGIN -->
+            <form method="post" action="{% url 'acesso' %}" data-form="login">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="login">
+                <input type="hidden" name="next" value="{{ proximo }}">
+
+                <h2>Entrar</h2>
+
+                {% if modo == 'login' and erros %}
+                    <div class="erros">
+                        <ul>
+                            {% for erro in erros %}
+                                <li>{{ erro }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="form-grupo">
+                    <label for="login-email">E-mail</label>
+                    <input type="email" id="login-email" name="email"
+                           value="{% if modo == 'login' %}{{ email }}{% endif %}"
+                           autocomplete="email" required>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="login-senha">Senha</label>
+                    <input type="password" id="login-senha" name="senha"
+                           autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="botao-formulario botao-auth">
+                    Entrar
+                </button>
+
+                <p class="auth-troca">
+                    Ainda não tem conta?
+                    <a href="{% url 'acesso' %}?modo=cadastro" data-trocar="cadastro">
+                        Cadastre-se
+                    </a>
+                </p>
+            </form>
+
+            <!-- CADASTRO -->
+            <form method="post" action="{% url 'acesso' %}" data-form="cadastro">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="cadastro">
+                <input type="hidden" name="next" value="{{ proximo }}">
+
+                <h2>Criar conta</h2>
+
+                {% if modo == 'cadastro' and erros %}
+                    <div class="erros">
+                        <ul>
+                            {% for erro in erros %}
+                                <li>{{ erro }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="form-grupo">
+                    <label for="cad-nome">Nome completo</label>
+                    <input type="text" id="cad-nome" name="nome"
+                           value="{% if modo == 'cadastro' %}{{ nome }}{% endif %}"
+                           autocomplete="name" required>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="cad-email">E-mail</label>
+                    <input type="email" id="cad-email" name="email"
+                           value="{% if modo == 'cadastro' %}{{ email }}{% endif %}"
+                           autocomplete="email" required>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="cad-senha">Senha</label>
+                    <input type="password" id="cad-senha" name="senha"
+                           autocomplete="new-password" required>
+                </div>
+
+                <button type="submit" class="botao-formulario botao-auth">
+                    Cadastrar
+                </button>
+
+                <p class="auth-troca">
+                    Já tem uma conta?
+                    <a href="{% url 'acesso' %}?modo=login" data-trocar="login">
+                        Entrar
+                    </a>
+                </p>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const card = document.getElementById('auth-card');
+
+        if (!card) {
+            return;
+        }
+
+        document.querySelectorAll('[data-trocar]').forEach(link => {
+            link.addEventListener('click', evento => {
+                evento.preventDefault();
+
+                const modo = link.dataset.trocar;
+                const classeNova = 'auth-' + modo;
+
+                if (card.classList.contains(classeNova)) {
+                    return;
+                }
+
+                card.classList.remove('auth-login', 'auth-cadastro');
+                card.classList.add(classeNova);
+
+                history.replaceState(null, '', link.getAttribute('href'));
+
+                const primeiroCampo = card.querySelector(
+                    '[data-form="' + modo + '"] input:not([type="hidden"])'
+                );
+
+                if (primeiroCampo) {
+                    primeiroCampo.focus({ preventScroll: true });
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

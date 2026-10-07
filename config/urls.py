@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('', include('contato.urls')),
+    path('', include('contas.urls')),
 ]

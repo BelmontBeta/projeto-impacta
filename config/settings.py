@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'contato',
+    'contas',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Troque o idioma para as mensagens de senha virem em português
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Recife'
+
+# Autenticação
+LOGIN_URL = 'acesso'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 ROOT_URLCONF = 'config.urls'
 

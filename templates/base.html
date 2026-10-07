@@ -35,6 +35,15 @@
                 <a href="{% url 'sobre' %}">O Projeto</a>
                 <a href="{% url 'desafios' %}">Desafios</a>
                 <a href="{% url 'contato' %}">Contato</a>
+
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'sair' %}" class="nav-form">
+                        {% csrf_token %}
+                        <button type="submit">Sair ({{ user.first_name|default:user.username }})</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'acesso' %}">Entrar</a>
+                {% endif %}
             </nav>
         </div>
     </header>

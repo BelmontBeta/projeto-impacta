@@ -348,6 +348,216 @@ form {
     margin: 0;
 }
 
+/* ACESSO (LOGIN / CADASTRO) COM TRANSIÇÃO DESLIZANTE */
+
+.auth-section {
+    display: flex;
+    justify-content: center;
+    padding: 60px 4%;
+    background: linear-gradient(135deg, #eaf4fc, #ffffff);
+}
+
+.auth-card {
+    --auth-duracao: 700ms;
+    --auth-curva: cubic-bezier(0.77, 0, 0.175, 1);
+
+    position: relative;
+    width: min(960px, 100%);
+    min-height: 620px;
+    overflow: hidden;
+    border-radius: 16px;
+    background-color: var(--branco);
+    box-shadow: 0 12px 40px rgba(11, 61, 110, 0.18);
+    isolation: isolate;
+}
+
+/* Painel azul: fica na metade esquerda (login) e desliza para a direita (cadastro) */
+.auth-painel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    width: 50%;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--azul-principal), var(--azul-escuro));
+    color: var(--branco);
+    transition: transform var(--auth-duracao) var(--auth-curva);
+}
+
+.auth-cadastro .auth-painel {
+    transform: translateX(100%);
+}
+
+/* Círculos decorativos no painel */
+.auth-painel::before,
+.auth-painel::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+}
+
+.auth-painel::before {
+    width: 260px;
+    height: 260px;
+    top: -90px;
+    right: -90px;
+}
+
+.auth-painel::after {
+    width: 200px;
+    height: 200px;
+    bottom: -70px;
+    left: -60px;
+}
+
+/* Textos do painel: um some, o outro aparece */
+.auth-painel-conteudo {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 40px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(20px);
+    transition:
+        opacity 250ms ease,
+        transform 300ms ease,
+        visibility 0s linear 300ms;
+}
+
+.auth-login .painel-login,
+.auth-cadastro .painel-cadastro {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    transition:
+        opacity 400ms ease 300ms,
+        transform 500ms var(--auth-curva) 250ms,
+        visibility 0s;
+}
+
+.auth-painel h1 {
+    margin-top: 0;
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.auth-painel p {
+    margin: 0;
+}
+
+.auth-painel ul {
+    margin: 24px 0 0;
+    padding-left: 20px;
+}
+
+.auth-painel li {
+    margin-bottom: 8px;
+}
+
+/* Área dos formulários: metade direita (login) e desliza para a esquerda (cadastro) */
+.auth-formularios {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    z-index: 1;
+    width: 50%;
+    transition: transform var(--auth-duracao) var(--auth-curva);
+}
+
+.auth-cadastro .auth-formularios {
+    transform: translateX(-100%);
+}
+
+/* Cada formulário ocupa toda a área e aparece com fade + deslize */
+.auth-formularios form {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: none;
+    padding: 48px 40px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(30px);
+    transition:
+        opacity 250ms ease,
+        transform 300ms ease,
+        visibility 0s linear 300ms;
+}
+
+.auth-login [data-form="login"],
+.auth-cadastro [data-form="cadastro"] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+    transition:
+        opacity 400ms ease 300ms,
+        transform 500ms var(--auth-curva) 250ms,
+        visibility 0s;
+}
+
+.auth-formularios h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--azul-escuro);
+    font-size: 1.75rem;
+}
+
+.auth-formularios .erros ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.auth-formularios .erros {
+    margin-bottom: 18px;
+}
+
+.botao-auth {
+    width: 100%;
+}
+
+.auth-troca {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-troca a {
+    color: var(--azul-principal);
+    font-weight: bold;
+}
+
+/* Botão "Sair" no menu parece um link */
+.nav-form {
+    display: inline;
+    margin: 0;
+}
+
+.nav-form button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--branco);
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.nav-form button:hover {
+    text-decoration: underline;
+}
+
 /* DESKTOP: cabeçalho fixo no topo, para a sidebar ficar sempre abaixo dele */
 
 @media (min-width: 769px) {
@@ -451,6 +661,51 @@ form {
     /* Espaço extra no fim da página para a barra inferior (sidebar) não cobrir o rodapé */
     .site-footer {
         padding-bottom: 86px;
+    }
+
+    /* ACESSO no celular: painel fixo em cima, só os textos e formulários trocam */
+    .auth-section {
+        padding: 32px 4%;
+    }
+
+    .auth-card {
+        min-height: 760px;
+    }
+
+    .auth-painel,
+    .auth-cadastro .auth-painel {
+        top: 0;
+        right: 0;
+        bottom: auto;
+        left: 0;
+        width: 100%;
+        height: 210px;
+        transform: none;
+    }
+
+    .auth-painel-conteudo {
+        padding: 28px 24px;
+    }
+
+    .auth-painel h1 {
+        font-size: 1.5rem;
+    }
+
+    .auth-painel ul {
+        display: none;
+    }
+
+    .auth-formularios,
+    .auth-cadastro .auth-formularios {
+        top: 210px;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        transform: none;
+    }
+
+    .auth-formularios form {
+        padding: 28px 24px;
     }
 
 }
