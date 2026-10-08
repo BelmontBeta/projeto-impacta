@@ -37,6 +37,8 @@
                    {% if request.resolver_match.url_name == 'sobre' %}aria-current="page"{% endif %}>O Projeto</a>
                 <a href="{% url 'desafios' %}"
                    {% if request.resolver_match.url_name == 'desafios' %}aria-current="page"{% endif %}>Desafios</a>
+                <a href="{% url 'solucoes' %}"
+                   {% if request.resolver_match.url_name == 'solucoes' %}aria-current="page"{% endif %}>Soluções</a>
                 <a href="{% url 'contato' %}"
                    {% if request.resolver_match.url_name == 'contato' %}aria-current="page"{% endif %}>Contato</a>
 
