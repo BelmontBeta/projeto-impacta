@@ -76,6 +76,7 @@ button:focus-visible {
 .site-header {
     background-color: var(--azul-principal);
     color: var(--branco);
+    box-shadow: 0 2px 10px rgba(11, 61, 110, 0.25);
 }
 
 .header-content {
@@ -87,26 +88,74 @@ button:focus-visible {
 }
 
 .logo {
+    flex-shrink: 0;
     color: var(--branco);
     text-decoration: none;
     font-weight: bold;
     font-size: 1.25rem;
 }
 
+
 .main-nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
+    flex: 1;
+    align-items: center;
+    gap: 6px;
+    margin-left: clamp(16px, 3vw, 40px);
 }
 
 .main-nav a {
+    padding: 9px 30px;
+    border-radius: 8px;
     color: var(--branco);
     text-decoration: none;
     font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .main-nav a:hover {
-    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.main-nav a[aria-current="page"] {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.main-nav > a:nth-last-child(2) {
+    margin-right: 24px;
+}
+
+
+.main-nav .nav-acessar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    padding: 11px 28px;
+    border: 2px solid var(--branco);
+    border-radius: 999px;
+    background-color: var(--branco);
+    color: var(--azul-principal);
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.main-nav .nav-acessar:hover {
+    background-color: transparent;
+    color: var(--branco);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.main-nav .nav-acessar:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* BOTÃO DO MENU (oculto no desktop, visível só no mobile) */
@@ -256,6 +305,11 @@ form {
     max-width: 700px;
 }
 
+.section:not(.auth-section) form {
+    width: min(100%, 700px);
+    margin: 32px auto 0;
+}
+
 .form-grupo {
     margin-bottom: 18px;
 }
@@ -299,6 +353,11 @@ form {
     border-radius: 8px;
     background-color: #d9e9f2;
     color: #0b3d6e;
+}
+
+.section .mensagem-sucesso {
+    width: min(100%, 700px);
+    margin: 0 auto 24px;
 }
 
 .erros {
@@ -538,27 +597,29 @@ form {
     font-weight: bold;
 }
 
-/* Botão "Sair" no menu parece um link */
 .nav-form {
-    display: inline;
-    margin: 0;
+    display: flex;
+    margin: 0 0 0 auto;
 }
 
 .nav-form button {
-    padding: 0;
-    border: 0;
-    background: none;
+    padding: 10px 22px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
+    background: transparent;
     color: var(--branco);
     font: inherit;
     font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .nav-form button:hover {
-    text-decoration: underline;
+    background-color: var(--branco);
+    color: var(--azul-principal);
+    transform: translateY(-1px);
 }
 
-/* DESKTOP: cabeçalho fixo no topo, para a sidebar ficar sempre abaixo dele */
 
 @media (min-width: 769px) {
 
@@ -606,19 +667,35 @@ form {
         display: block;
     }
 
-    /* Menu recolhido por padrão no mobile */
     .main-nav {
         display: none;
+        flex: none;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         width: 100%;
-        gap: 10px 16px;
+        margin-left: 0;
+        gap: 6px;
     }
 
-    /* Menu aberto ao clicar no botão */
     .main-nav.is-open {
         display: flex;
+    }
+
+    .main-nav > a:nth-last-child(2) {
+        margin-right: 0;
+    }
+
+    .main-nav .nav-acessar {
+        justify-content: center;
+        width: min(100%, 260px);
+        margin-left: 0;
+        margin-top: 8px;
+        text-align: center;
+    }
+
+    .nav-form {
+        margin: 8px 0 0;
     }
 
     .hero {
@@ -658,12 +735,10 @@ form {
         max-width: 100%;
     }
 
-    /* Espaço extra no fim da página para a barra inferior (sidebar) não cobrir o rodapé */
     .site-footer {
         padding-bottom: 86px;
     }
 
-    /* ACESSO no celular: painel fixo em cima, só os textos e formulários trocam */
     .auth-section {
         padding: 32px 4%;
     }
@@ -710,7 +785,6 @@ form {
 
 }
 
-/* CELULAR */
 
 @media (max-width: 600px) {
 
