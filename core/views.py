@@ -11,3 +11,6 @@ def sobre(request):
 
 def desafios(request):
     return render(request, 'core/desafios.html')
+
+def solucoes(request):
+    return render(request, 'core/solucoes.html')
