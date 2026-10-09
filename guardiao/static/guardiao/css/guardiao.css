@@ -1,7 +1,5 @@
-/* =========================================================
-   GUARDIÃO ESG — telas do diagnóstico
-   (perguntas, resultado, detalhes por pilar, plano de ação)
-   ========================================================= */
+/* GUARDIÃO ESG — telas do diagnóstico
+(perguntas, resultado, detalhes por pilar, plano de ação) */
 
 :root {
     --g-azul: #2563a8;
@@ -53,9 +51,7 @@ body.guardiao summary:focus-visible {
     outline-offset: 2px;
 }
 
-/* =========================
-   NAVBAR
-========================= */
+/*NAVBAR*/
 
 .g-navbar {
     width: 100%;
@@ -215,9 +211,7 @@ body.guardiao summary:focus-visible {
     background: #fef2f2;
 }
 
-/* =========================
-   COMPONENTES COMUNS
-========================= */
+/*COMPONENTES COMUNS*/
 
 .g-pagina {
     max-width: 1080px;
@@ -422,9 +416,7 @@ body.guardiao summary:focus-visible {
     font-weight: 700;
 }
 
-/* =========================
-   QUESTIONÁRIO
-========================= */
+/*QUESTIONÁRIO*/
 
 .quiz {
     display: grid;
@@ -633,9 +625,7 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     min-width: 194px;
 }
 
-/* =========================
-   RESULTADO
-========================= */
+/*RESULTADO*/
 
 .res-grade {
     display: grid;
@@ -762,9 +752,7 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     color: var(--g-suave);
 }
 
-/* =========================
-   DETALHES POR PILAR
-========================= */
+/*DETALHES POR PILAR*/
 
 .det-lista {
     display: flex;
@@ -854,9 +842,7 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
 .det-ponto.p2 { background: #5b8fcb; }
 .det-ponto.p3 { background: var(--g-verde); }
 
-/* =========================
-   PLANO DE AÇÃO
-========================= */
+/*PLANO DE AÇÃO*/
 
 .plano-progresso {
     margin: -14px 0 26px;
@@ -1042,9 +1028,7 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     border-color: var(--g-verde);
 }
 
-/* =========================
-   RESPONSIVO
-========================= */
+/*RESPONSIVO*/
 
 @media (max-width: 1000px) {
     .g-navbar {
