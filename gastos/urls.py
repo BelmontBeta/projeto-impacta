@@ -8,9 +8,3 @@ urlpatterns = [
     path("novo/", views.adicionar, name="adicionar"),
     path("<int:pk>/excluir/", views.excluir, name="excluir"),
 ]
-from django.urls import path, include
-
-urlpatterns = [
-    # ... suas rotas atuais
-    path("gastos/", include("gastos.urls")),
-]
