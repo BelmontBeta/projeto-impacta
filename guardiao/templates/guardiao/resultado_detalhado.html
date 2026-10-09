@@ -1,0 +1,58 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Resultado por pilar · Guardião ESG{% endblock %}
+
+{% block content %}
+<main class="g-pagina">
+
+    <a class="g-voltar" href="{% url 'guardiao:resultado' diagnostico.pk %}">
+        {% include "guardiao/partials/icone_voltar.html" %}
+        Voltar
+    </a>
+
+    <h1 class="g-titulo" style="font-size: 36px;">Resultado por pilar</h1>
+    <p class="g-subtitulo">Veja onde você está indo bem e onde há oportunidades de melhoria.</p>
+
+    <div class="det-lista">
+        {% for pilar in pilares %}
+            <details class="g-cartao det-pilar" {% if forloop.first %}open{% endif %}>
+                <summary>
+                    <div class="g-selo fundo-{{ pilar.classe }}">{{ pilar.letra }}</div>
+                    <div class="res-pilar-corpo">
+                        <div class="res-pilar-topo">
+                            <span class="res-pilar-nome">{{ pilar.nome }}</span>
+                            <span class="res-pilar-nota cor-{{ pilar.classe }}">{{ pilar.nota }}<small>/100</small></span>
+                        </div>
+                        <div class="g-barra"><span class="fundo-{{ pilar.classe }}" style="width: {{ pilar.largura }}%"></span></div>
+                    </div>
+                    <svg class="g-icone det-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </summary>
+
+                <div class="det-conteudo">
+                    <p>{{ pilar.descricao }}</p>
+                    <span class="g-nivel pequeno {{ pilar.nivel.classe }}">{{ pilar.nivel.frase_pilar }}</span>
+
+                    {% if pilar.respostas %}
+                        <ul class="det-respostas">
+                            {% for resposta in pilar.respostas %}
+                                <li class="det-resposta">
+                                    <span class="det-resposta-pergunta">{{ resposta.pergunta }}</span>
+                                    <span class="det-resposta-valor">
+                                        <span class="det-ponto p{{ resposta.pontos }}" aria-hidden="true"></span>
+                                        {{ resposta.resposta }}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </details>
+        {% endfor %}
+    </div>
+
+    <div class="g-acoes">
+        <a class="g-botao" href="{% url 'guardiao:plano' diagnostico.pk %}">Ver plano de ação</a>
+    </div>
+
+</main>
+{% endblock %}

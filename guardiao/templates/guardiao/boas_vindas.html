@@ -288,6 +288,15 @@
             background: #f8fafc;
         }
 
+        a.botao-secundario {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .botoes form {
+            margin: 0;
+        }
+
         /* =========================
            CARDS
         ========================= */
@@ -573,20 +582,37 @@
 
             <div class="botoes">
 
-                <button
-                    class="botao-principal"
-                    onclick="alert('O diagnóstico será implementado aqui!')"
-                >
-                    Começar diagnóstico
-                </button>
+                <form method="post" action="{% url 'guardiao:iniciar' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="botao-principal">
+                        {% if ultimo %}Refazer diagnóstico{% else %}Começar diagnóstico{% endif %}
+                    </button>
+                </form>
+
+                {% if ultimo %}
+                    <a class="botao-secundario" href="{% url 'guardiao:ultimo_resultado' %}">
+                        Ver último resultado
+                    </a>
+                {% endif %}
 
                 <button
                     class="botao-secundario"
-                    onclick="alert('Aqui explicaremos como funciona o diagnóstico.')"
+                    type="button"
+                    onclick="document.getElementById('comoFunciona').toggleAttribute('hidden')"
                 >
                     Como funciona?
                 </button>
 
+            </div>
+
+            <div id="comoFunciona" class="card" style="margin-top: 28px; max-width: 750px;" hidden>
+                <h3>Como funciona</h3>
+                <p>
+                    Você responde 16 perguntas sobre o dia a dia do restaurante.
+                    Cada resposta vale de 0 a 3 pontos e gera uma nota de 0 a 100
+                    para os pilares Ambiental, Social e Governança. As respostas mais
+                    fracas viram missões simples no seu plano de ação.
+                </p>
             </div>
 
         </section>
@@ -756,6 +782,18 @@
             menu.classList.toggle("aberto");
 
         }
+
+
+        // Abre a aba indicada na URL (#metas, #fornecedores, #qrcode)
+
+        (function () {
+            var abas = { "#metas": 1, "#fornecedores": 2, "#qrcode": 3 };
+            var indice = abas[window.location.hash];
+
+            if (indice !== undefined) {
+                abrirAba(indice);
+            }
+        })();
 
 
         // Fecha o menu da conta ao clicar fora dele

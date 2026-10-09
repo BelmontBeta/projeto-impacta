@@ -1,0 +1,92 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Pergunta {{ numero }} de {{ total }} · Guardião ESG{% endblock %}
+
+{% block content %}
+<div class="quiz">
+
+    <aside class="quiz-lateral" aria-label="Progresso do diagnóstico">
+        <div class="quiz-progresso-titulo">Progresso</div>
+        <div class="quiz-progresso-numero">{{ numero }}<small> / {{ total }}</small></div>
+        <div class="g-barra" role="progressbar" aria-valuemin="0" aria-valuemax="{{ total }}" aria-valuenow="{{ numero }}">
+            <span style="width: {{ progresso }}%"></span>
+        </div>
+
+        <ol class="quiz-lista">
+            {% for etapa in lateral %}
+                <li>
+                    {% if etapa.estado != "atual" and etapa.liberada %}
+                        <a class="quiz-item {{ etapa.estado }}"
+                           href="{% url 'guardiao:pergunta' etapa.numero %}">
+                    {% else %}
+                        <div class="quiz-item {{ etapa.estado }}"
+                             {% if etapa.estado == "atual" %}aria-current="step"{% endif %}>
+                    {% endif %}
+                            <span class="quiz-bolinha">
+                                {% if etapa.estado == "feita" %}
+                                    <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                                    <span class="sr-only">Respondida</span>
+                                {% else %}
+                                    {{ etapa.numero }}
+                                {% endif %}
+                            </span>
+                            <span class="quiz-item-texto">{{ etapa.texto }}</span>
+                    {% if etapa.estado != "atual" and etapa.liberada %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ol>
+    </aside>
+
+    <section class="quiz-principal">
+        <form class="quiz-conteudo" method="post" novalidate>
+            {% csrf_token %}
+
+            {% include "guardiao/partials/pilula_pilar.html" with pilar=pilar nome=item.pilar %}
+
+            <h1 class="g-titulo quiz-pergunta" id="pergunta">{{ item.pergunta }}</h1>
+
+            <fieldset class="quiz-opcoes" aria-labelledby="pergunta">
+                {% for valor, texto in opcoes %}
+                    <label class="quiz-opcao">
+                        <input type="radio" name="resposta" value="{{ valor }}"
+                               {% if selecionada == valor %}checked{% endif %}>
+                        <span class="quiz-opcao-cartao">
+                            {{ texto }}
+                            <span class="quiz-opcao-marca">
+                                <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </span>
+                        </span>
+                    </label>
+                {% endfor %}
+            </fieldset>
+
+            {% if erro %}
+                <p class="quiz-erro" role="alert">{{ erro }}</p>
+            {% endif %}
+
+            <div class="quiz-rodape-acoes">
+                {% if numero > 1 %}
+                    <a class="g-voltar" href="{% url 'guardiao:pergunta' numero|add:'-1' %}">
+                        {% include "guardiao/partials/icone_voltar.html" %}
+                        Voltar
+                    </a>
+                {% else %}
+                    <a class="g-voltar" href="{% url 'guardiao:boas_vindas' %}">
+                        {% include "guardiao/partials/icone_voltar.html" %}
+                        Sair do diagnóstico
+                    </a>
+                {% endif %}
+
+                <button class="g-botao" type="submit">
+                    {% if ultima %}Ver resultado{% else %}Próxima pergunta{% endif %}
+                </button>
+            </div>
+        </form>
+    </section>
+
+</div>
+{% endblock %}

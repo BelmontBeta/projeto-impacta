@@ -1,0 +1,78 @@
+{% load static %}<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Guardião ESG{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'guardiao/css/guardiao.css' %}">
+</head>
+
+<body class="guardiao">
+
+    <nav class="g-navbar">
+
+        <a class="g-logo" href="{% url 'guardiao:boas_vindas' %}">
+            <img src="{% static 'imagens/logo.jpg' %}" alt="Logo Guardião ESG">
+            <span>Guardião ESG</span>
+        </a>
+
+        <div class="g-menu">
+            <a class="ativo" href="{% url 'guardiao:boas_vindas' %}">Diagnóstico</a>
+            <a href="{% url 'guardiao:boas_vindas' %}#metas">Metas</a>
+            <a href="{% url 'guardiao:boas_vindas' %}#fornecedores">Fornecedores / Doações</a>
+            <a href="{% url 'guardiao:boas_vindas' %}#qrcode">QR CODE</a>
+        </div>
+
+        <div class="g-conta">
+            <button class="g-conta-botao" type="button" id="botaoConta"
+                    aria-haspopup="true" aria-expanded="false">
+                <div class="g-conta-icone">
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+                <span class="g-conta-nome">Minha conta</span>
+                <span class="g-conta-seta">▼</span>
+            </button>
+
+            <div class="g-conta-menu" id="menuConta">
+                <div class="g-conta-dados">
+                    <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                    <span>{{ request.user.email }}</span>
+                </div>
+
+                <form method="post" action="{% url 'sair' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="g-sair">Sair da conta</button>
+                </form>
+            </div>
+        </div>
+
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <script>
+        (function () {
+            var botao = document.getElementById("botaoConta");
+            var menu = document.getElementById("menuConta");
+
+            botao.addEventListener("click", function () {
+                var aberto = menu.classList.toggle("aberto");
+                botao.setAttribute("aria-expanded", aberto);
+            });
+
+            document.addEventListener("click", function (evento) {
+                if (!botao.parentNode.contains(evento.target)) {
+                    menu.classList.remove("aberto");
+                    botao.setAttribute("aria-expanded", "false");
+                }
+            });
+        })();
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

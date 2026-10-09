@@ -1,0 +1,70 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Seu diagnóstico · Guardião ESG{% endblock %}
+
+{% block content %}
+<main class="g-pagina">
+
+    <p class="g-eyebrow">Diagnóstico concluído</p>
+    <h1 class="g-titulo" style="font-size: 40px;">Seu diagnóstico está pronto!</h1>
+
+    <div class="res-grade">
+
+        <section class="g-cartao res-nota" aria-label="Nota geral">
+            <div class="res-anel">
+                <svg viewBox="0 0 140 140" aria-hidden="true">
+                    <circle class="res-anel-trilho" cx="70" cy="70" r="62" fill="none" stroke-width="10"/>
+                    <circle class="res-anel-valor anel-{{ nivel.classe }}" cx="70" cy="70" r="62" fill="none" stroke-width="10"
+                            stroke-dasharray="{{ anel_tracado }}" stroke-dashoffset="{{ anel_offset }}"/>
+                </svg>
+                <div class="res-anel-texto">
+                    <span class="res-anel-numero">{{ nota }}</span>
+                    <span class="res-anel-de">de 100</span>
+                </div>
+            </div>
+
+            <span class="g-nivel {{ nivel.classe }}">{{ nivel.nome }}</span>
+            <p class="res-frase">{{ nivel.frase_geral }}</p>
+
+            {% if evolucao %}
+                <p class="res-evolucao">
+                    Desde {{ evolucao.data|date:"d/m/Y" }}:
+                    <strong class="{% if evolucao.diferenca > 0 %}sobe{% elif evolucao.diferenca < 0 %}desce{% endif %}">
+                        {{ evolucao.sinal }}{{ evolucao.diferenca }} pontos
+                    </strong>
+                </p>
+            {% endif %}
+        </section>
+
+        <section class="g-cartao res-pilares" aria-label="Resultado por pilar">
+            <span class="g-rotulo">Resultado por pilar</span>
+
+            {% for pilar in pilares %}
+                <div class="res-pilar">
+                    <div class="g-selo fundo-{{ pilar.classe }}">{{ pilar.letra }}</div>
+                    <div class="res-pilar-corpo">
+                        <div class="res-pilar-topo">
+                            <span class="res-pilar-nome">{{ pilar.nome }}</span>
+                            <span class="res-pilar-nota cor-{{ pilar.classe }}">{{ pilar.nota }}<small>/100</small></span>
+                        </div>
+                        <div class="g-barra"><span class="fundo-{{ pilar.classe }}" style="width: {{ pilar.largura }}%"></span></div>
+                        <p class="res-pilar-desc">{{ pilar.descricao }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+
+    </div>
+
+    <div class="g-acoes">
+        <a class="g-botao contorno" href="{% url 'guardiao:resultado_detalhado' diagnostico.pk %}">Ver resultados detalhados</a>
+        <a class="g-botao" href="{% url 'guardiao:plano' diagnostico.pk %}">Ver plano de ação</a>
+    </div>
+
+    <p class="g-rodape">
+        Projeto Impacta · Diagnóstico feito em {{ diagnostico.criado_em|date:"d/m/Y" }} ·
+        <a href="{% url 'guardiao:boas_vindas' %}">Voltar ao início</a>
+    </p>
+
+</main>
+{% endblock %}

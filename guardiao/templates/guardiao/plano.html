@@ -1,0 +1,86 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Plano de ação · Guardião ESG{% endblock %}
+
+{% block content %}
+<main class="g-pagina">
+
+    <a class="g-voltar" href="{% url 'guardiao:resultado' diagnostico.pk %}">
+        {% include "guardiao/partials/icone_voltar.html" %}
+        Voltar
+    </a>
+
+    <h1 class="g-titulo" style="font-size: 36px;">Plano de ação</h1>
+    <p class="g-subtitulo">Ações simples selecionadas com base no seu diagnóstico.</p>
+
+    {% if missoes %}
+        <p class="plano-progresso">{{ concluidas }} de {{ missoes|length }} concluída{{ concluidas|pluralize }}</p>
+
+        <div class="plano-grade">
+            {% for missao in missoes %}
+                <article class="g-cartao missao {% if missao.registro.concluida %}concluida{% endif %}">
+                    <div>
+                        {% include "guardiao/partials/pilula_pilar.html" with pilar=missao.pilar nome=missao.nome_pilar %}
+                    </div>
+
+                    <h2 class="missao-titulo">{{ missao.titulo }}</h2>
+                    <p class="missao-resumo">{{ missao.resumo }}</p>
+
+                    <ul class="missao-meta">
+                        <li>
+                            <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                            {{ missao.tempo }}
+                        </li>
+                        <li>
+                            <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M17 6.5C16 5 14.2 4.5 12 4.5c-2.5 0-4.5 1.2-4.5 3.2 0 4.8 9.5 2.3 9.5 7 0 2-2 3.3-5 3.3-2.3 0-4.2-.7-5.2-2.3"/></svg>
+                            {{ missao.custo_rotulo }}
+                        </li>
+                    </ul>
+
+                    <div class="missao-acoes">
+                        <a class="g-botao" href="{% url 'guardiao:missao' diagnostico.pk missao.registro.missao_id %}">Ver missão</a>
+
+                        <form method="post" action="{% url 'guardiao:missao_alternar' diagnostico.pk missao.registro.missao_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="campo" value="destacada">
+                            <button type="submit"
+                                    class="g-icone-botao destaque {% if missao.registro.destacada %}marcada{% endif %}"
+                                    aria-pressed="{% if missao.registro.destacada %}true{% else %}false{% endif %}"
+                                    aria-label="{% if missao.registro.destacada %}Remover destaque da missão{% else %}Destacar missão{% endif %}"
+                                    title="Destacar">
+                                <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>
+                            </button>
+                        </form>
+
+                        <form method="post" action="{% url 'guardiao:missao_alternar' diagnostico.pk missao.registro.missao_id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="campo" value="concluida">
+                            <button type="submit"
+                                    class="g-icone-botao concluir {% if missao.registro.concluida %}marcada{% endif %}"
+                                    aria-pressed="{% if missao.registro.concluida %}true{% else %}false{% endif %}"
+                                    aria-label="{% if missao.registro.concluida %}Marcar missão como não concluída{% else %}Marcar missão como concluída{% endif %}"
+                                    title="Concluir">
+                                <svg class="g-icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="g-cartao plano-vazio">
+            <h2 class="g-titulo" style="font-size: 24px;">Parabéns!</h2>
+            <p>Suas respostas mostram boas práticas em todas as áreas.</p>
+            <p>Continue acompanhando e refaça o diagnóstico daqui a 3 meses.</p>
+        </div>
+    {% endif %}
+
+    <div class="g-acoes">
+        <form method="post" action="{% url 'guardiao:iniciar' %}">
+            {% csrf_token %}
+            <button type="submit" class="g-botao contorno">Refazer diagnóstico</button>
+        </form>
+    </div>
+
+</main>
+{% endblock %}
