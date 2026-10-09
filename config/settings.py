@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'contato',
     'contas',
     'guardiao',
+    'gastos',
 ]
 
 MIDDLEWARE = [
