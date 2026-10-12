@@ -264,6 +264,19 @@ main {
     color: var(--azul-principal);
 }
 
+/* CARDS DA PÁGINA DE SOLUÇÕES (grade 2x2, todos do mesmo tamanho) */
+
+.cards-solucoes {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.cards-solucoes .card {
+    min-height: 180px;
+}
+
 /* BOTÕES */
 
 .botao {
@@ -714,6 +727,11 @@ form {
     .cards,
     .etapas {
         grid-template-columns: 1fr;
+    }
+
+    /* Soluções: 1 coluna no celular, cada card com a altura do seu conteúdo */
+    .cards-solucoes {
+        grid-auto-rows: auto;
     }
 
     .section {
