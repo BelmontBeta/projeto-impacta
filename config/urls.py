@@ -9,3 +9,9 @@ urlpatterns = [
     path('', include('contas.urls')),
     path('guardiao/', include('guardiao.urls')),
 ]
+from django.urls import path, include
+
+urlpatterns = [
+    # ... suas rotas atuais
+    path("gastos/", include("gastos.urls")),
+]
