@@ -54,7 +54,6 @@ def adicionar(request):
             "data": data_txt,
         }
 
-        # validação manual
         if categoria not in dict(Gasto.CATEGORIAS):
             erros.append("Escolha uma categoria válida.")
 
