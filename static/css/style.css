@@ -836,3 +836,12 @@ form {
     }
 
 }
+.card-desafio {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+    will-change: transform; /* Otimização de performance para renderização suave */
+}
+
+.card-desafio:hover {
+    transform: translateY(-6px) scale(1.02); /* Eleva levemente e aumenta 2% */
+    box-shadow: 0 10px 20px rgba(11, 61, 110, 0.12); /* Sombra suave no azul escuro */
+}
