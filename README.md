@@ -477,10 +477,107 @@ A versão publicada está disponível na branch `main`.
 
 ---
 
+## 📋 Entrega 03
+
+### Descrição
+Nesta entrega (Entrega 03) consolidamos novas histórias de usuário, implementamos pelo menos 3 delas, atualizamos o backlog e o quadro da sprint, registramos evidências (prints e screencasts) e atualizamos o bug tracker/Issues. O objetivo foi entregar funcionalidades incrementais e documentar o processo conforme as orientações da disciplina.
+
+### Data
+19/10/2026
+
+---
+
+### 🎯 Objetivos Principais
+- Implementar um conjunto de histórias bem definidas (mínimo 6 histórias documentadas);
+- Selecionar e implementar pelo menos 3 histórias nesta entrega;
+- Atualizar o Jira (criar Sprint 03) e o backlog;
+- Registrar e publicar evidências (prints e screencasts);
+- Atualizar GitHub Issues e o README com evidências da entrega;
+- Garantir commits frequentes e versionamento ativo durante a sprint.
+
+---
+
+### 📝 Histórias de Usuário (documentadas)
+As histórias completas, com cenários BDD e critérios de aceitação, estão documentadas em:
+https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03
+
+(Use o link acima para ver todas as histórias detalhadas antes de colar esta seção no README.)
+
+---
+
+### ✅ Histórias selecionadas e implementadas nesta entrega
+Observação: abaixo as histórias implementadas nesta entrega — cada uma com uma breve descrição estilo POST-IT (conforme visto em sala):
+
+- História A — "Confirmação de envio do contato"  
+  - Descrição (POST-IT): Ao enviar o formulário, exibir mensagem de sucesso no topo da página e gravar status "enviado" no model de Feedback.  
+  - Critérios de aceitação (BDD/validação): Dado que o usuário preenche o formulário corretamente, quando submeter, então verá a mensagem de sucesso e o registro será persistido no banco.
+
+- História B — "Marcar feedback como avaliado (admin)"  
+  - Descrição (POST-IT): No Django Admin adicionar ação/campo para marcar feedbacks como 'avaliado' com timestamp.  
+  - Critérios de aceitação: Admin consegue selecionar feedback(s) e aplicar ação; status e data ficam visíveis na listagem.
+
+- História C — "Exportar feedbacks em CSV"  
+  - Descrição (POST-IT): Adicionar rota protegida que gera CSV com todos os feedbacks filtráveis por data.  
+  - Critérios de aceitação: Rota acessível por admin, gera arquivo .csv válido com cabeçalho e dados.
+
+(Adicionar aqui prints/links para as views/templates/commits que implementaram cada história dentro da seção "histórias implementadas".)
+
+---
+
+### 📌 Tarefas administrativas realizadas
+- Criação da Sprint 03 no Jira;
+- Atualização do backlog (prints do backlog adicionados em docs/);
+- Registro das histórias implementadas dentro desta entrega (seção "histórias implementadas" acima);
+- Commits frequentes e organização das branches por história.
+
+---
+
+### 🧪 Testes Realizados (Resumo)
+| Teste | Resultado |
+|---|---|
+| Verificação do projeto com `python manage.py check` | Aprovado |
+| Execução das migrações | Aprovado |
+| Coleta de arquivos estáticos | Aprovado |
+| Inicialização do servidor local | Aprovado |
+| Envio do formulário de contato (cenário de sucesso) | Aprovado |
+| Marcação de feedback como avaliado (admin) | Aprovado |
+| Exportação de feedbacks em CSV | Aprovado |
+| Acesso ao painel administrativo | Aprovado |
+
+---
+
+### 🌐 Deployment / Evidências
+- Deployment das histórias: adicionar screencast das histórias implementadas (URL ou arquivos em docs/).  
+  - Screencast das histórias: docs/screencast-historias-entrega-03.mp4 (ou link do YouTube)  
+  - Screencast explicando o código Django (views/templates/models): docs/screencast-codigo-entrega-03.mp4 (ou link do YouTube)
+
+### 🐛 Issues / Bug Tracker
+- GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega: https://github.com/BelmontBeta/projeto-impacta/issues  
+- Adicionar print do Issue tracker na seção de evidências: docs/entrega-03-issues.png
+
+---
+
+### 📂 Evidências (sugestões de arquivos a adicionar em docs/)
+- docs/entrega-03-backlog.png — print do backlog (Jira) com as histórias da Entrega 03  
+- docs/entrega-03-sprint-board.png — print do quadro da Sprint 03 (Jira)  
+- docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV)  
+- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias  
+- docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
+
+(Incluir os prints reais no repositório em docs/ e links diretos no README ao colar.)
+
+---
+
+### 🔀 Versionamento durante a Sprint
+- Branching por história (feature/<id>-<resumo>); commits frequentes (mínimo semanal com código).
+- Pull requests com descrição das alterações, referências às histórias/Issues.
+
+---
+
 ## 📞 Contato
 
 Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
 
 ---
 
-**Última atualização:** 06/10/2026
+**Última atualização:** 17/10/2026
