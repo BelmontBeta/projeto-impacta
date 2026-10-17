@@ -497,30 +497,9 @@ Nesta entrega (Entrega 03) consolidamos novas histórias de usuário, implementa
 
 ---
 
-### 📝 Histórias de Usuário (documentadas)
-As histórias completas, com cenários BDD e critérios de aceitação, estão documentadas em:
+### 📝 Histórias de Usuário (documentadas) & ✅ Histórias selecionadas e implementadas nesta entrega
+As histórias completas, com cenários BDD e critérios de aceitação, além da seleção das histórias, estão documentadas em:
 [Histórias Épicas](https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03)
-
-(Use o link acima para ver todas as histórias detalhadas antes de colar esta seção no README.)
-
----
-
-### ✅ Histórias selecionadas e implementadas nesta entrega
-Observação: abaixo as histórias implementadas nesta entrega — cada uma com uma breve descrição estilo POST-IT (conforme visto em sala):
-
-- História A — "Confirmação de envio do contato"  
-  - Descrição (POST-IT): Ao enviar o formulário, exibir mensagem de sucesso no topo da página e gravar status "enviado" no model de Feedback.  
-  - Critérios de aceitação (BDD/validação): Dado que o usuário preenche o formulário corretamente, quando submeter, então verá a mensagem de sucesso e o registro será persistido no banco.
-
-- História B — "Marcar feedback como avaliado (admin)"  
-  - Descrição (POST-IT): No Django Admin adicionar ação/campo para marcar feedbacks como 'avaliado' com timestamp.  
-  - Critérios de aceitação: Admin consegue selecionar feedback(s) e aplicar ação; status e data ficam visíveis na listagem.
-
-- História C — "Exportar feedbacks em CSV"  
-  - Descrição (POST-IT): Adicionar rota protegida que gera CSV com todos os feedbacks filtráveis por data.  
-  - Critérios de aceitação: Rota acessível por admin, gera arquivo .csv válido com cabeçalho e dados.
-
-(Adicionar aqui prints/links para as views/templates/commits que implementaram cada história dentro da seção "histórias implementadas".)
 
 ---
 
