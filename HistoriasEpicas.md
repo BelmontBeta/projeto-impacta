@@ -162,5 +162,3 @@ Histórias selecionadas (implementadas / a entregar nesta versão):
 - Garantir commits semanais até a data 19/10/2026 (versão final / deploy atualizado).
 
 ---
-
-Documento gerado automaticamente para a Entrega 03 — Projeto Impacta
