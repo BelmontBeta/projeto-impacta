@@ -531,8 +531,8 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
   - Screencast explicando o código Django (views/templates/models): docs/screencast-codigo-entrega-03.mp4 (ou link do YouTube)
 
 ### 🐛 Issues / Bug Tracker
-- GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega: https://github.com/BelmontBeta/projeto-impacta/issues  
-- Adicionar print do Issue tracker na seção de evidências: docs/entrega-03-issues.png
+- GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega:
+[GitHub Issues]https://github.com/BelmontBeta/projeto-impacta/issues  
 
 ---
 
