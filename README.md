@@ -6,7 +6,7 @@ Solução web de impacto e inovação voltada à gestão ESG para pequenas e mé
 
 ## 📝 Descrição do Projeto
 
-O Projeto Impacta é uma aplicação web desenvolvida na disciplina **Projetos 2**, da **CESAR School**, com o objetivo de apresentar soluções relacionadas à sustentabilidade, impacto social e inovação.
+O Projeto Impacta é uma aplicação web desenvolvida na disciplina **Projetos 2**, da **CESAR School**, com o objetivo de apresentar soluções relacionadas à sustentabilidade, impacto social e inovação no ramo alimentício.
 
 A aplicação foi desenvolvida utilizando o framework Django e possui páginas informativas sobre ESG, desafios do setor, equipe do projeto e um formulário de contato para envio de feedbacks.
 
@@ -122,6 +122,11 @@ projeto-impacta/
 │   ├── deploy-render.png
 │   ├── commits-main.png
 │   └── admin-feedback.png
+├── docs/entrega-03/
+│   ├── README.md
+│   ├── 01-Historias.md
+│   ├── 02-Selecao-e-POSTIT.md
+│   └── 03-Observacoes.md
 ├── manage.py
 ├── requirements.txt
 └── README.md
@@ -239,7 +244,7 @@ Foram realizados testes locais e em ambiente de produção.
 |---|---|
 | Verificação do projeto com `python manage.py check` | Aprovado |
 | Execução das migrações | Aprovado |
-| Coleta de arquivos estáticos | Aprovado |
+| Coleta dos arquivos estáticos | Aprovado |
 | Inicialização do servidor local | Aprovado |
 | Abertura da página inicial | Aprovado |
 | Navegação entre as páginas | Aprovado |
@@ -253,60 +258,6 @@ Foram realizados testes locais e em ambiente de produção.
 | Visualização dos feedbacks no painel administrativo | Aprovado |
 | Funcionamento dos arquivos estáticos em produção | Aprovado |
 | Acesso à aplicação publicada no Render | Aprovado |
-
----
-
-A alteração foi aplicada ao:
-
-- Cabeçalho;
-- Menu de navegação;
-- Botões;
-- Rodapé;
-- Títulos;
-- Cards;
-- Bordas;
-- Gradiente da página inicial;
-- Mensagens de sucesso;
-- Campos do formulário.
-
----
-
-## 👥 Membros da Equipe
-
-| Nome completo | E-mail CESAR School | Função |
-|---|---|---|
-| Caio Henrique de Sena Belmont | chsb@cesar.school | Desenvolvimento |
-| Caio Freitas de Andrade Medeiros | cfam@cesar.school | Desenvolvimento |
-| Gabriel Cassemiro Romualdo Filgueira Pino | gcrfl@cesar.school | Desenvolvimento |
-| Gabriel Furtado Correia Miller | gfcm@cesar.school | Desenvolvimento |
-| Jose Henrique Carneiro Lapa | jhcl@cesar.school | Desenvolvimento |
-| João Pedro Guedes Alcoforado Carneiro Leão | jpgacl@cesar.school | Desenvolvimento |
-| Mariana Moreira de Andrade Lima | mmal@cesar.school | Modelagem |
-| Geovanna Eduarda Da Silva França | ge@cesar.school | Modelagem |
-| Tainá Wanderley Carneiro Leão | twcl@cesar.school | Modelagem |
-
----
-
-## 📋 Entrega 01
-
-### Descrição
-
-Análise de concorrência e benchmarking de soluções relacionadas à gestão ESG e sustentabilidade.
-
-### Documento
-
-[Análise de concorrência](https://github.com/BelmontBeta/projeto-impacta/blob/main/analise-concorrencia.md)
-
-### Registros visuais
-
-- Painel inicial
-  <img width="969" height="524" alt="image" src="https://github.com/user-attachments/assets/bfdcd4e9-b38c-449c-b5f0-3ea85d8363e7" />
-- Painel Backlog
-  <img width="1093" height="501" alt="image" src="https://github.com/user-attachments/assets/401efda4-a7b3-4f27-879b-713e4dadab2d" />
-
-### Data
-
-31/08/2026
 
 ---
 
@@ -340,6 +291,26 @@ Desenvolvimento, testes, documentação e publicação da aplicação web Projet
 
 ---
 
+## 📋 Entrega 03
+
+### Descrição
+
+Material da Entrega 03: histórias de usuário escritas em Markdown, seleção das histórias implementadas, observações e próximos passos.
+
+### Conteúdo adicionado
+
+- docs/entrega-03/01-Historias.md — Histórias completas com BDD
+- docs/entrega-03/02-Selecao-e-POSTIT.md — Histórias selecionadas (POST-IT)
+- docs/entrega-03/03-Observacoes.md — Observações e próximos passos
+
+### Ações pendentes
+
+- Adicionar prints do backlog do JIRA e do quadro da Sprint 03 em docs/entrega-03/evidencias/
+- Gravar screencast das histórias em produção e adicionar link em docs/entrega-03/README.md
+- Criar issues no GitHub para as histórias planejadas (Export CSV, filtros, dashboard)
+
+---
+
 ## 🐛 Issues e Bug Tracker
 
 O acompanhamento de tarefas, problemas e correções foi realizado por meio do GitHub Issues.
@@ -364,123 +335,6 @@ Acesse o quadro do Jira:
 
 [Quadro do Projeto Impacta no Jira](https://projetos-fds-cesar.atlassian.net/jira/software/projects/IMP26/summary?atlOrigin=eyJpIjoiZDQwNTFiODg5NDlmNDhhZWE2MTdjYjYyNjVhM2NlZjUiLCJwIjoiaiJ9)
 
-### Sprint 02
-
-A Sprint 02 foi utilizada para organizar as atividades de desenvolvimento, testes, documentação e publicação do sistema.
-
-#### Principais tarefas
-
-- Finalizar a infraestrutura Django;
-- Atualizar as informações da equipe;
-- Corrigir a paleta de cores;
-- Implementar o formulário de contato;
-- Implementar o armazenamento de feedbacks;
-- Configurar o painel administrativo;
-- Configurar o banco PostgreSQL;
-- Configurar os arquivos estáticos;
-- Realizar o deploy no Render;
-- Criar o superusuário administrativo;
-- Realizar os testes em produção;
-- Atualizar a documentação;
-- Gravar os vídeos da entrega.
-
-#### Quadro da Sprint
-
-[Quadro da Sprint 02 no Jira](https://projetos-fds-cesar.atlassian.net/jira/software/projects/IMP26/boards/34/backlog)
-
-#### Evidência
-
-![Quadro da Sprint 02](docs/sprint-02.png)
-
 ---
 
-## 🎥 Vídeos da Entrega
-
-### Vídeo de utilização do sistema
-
-O vídeo demonstra:
-
-- Acesso à aplicação publicada;
-- Navegação pelas páginas;
-- Visualização da equipe;
-- Acesso ao formulário de contato;
-- Envio de um feedback;
-- Acesso ao painel administrativo;
-- Visualização do feedback armazenado.
-
-[Vídeo de utilização do sistema](https://youtu.be/WyNH5URHsVQ)
-
-### Vídeo de explicação do código
-
-O vídeo explica:
-
-- Estrutura do projeto Django;
-- Arquivo `config/urls.py`;
-- Rotas da aplicação;
-- Funcionamento das views;
-- Uso de `request.POST`;
-- Validação manual dos dados;
-- Model utilizado para persistência;
-- Templates HTML;
-- Arquivos estáticos;
-- Configuração do deploy;
-- Acesso ao painel administrativo.
-
-[Vídeo de explicação do código](https://youtu.be/1NUkU0zcdG0)
-
----
-
-## 📸 Evidências da Entrega
-
-### Aplicação publicada
-
-![Aplicação publicada no Render](docs/deploy-render.png)
-
-### Histórico de commits
-
-![Histórico de commits na branch main](docs/commits-main.png)
-
-### Painel administrativo
-
-![Feedback no painel administrativo](docs/admin-feedback.png)
-
-### Issues do GitHub
-
-![Issues do GitHub](docs/github-issues.png)
-
-### Sprint 02
-
-![Sprint 02 no Jira](docs/sprint-02.png)
-
----
-
-## 🔀 Versionamento
-
-O projeto utiliza Git e GitHub para controle de versão.
-
-Repositório:
-
-[Repositório do Projeto Impacta](https://github.com/BelmontBeta/projeto-impacta)
-
-As alterações foram organizadas por meio de commits relacionados às funcionalidades e etapas do projeto, incluindo:
-
-- Atualização da equipe;
-- Correção da paleta de cores;
-- Implementação do formulário;
-- Configuração do banco de dados;
-- Configuração do deploy;
-- Criação do superusuário;
-- Atualização da documentação;
-- Realização dos testes finais.
-
-A versão publicada está disponível na branch `main`.
-
----
-
-## 📞 Contato
-
-Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
-
----
-
-**Última atualização:** 06/10/2026
+(continuação do README original)
