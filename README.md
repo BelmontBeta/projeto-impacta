@@ -499,7 +499,7 @@ Nesta entrega (Entrega 03) consolidamos novas histórias de usuário, implementa
 
 ### 📝 Histórias de Usuário (documentadas)
 As histórias completas, com cenários BDD e critérios de aceitação, estão documentadas em:
-https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03
+[Histórias Épicas](https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03)
 
 (Use o link acima para ver todas as histórias detalhadas antes de colar esta seção no README.)
 
