@@ -532,7 +532,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ### 🐛 Issues / Bug Tracker
 - GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega:
-[GitHub Issues]https://github.com/BelmontBeta/projeto-impacta/issues  
+[GitHub Issues](https://github.com/BelmontBeta/projeto-impacta/issues) 
 
 ---
 
