@@ -542,7 +542,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ## 📂 Evidências
 
-### Backlog com as Histórias (em andamento)
+### Backlog (em andamento)
 
 ![Backlog do Jira]()
 
@@ -550,12 +550,23 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ![Sprint 03 no Jira](docs/print-sprint03.png)
 
+### Fluxos
+
 - docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV) (em andamento)
+
+![Fluxos Implementados]()
+
+### Screencast Histórias
+
 - docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias (em andamento)
+
+![Screencast Histórias]()
 
 ### Histórico de Commits da Entrega 03
 
 - docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03 (em andamento)
+
+![Commits]()
 
 ---
 
