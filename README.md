@@ -536,9 +536,14 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
-### 📂 Evidências (sugestões de arquivos a adicionar em docs/)
-- docs/entrega-03-backlog.png — print do backlog (Jira) com as histórias da Entrega 03  
-- docs/entrega-03-sprint-board.png — print do quadro da Sprint 03 (Jira)  
+## 📂 Evidências (sugestões de arquivos a adicionar em docs/)
+
+- docs/entrega-03-backlog.png — print do backlog (Jira) com as histórias da Entrega 03
+
+### Sprint 03  
+
+![Sprint 03 no Jira](docs/print-sprint03.png)
+
 - docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV)  
 - docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias  
 - docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
