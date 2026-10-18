@@ -533,11 +533,9 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 ## 🐛 Issues / Bug Tracker
 - GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega:
 [GitHub Issues](https://github.com/BelmontBeta/projeto-impacta/issues)
+
+### Evidência
 <img width="969" height="524" alt="image" src="https://github.com/BelmontBeta/projeto-impacta/blob/main/docs/githubissues2.png" />
-
-### Evidência (em andamento)
-
-- Foto do github issues da entrega 03
 
 ---
 
