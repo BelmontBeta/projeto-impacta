@@ -525,7 +525,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
-## 🌐 Deployment / Evidências
+## 🌐 Deployment / Evidências (em andamento)
 - Deployment das histórias: adicionar screencast das histórias implementadas (URL ou arquivos em docs/).  
   - Screencast das histórias: docs/screencast-historias-entrega-03.mp4 (ou link do YouTube)  
   - Screencast explicando o código Django (views/templates/models): docs/screencast-codigo-entrega-03.mp4 (ou link do YouTube)
@@ -534,9 +534,9 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 - GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega:
 [GitHub Issues](https://github.com/BelmontBeta/projeto-impacta/issues)
 
-### Evidência
+### Evidência (em andamento)
 
-- Foto do github issues da entrega 03 (em andamento)
+- Foto do github issues da entrega 03
 
 ---
 
@@ -550,21 +550,21 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ![Sprint 03 no Jira](docs/print-sprint03.png)
 
-### Fluxos
+### Fluxos (em andamento)
 
-- docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV) (em andamento)
+- docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV)
 
 ![Fluxos Implementados]()
 
-### Screencast Histórias
+### Histórias (em andamento)
 
-- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias (em andamento)
+- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias
 
 ![Screencast Histórias]()
 
-### Histórico de Commits da Entrega 03
+### Histórico de Commits da Entrega 03 (em andamento)
 
-- docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03 (em andamento)
+- docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
 
 ![Commits]()
 
