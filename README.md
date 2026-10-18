@@ -497,7 +497,7 @@ Nesta entrega (Entrega 03) consolidamos novas histórias de usuário, implementa
 
 ---
 
-### 📝 Histórias de Usuário (documentadas) & ✅ Histórias selecionadas e implementadas nesta entrega
+## 📝 Histórias de Usuário (documentadas) & ✅ Histórias selecionadas e implementadas nesta entrega
 As histórias completas, com cenários BDD e critérios de aceitação, além da seleção das histórias, estão documentadas em:
 [Histórias Épicas](https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03)
 
@@ -511,7 +511,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
-### 🧪 Testes Realizados (Resumo)
+## 🧪 Testes Realizados (Resumo)
 | Teste | Resultado |
 |---|---|
 | Verificação do projeto com `python manage.py check` | Aprovado |
@@ -525,18 +525,22 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
-### 🌐 Deployment / Evidências
+## 🌐 Deployment / Evidências
 - Deployment das histórias: adicionar screencast das histórias implementadas (URL ou arquivos em docs/).  
   - Screencast das histórias: docs/screencast-historias-entrega-03.mp4 (ou link do YouTube)  
   - Screencast explicando o código Django (views/templates/models): docs/screencast-codigo-entrega-03.mp4 (ou link do YouTube)
 
-### 🐛 Issues / Bug Tracker
+## 🐛 Issues / Bug Tracker
 - GitHub Issues atualizados com as tarefas e bugs encontrados nesta entrega:
-[GitHub Issues](https://github.com/BelmontBeta/projeto-impacta/issues) 
+[GitHub Issues](https://github.com/BelmontBeta/projeto-impacta/issues)
+
+### Evidência
+
+- Foto do github issues da entrega 03 (em andamento)
 
 ---
 
-## 📂 Evidências (sugestões de arquivos a adicionar em docs/)
+## 📂 Evidências
 
 - docs/entrega-03-backlog.png — print do backlog (Jira) com as histórias da Entrega 03
 
@@ -545,14 +549,15 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 ![Sprint 03 no Jira](docs/print-sprint03.png)
 
 - docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV)  
-- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias  
-- docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
+- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias
 
-(Incluir os prints reais no repositório em docs/ e links diretos no README ao colar.)
+### Histórico de Commits da Entrega 03
+
+- docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
 
 ---
 
-### 🔀 Versionamento durante a Sprint
+## 🔀 Versionamento durante a Sprint
 - Branching por história (feature/<id>-<resumo>); commits frequentes (mínimo semanal com código).
 - Pull requests com descrição das alterações, referências às histórias/Issues.
 
@@ -564,4 +569,4 @@ Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros
 
 ---
 
-**Última atualização:** 17/10/2026
+**Última atualização:** 18/10/2026
