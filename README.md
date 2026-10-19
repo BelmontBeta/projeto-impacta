@@ -498,6 +498,7 @@ Nesta entrega (Entrega 03) consolidamos novas histórias de usuário, implementa
 ---
 
 ## 📝 Histórias de Usuário (documentadas) & ✅ Histórias selecionadas e implementadas nesta entrega
+
 As histórias completas, com cenários BDD e critérios de aceitação, além da seleção das histórias, estão documentadas em:
 [Histórias Épicas](https://github.com/BelmontBeta/projeto-impacta/blob/main/HistoriasEpicas.md#hist%C3%B3rias-de-usu%C3%A1rio--entrega-03)
 
@@ -526,6 +527,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 ---
 
 ## 🌐 Deployment / Evidências (em andamento)
+
 - Deployment das histórias: adicionar screencast das histórias implementadas (URL ou arquivos em docs/).  
 - Screencast das histórias: docs/screencast-historias-entrega-03.mp4 (ou link do YouTube)
 
@@ -584,4 +586,4 @@ Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros
 
 ---
 
-**Última atualização:** 18/10/2026
+**Última atualização:** 19/10/2026
