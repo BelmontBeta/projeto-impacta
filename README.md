@@ -571,7 +571,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 - docs/entrega-03-commits.png — print do histórico de commits relacionados à Entrega 03
 
-![Commits]()
+![Commits](docs/print-commits.png)
 
 ---
 
