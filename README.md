@@ -546,9 +546,9 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ## 📂 Evidências
 
-### Backlog (em andamento)
+### Backlog
 
-![Backlog do Jira]()
+![Backlog do Jira](docs/backlog-jira.png)
 
 ### Sprint 03  
 
