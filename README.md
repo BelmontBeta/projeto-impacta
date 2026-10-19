@@ -528,8 +528,9 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ## 🌐 Deployment / Evidências (em andamento)
 
-- Deployment das histórias: adicionar screencast das histórias implementadas (URL ou arquivos em docs/).  
-- Screencast das histórias: docs/screencast-historias-entrega-03.mp4 (ou link do YouTube)
+### Vídeo das Histórias implementadas (em andamento)
+
+[Vídeo Histórias]()
 
 ### Vídeo explicando Código Django
 
