@@ -579,4 +579,4 @@ Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros
 
 ---
 
-**Última atualização:** 19/10/2026
+**Última atualização:** 21/10/2026
