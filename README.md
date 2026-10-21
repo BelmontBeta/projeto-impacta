@@ -561,12 +561,6 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ![Fluxos Implementados]()
 
-### Histórias (em andamento)
-
-- docs/entrega-03-screencast-historias.png — thumbnail/print do screencast das histórias
-
-![Screencast Histórias]()
-
 ### Histórico de Commits da Entrega 03
 
 ![Commits](docs/print-commits.png)
