@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Minha conta - Projeto Impacta{% endblock %}
+
+{% block content %}
+<section class="perfil-pagina">
+    <div class="perfil-container">
+        <h1>Minha conta</h1>
+
+        <div class="perfil-dados">
+            <div class="perfil-avatar" aria-hidden="true">
+                <i class="fa-regular fa-user"></i>
+            </div>
+
+            <div class="perfil-informacoes">
+                <p class="perfil-nome">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </p>
+
+                <p class="perfil-email">
+                    {{ request.user.email }}
+                </p>
+            </div>
+        </div>
+
+        {% if mensagem %}
+            <p class="perfil-mensagem" role="status">{{ mensagem }}</p>
+        {% endif %}
+
+        <div class="perfil-acoes">
+            <button
+                class="perfil-link"
+                type="button"
+                id="botaoEditarPerfil"
+                aria-expanded="false"
+                aria-controls="formulariosPerfil">
+                Editar perfil
+            </button>
+
+            <form method="post" action="{% url 'sair' %}">
+                {% csrf_token %}
+                <button class="perfil-link" type="submit">Sair da conta</button>
+            </form>
+        </div>
+
+        <div class="perfil-formularios" id="formulariosPerfil" hidden>
+            <section class="perfil-formulario">
+                <h2>Editar nome</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="perfil">
+
+                    {{ perfil_form.non_field_errors }}
+
+                    <div class="form-grupo">
+                        {{ perfil_form.first_name.label_tag }}
+                        {{ perfil_form.first_name }}
+                        {{ perfil_form.first_name.errors }}
+                    </div>
+
+                    <button class="perfil-botao-salvar" type="submit">
+                        Salvar perfil
+                    </button>
+                </form>
+            </section>
+
+            <section class="perfil-formulario">
+                <h2>Alterar senha</h2>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="senha">
+
+                    {{ senha_form.non_field_errors }}
+
+                    {% for campo in senha_form %}
+                        <div class="form-grupo">
+                            {{ campo.label_tag }}
+                            {{ campo }}
+                            {{ campo.errors }}
+
+                            {% if campo.help_text %}
+                                <small>{{ campo.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button class="perfil-botao-salvar" type="submit">
+                        Alterar senha
+                    </button>
+                </form>
+            </section>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const botao = document.getElementById('botaoEditarPerfil');
+        const formularios = document.getElementById('formulariosPerfil');
+
+        if (botao && formularios) {
+            botao.addEventListener('click', function () {
+                const estaAberto = botao.getAttribute('aria-expanded') === 'true';
+
+                botao.setAttribute('aria-expanded', String(!estaAberto));
+                formularios.hidden = estaAberto;
+            });
+        }
+    });
+</script>
+{% endblock %}

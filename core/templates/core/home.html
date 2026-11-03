@@ -7,23 +7,34 @@
 {% block content %}
 
 <section class="hero">
-    <div class="container">
-        <h1>ESG aplicado ao ramo alimentício</h1>
+    <div class="container hero-layout">
+        <div class="hero-conteudo">
+            <h1>ESG aplicado ao ramo alimentício</h1>
 
-        <p>
-            Este projeto acadêmico busca estudar como os princípios
-            ambientais, sociais e de governança podem ser compreendidos
-            dentro da cadeia alimentícia.
-        </p>
+            <p>
+                Este projeto acadêmico busca estudar como os princípios
+                ambientais, sociais e de governança podem ser compreendidos
+                dentro da cadeia alimentícia.
+            </p>
 
-        <p>
-            Nosso objetivo inicial é apresentar conceitos, desafios e
-            impactos relacionados ao tema.
-        </p>
+            <a class="botao" href="{% url 'sobre' %}">
+                Conhecer o projeto
+            </a>
+        </div>
 
-        <a class="botao" href="{% url 'sobre' %}">
-            Conheça o projeto
-        </a>
+        <div class="hero-categorias" aria-label="Pilares ESG">
+            <div class="categoria-esg categoria-ambiental">
+                Ambiental
+            </div>
+
+            <div class="categoria-esg">
+                Social
+            </div>
+
+            <div class="categoria-esg">
+                Governança
+            </div>
+        </div>
     </div>
 </section>
 
@@ -37,6 +48,7 @@
             sociais e de governança de uma organização.
         </p>
 
+        {% comment %}
         <div class="cards">
             <article class="card card-desafio">
                 <h3>Ambiental</h3>
@@ -66,6 +78,7 @@
                 </p>
             </article>
         </div>
+        {% endcomment %}
     </div>
 </section>
 
@@ -91,6 +104,7 @@
     </div>
 </section>
 
+{% comment %}
 <section class="section">
     <div class="container">
         <h2 class="section-title">Objetivos do projeto</h2>
@@ -129,6 +143,7 @@
     </div>
 </section>
 
+
 <section class="section section-alternativa">
     <div class="container">
         <h2 class="section-title">Etapas do projeto</h2>
@@ -156,5 +171,6 @@
         </div>
     </div>
 </section>
+{% endcomment %}
 
 {% endblock %}

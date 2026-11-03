@@ -1,4 +1,11 @@
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import (
+    authenticate,
+    get_user_model,
+    login,
+    logout,
+    update_session_auth_hash,
+)
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -7,11 +14,15 @@ from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from .forms import AlterarSenhaForm, PerfilForm
+
 User = get_user_model()
 
+DESTINO_PADRAO = '/guardiao/boas-vindas/'
 
-def _destino(request):
-    """Retorna o destino seguro após o login."""
+
+def _destino(request, padrao=DESTINO_PADRAO):
+    """Retorna o destino seguro após o login/cadastro."""
     proximo = request.GET.get('next') or request.POST.get('next') or ''
 
     if proximo and url_has_allowed_host_and_scheme(
@@ -21,7 +32,7 @@ def _destino(request):
     ):
         return proximo
 
-    return 'home'
+    return padrao
 
 
 def _validar_cadastro(nome, email, senha):
@@ -66,10 +77,11 @@ def _validar_cadastro(nome, email, senha):
 
 
 def acesso(request):
+    proximo = request.GET.get('next') or request.POST.get('next') or ''
 
-    # Se já estiver logado, vai para o Guardião ESG
+    # Se já estiver logado, vai para o destino seguro ou Guardião ESG
     if request.user.is_authenticated:
-        return redirect('/guardiao/boas-vindas/')
+        return redirect(_destino(request))
 
     modo = (
         'cadastro'
@@ -82,7 +94,6 @@ def acesso(request):
     email = ''
 
     if request.method == 'POST':
-
         acao = request.POST.get('acao')
         email = request.POST.get('email', '').strip().lower()
         senha = request.POST.get('senha', '')
@@ -90,20 +101,13 @@ def acesso(request):
         # =========================
         # CADASTRO
         # =========================
-
         if acao == 'cadastro':
-
             modo = 'cadastro'
             nome = request.POST.get('nome', '').strip()
 
-            erros = _validar_cadastro(
-                nome,
-                email,
-                senha
-            )
+            erros = _validar_cadastro(nome, email, senha)
 
             if not erros:
-
                 usuario = User.objects.create_user(
                     username=email,
                     email=email,
@@ -113,34 +117,21 @@ def acesso(request):
 
                 login(request, usuario)
 
-                # Após cadastro → Guardião ESG
-                return redirect('/guardiao/boas-vindas/')
+                return redirect(_destino(request))
 
         # =========================
         # LOGIN
         # =========================
-
         else:
-
             modo = 'login'
 
             if not email or not senha:
-
-                erros.append(
-                    'O e-mail e a senha são obrigatórios.'
-                )
+                erros.append('O e-mail e a senha são obrigatórios.')
 
             else:
+                conta = User.objects.filter(email__iexact=email).first()
 
-                conta = User.objects.filter(
-                    email__iexact=email
-                ).first()
-
-                username = (
-                    conta.username
-                    if conta
-                    else email
-                )
+                username = conta.username if conta else email
 
                 usuario = authenticate(
                     request,
@@ -149,30 +140,69 @@ def acesso(request):
                 )
 
                 if usuario is None:
-
-                    erros.append(
-                        'E-mail ou senha inválidos.'
-                    )
+                    erros.append('E-mail ou senha inválidos.')
 
                 else:
-
                     login(request, usuario)
 
-                    # Após login → Guardião ESG
-                    return redirect('/guardiao/boas-vindas/')
+                    return redirect(_destino(request))
 
     contexto = {
         'modo': modo,
         'erros': erros,
         'nome': nome,
         'email': email,
+        'proximo': proximo,
     }
 
-    return render(
-        request,
-        'contas/acesso.html',
-        contexto
-    )
+    return render(request, 'contas/acesso.html', contexto)
+
+
+@login_required
+def minha_conta(request):
+    """Página para o usuário logado editar nome e senha."""
+    usuario = request.user
+    mensagem = ''
+
+    perfil_form = PerfilForm(instance=usuario)
+    senha_form = AlterarSenhaForm(user=usuario)
+
+    if request.method == 'POST':
+        acao = request.POST.get('acao')
+
+        # =========================
+        # EDITAR NOME
+        # =========================
+        if acao == 'perfil':
+            perfil_form = PerfilForm(request.POST, instance=usuario)
+
+            if perfil_form.is_valid():
+                perfil_form.save()
+                mensagem = 'Seu nome foi atualizado.'
+                perfil_form = PerfilForm(instance=usuario)
+
+        # =========================
+        # ALTERAR SENHA
+        # =========================
+        elif acao == 'senha':
+            senha_form = AlterarSenhaForm(user=usuario, data=request.POST)
+
+            if senha_form.is_valid():
+                usuario = senha_form.save()
+
+                # Mantém o usuário logado após trocar a senha
+                update_session_auth_hash(request, usuario)
+
+                mensagem = 'Sua senha foi atualizada.'
+                senha_form = AlterarSenhaForm(user=usuario)
+
+    contexto = {
+        'perfil_form': perfil_form,
+        'senha_form': senha_form,
+        'mensagem': mensagem,
+    }
+
+    return render(request, 'contas/minha_conta.html', contexto)
 
 
 @require_POST

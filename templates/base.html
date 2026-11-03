@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -7,21 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        {% block title %}
-            Projeto Impacta
-        {% endblock %}
+        {% block title %}Projeto Impacta{% endblock %}
     </title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'imagens/logo-impacta.ico' %}">
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="logo-impacta.ico">
 </head>
 <body>
 
     <header class="site-header">
         <div class="container header-content">
-            <a class="logo" href="{% url 'home' %}">
-                Projeto Impacta
+            <a class="logo" href="{% url 'home' %}" aria-label="Página inicial">
+                <img src="{% static 'imagens/logo.jpg' %}" alt="Logo do projeto">
             </a>
 
             <button class="nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false">
@@ -33,21 +35,35 @@
 
             <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
                 <a href="{% url 'home' %}"
-                   {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>Início</a>
+                   {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}>
+                    Início
+                </a>
+
                 <a href="{% url 'sobre' %}"
-                   {% if request.resolver_match.url_name == 'sobre' %}aria-current="page"{% endif %}>O Projeto</a>
+                   {% if request.resolver_match.url_name == 'sobre' %}aria-current="page"{% endif %}>
+                    O Projeto
+                </a>
+
                 <a href="{% url 'desafios' %}"
-                   {% if request.resolver_match.url_name == 'desafios' %}aria-current="page"{% endif %}>Desafios</a>
+                   {% if request.resolver_match.url_name == 'desafios' %}aria-current="page"{% endif %}>
+                    Desafios
+                </a>
+
                 <a href="{% url 'solucoes' %}"
-                   {% if request.resolver_match.url_name == 'solucoes' %}aria-current="page"{% endif %}>Soluções</a>
+                   {% if request.resolver_match.url_name == 'solucoes' %}aria-current="page"{% endif %}>
+                    Soluções
+                </a>
+
                 <a href="{% url 'contato' %}"
-                   {% if request.resolver_match.url_name == 'contato' %}aria-current="page"{% endif %}>Contato</a>
+                   {% if request.resolver_match.url_name == 'contato' %}aria-current="page"{% endif %}>
+                    Contato
+                </a>
 
                 {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'sair' %}" class="nav-form">
-                        {% csrf_token %}
-                        <button type="submit">Sair ({{ user.first_name|default:user.username }})</button>
-                    </form>
+                    <a class="nav-conta" href="{% url 'minha_conta' %}">
+                        <i class="fa-regular fa-user" aria-hidden="true"></i>
+                        Minha conta
+                    </a>
                 {% else %}
                     <a class="nav-acessar" href="{% url 'acesso' %}">Acessar</a>
                 {% endif %}
