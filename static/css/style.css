@@ -843,3 +843,33 @@ main {
         padding: 18px;
     }
 }
+
+
+/*CSS para deixar o formulario mais compacto - 03/11/26*/
+
+.form-contato {
+    max-width: 640px;
+}
+
+.form-contato .form-grupo {
+    margin-bottom: 10px;
+}
+
+.form-contato .form-grupo label {
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+}
+
+.form-contato .form-grupo input,
+.form-contato .form-grupo textarea {
+    padding: 6px 10px;
+    font-size: 0.95rem;
+}
+
+.form-contato .form-grupo textarea {
+    min-height: 70px;
+}
+
+.form-contato .botao-formulario {
+    padding: 8px 18px;
+}
