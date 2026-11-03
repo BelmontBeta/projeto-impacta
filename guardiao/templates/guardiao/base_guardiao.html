@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'guardiao/css/guardiao.css' %}">
+    {% block extra_head %}{% endblock %}
 </head>
 
 <body class="guardiao">
@@ -22,9 +23,9 @@
         </a>
 
         <div class="g-menu">
-            <a class="ativo" href="{% url 'guardiao:boas_vindas' %}">Diagnóstico</a>
+            <a {% if request.resolver_match.app_name != 'empresas' %}class="ativo"{% endif %} href="{% url 'guardiao:boas_vindas' %}">Diagnóstico</a>
             <a href="{% url 'guardiao:boas_vindas' %}#metas">Metas</a>
-            <a href="{% url 'guardiao:boas_vindas' %}#fornecedores">Fornecedores / Doações</a>
+            <a {% if request.resolver_match.app_name == 'empresas' %}class="ativo"{% endif %} href="{% url 'empresas:mapa_esg' %}">Fornecedores / Doações</a>
             <a href="{% url 'guardiao:boas_vindas' %}#qrcode">QR CODE</a>
             <a href="{% url 'minha_conta' %}">Minha conta</a>
         </div>

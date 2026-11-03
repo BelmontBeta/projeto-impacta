@@ -1,0 +1,373 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Fornecedores e Doações · Guardião ESG{% endblock %}
+
+{% block extra_head %}
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+
+    <style>
+        .mapa-esg {
+            --azul: #497ECC;
+            --verde: #46944B;
+            --preto: #000000;
+            --branco: #FFFFFF;
+            font-family: var(--fonte-texto); font-size: 15px; color: var(--preto); background: var(--branco);
+            line-height: 1.5; min-height: calc(100vh - 64px);
+            --fonte-titulo: "Poppins", sans-serif;
+            --fonte-texto: "Open Sans", sans-serif;
+        }
+        .mapa-esg *, .mapa-esg *::before, .mapa-esg *::after { box-sizing: border-box; }
+        
+        
+
+
+        /* conteúdo */
+        .mapa-esg .mapa-conteudo { max-width: 1240px; margin: 0 auto; padding: 36px 40px 40px; }
+        .mapa-esg h1 { font-family: var(--fonte-titulo); font-weight: 500; font-size: 34px; line-height: 1.2; margin: 0 0 14px; }
+        .mapa-esg .apoio { color: #333; margin: 0 0 20px; }
+
+        .mapa-esg .busca { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .mapa-esg input[type="text"], .mapa-esg select {
+            height: 34px;
+            font-family: var(--fonte-texto); font-size: 13px; padding: 0 14px;
+            border: 1.5px solid var(--preto); border-radius: 999px; background: var(--branco);
+            color: var(--preto);
+        }
+        .mapa-esg #campo-busca { width: 250px; }
+        .mapa-esg #campo-insumo { width: 290px; }
+        .mapa-esg input[type="text"]::placeholder { color: #666; }
+        .mapa-esg input:focus, .mapa-esg select:focus, .mapa-esg button:focus-visible { outline: 3px solid rgba(73,126,204,.45); border-color: var(--azul); }
+        .mapa-esg select {
+            appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 32px; width: 92px;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+            background-repeat: no-repeat; background-position: right 13px center;
+        }
+        .mapa-esg .busca button {
+            height: 34px; font-family: var(--fonte-titulo); font-weight: 600; font-size: 13px;
+            padding: 0 24px; border-radius: 999px; cursor: pointer;
+            border: 1.5px solid var(--preto);
+        }
+        .mapa-esg #botao-buscar { background: var(--verde); border-color: var(--verde); color: var(--preto); }
+        .mapa-esg #botao-buscar:hover { background: var(--preto); border-color: var(--preto); color: var(--branco); }
+        .mapa-esg #botao-filtros { background: var(--branco); color: var(--preto); display: inline-flex; align-items: center; gap: 8px; padding: 0 18px; }
+        .mapa-esg #botao-filtros:hover { border-color: var(--azul); color: var(--azul); }
+        .mapa-esg #botao-filtros svg { width: 11px; height: 8px; transition: transform .2s; }
+        .mapa-esg #botao-filtros[aria-expanded="true"] { background: #EEF3FB; border-color: var(--azul); }
+        .mapa-esg #botao-filtros[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+        /* painel de filtros que desce e empurra o mapa */
+        .mapa-esg #painel-filtros {
+            display: grid; grid-template-rows: 0fr;
+            transition: grid-template-rows .25s ease;
+        }
+        .mapa-esg #painel-filtros.aberto { grid-template-rows: 1fr; }
+        .mapa-esg #painel-filtros > div { overflow: hidden; }
+        .mapa-esg .filtros { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; padding: 14px 0 2px; }
+        .mapa-esg .filtros label {
+            display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+            padding: 5px 12px 5px 8px; border: 1.5px solid var(--preto); border-radius: 999px;
+            background: var(--branco);
+        }
+        .mapa-esg .filtros label:has(input:checked) { background: #EEF3FB; border-color: var(--azul); }
+        .mapa-esg input[type="checkbox"] {
+            appearance: none; -webkit-appearance: none; margin: 0; flex: none; cursor: pointer;
+            width: 18px; height: 18px; border: 1.5px solid var(--preto); border-radius: 6px; background: var(--branco);
+        }
+        .mapa-esg input[type="checkbox"]:checked {
+            background: var(--azul) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M3.5 8.5l3 3 6-7' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 12px no-repeat;
+            border-color: var(--azul);
+        }
+        .mapa-esg input[type="checkbox"]:focus-visible { outline: 3px solid rgba(73,126,204,.45); outline-offset: 1px; }
+        .mapa-esg .ponto { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
+        .mapa-esg .ponto.parceiro { border: 2px solid var(--preto); width: 13px; height: 13px; }
+
+        .mapa-esg #contador { font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
+        .mapa-esg #aviso-limite { font-size: 13px; margin-bottom: 8px; }
+        .mapa-esg #aviso-limite:empty { display: none; }
+        .mapa-esg #mapa { height: 560px; width: 100%; border: 1.5px solid var(--preto); border-radius: 18px; overflow: hidden; }
+
+        .mapa-esg .leaflet-popup-content { font-family: var(--fonte-texto); font-size: 13px; }
+        .mapa-esg .leaflet-popup-content strong { font-family: var(--fonte-titulo); font-weight: 600; }
+        .mapa-esg .leaflet-popup-content a { color: var(--azul); font-weight: 600; }
+        @media (max-width: 800px) {
+            .mapa-esg .mapa-conteudo { padding: 24px 16px 32px; }
+            .mapa-esg h1 { font-size: 24px; }
+            .mapa-esg #campo-busca, .mapa-esg #campo-insumo { width: 100%; }
+            .mapa-esg #mapa { height: 60vh; }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="mapa-esg">
+    <div class="mapa-conteudo">
+        <h1>Fornecedores de insumos e pontos de doação</h1>
+        <p class="apoio">Pesquise uma cidade, bairro ou endereço e consulte a distância exata até o seu restaurante.</p>
+
+        <div class="busca">
+            <input type="text" id="campo-busca" placeholder="Local (Ex: Boa Viagem, Recife)" aria-label="Local">
+            <input type="text" id="campo-insumo" placeholder="Filtrar insumo (Ex: ovos, peixes, hortaliças)" aria-label="Insumo">
+            <select id="campo-raio" aria-label="Raio de busca">
+                <option value="2000">2 KM</option>
+                <option value="5000" selected>5 KM</option>
+                <option value="10000">10 KM</option>
+                <option value="20000">20 KM</option>
+            </select>
+            <button id="botao-buscar">Buscar</button>
+            <button id="botao-filtros" type="button" aria-expanded="false" aria-controls="painel-filtros">
+                Filtros
+                <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+
+        <div id="painel-filtros">
+            <div>
+                <div class="filtros">
+                    <label><input type="checkbox" id="chk-fornecedor" checked><span class="ponto" style="background:#46944B"></span> Fornecedores de insumos</label>
+                    <label><input type="checkbox" id="chk-doacao" checked><span class="ponto" style="background:#497ECC"></span> Pontos de doação</label>
+                    <label><input type="checkbox" id="chk-banco" checked> Bancos de alimentos</label>
+                    <label><input type="checkbox" id="chk-social" checked> Instituições sociais</label>
+                    <label><input type="checkbox" id="chk-comunitario" checked> Centros comunitários</label>
+                    <label><input type="checkbox" id="chk-igreja"> Igrejas e locais de culto</label>
+                    <label><input type="checkbox" id="chk-parceiro" checked> Parceiros verificados:
+                        <span class="ponto parceiro" style="background:#46944B"></span> produtor
+                        <span class="ponto parceiro" style="background:#497ECC"></span> entidade</label>
+                </div>
+            </div>
+        </div>
+
+        <div id="contador">Digite um local e clique em Buscar.</div>
+        <div id="aviso-limite" role="status"></div>
+        <div id="mapa"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+    <script>
+        const URL_API_PARCEIROS = "{% url 'empresas:api_parceiros' %}";
+        const URL_API_LOCAIS = "{% url 'empresas:api_locais' %}";
+
+        // Coordenadas fixas do Restaurante (Bairro do Recife / Marco Zero)
+        const RESTAURANTE = {
+            nome: "Nosso Restaurante ESG",
+            lat: -8.0631,
+            lng: -34.8711
+        };
+
+        const mapa = L.map("mapa").setView([RESTAURANTE.lat, RESTAURANTE.lng], 12);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap"
+        }).addTo(mapa);
+
+        const camada = L.layerGroup().addTo(mapa);
+        const campoBusca = document.getElementById("campo-busca");
+        const campoInsumo = document.getElementById("campo-insumo");
+        const campoRaio = document.getElementById("campo-raio");
+        
+        const chkFornecedor = document.getElementById("chk-fornecedor");
+        const chkDoacao = document.getElementById("chk-doacao");
+        const chkBanco = document.getElementById("chk-banco");
+        const chkSocial = document.getElementById("chk-social");
+        const chkComunitario = document.getElementById("chk-comunitario");
+        const chkIgreja = document.getElementById("chk-igreja");
+        const chkParceiro = document.getElementById("chk-parceiro");
+        
+        const contador = document.getElementById("contador");
+        const avisoLimite = document.getElementById("aviso-limite");
+
+        const CORES = { fornecedor: "#46944B", doacao: "#497ECC" };
+        const CORES_PARCEIRO = { produtor: "#46944B", entidade: "#497ECC" };
+        const ROTULOS = { fornecedor: "Fornecedor de insumos", doacao: "Ponto de doação" };
+
+        let centro = null;
+        let locais = [];
+        let parceiros = [];
+        let avisoAtual = "";
+
+        function escapar(texto) {
+            const div = document.createElement("div");
+            div.textContent = texto ?? "";
+            return div.innerHTML;
+        }
+
+        // Calcula a distância entre duas coordenadas em km
+        function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
+            const p1 = L.latLng(lat1, lon1);
+            const p2 = L.latLng(lat2, lon2);
+            return (p1.distanceTo(p2) / 1000).toFixed(2);
+        }
+
+        function popup(local) {
+            const dist = calcularDistanciaKm(RESTAURANTE.lat, RESTAURANTE.lng, local.latitude, local.longitude);
+            let html = `<strong>${escapar(local.nome)}</strong><br>
+                <em>${ROTULOS[local.categoria]} · ${escapar(local.tipo)}</em><br>
+                Distância do restaurante: ${dist} km`;
+            if (local.endereco) html += `<br>${escapar(local.endereco)}`;
+            if (local.telefone) html += `<br>Tel.: ${escapar(local.telefone)}`;
+            if (/^https?:\/\//i.test(local.site || "")) {
+                html += `<br><a href="${encodeURI(local.site)}" target="_blank" rel="noopener">Site</a>`;
+            }
+            return html;
+        }
+
+        function popupParceiro(p) {
+            const dist = calcularDistanciaKm(RESTAURANTE.lat, RESTAURANTE.lng, p.latitude, p.longitude);
+            let html = `<strong>${escapar(p.nome)}</strong><br>
+                <em>${escapar(p.tipo_rotulo)} · parceiro verificado</em><br>
+                Distância do restaurante: ${dist} km<br>
+                ${escapar(p.cidade)} - ${escapar(p.estado)}`;
+            if (p.produtos.length) html += `<br><b>Produtos:</b> ${escapar(p.produtos.join(", "))}`;
+            if (p.aceita_doacao) html += `<br><b>Aceita doações de alimentos</b>`;
+            if (p.contato) html += `<br>Contato: ${escapar(p.contato)}`;
+            if (p.praticas_esg) html += `<hr>${escapar(p.praticas_esg)}`;
+            return html;
+        }
+
+        function desenhar(ajustarMapa) {
+            camada.clearLayers();
+
+            // Ponto fixo do restaurante no mapa
+            const posRestaurante = L.latLng(RESTAURANTE.lat, RESTAURANTE.lng);
+            L.circleMarker(posRestaurante, {
+                radius: 12, color: "#FFFFFF", weight: 3,
+                fillColor: "#000000", fillOpacity: 1
+            }).addTo(camada).bindPopup(`<strong>${RESTAURANTE.nome}</strong><br>Ponto de referência das distâncias`);
+
+            if (!centro) return;
+
+            const pontoCentral = L.latLng(centro.latitude, centro.longitude);
+            const termoInsumo = campoInsumo.value.trim().toLowerCase();
+
+            L.marker(pontoCentral)
+                .addTo(camada)
+                .bindPopup(`<strong>Local pesquisado</strong><br>${escapar(centro.nome)}`);
+
+            const circulo = L.circle(pontoCentral, {
+                radius: centro.raio, color: "#497ECC", weight: 1, fillOpacity: 0.04
+            }).addTo(camada);
+
+            const visiveis = locais.filter(local => {
+                if (local.categoria === "fornecedor") {
+                    return chkFornecedor.checked;
+                }
+
+                if (local.categoria === "doacao") {
+                    if (!chkDoacao.checked) return false;
+
+                    if (local.tipo === "Banco de alimentos") return chkBanco.checked;
+                    if (local.tipo === "Instituição social") return chkSocial.checked;
+                    if (local.tipo === "Centro comunitário") return chkComunitario.checked;
+                    if (local.tipo === "Igreja" || local.tipo === "Local de culto") return chkIgreja.checked;
+                }
+
+                return false;
+            });
+
+            visiveis.forEach(local => {
+                L.circleMarker([local.latitude, local.longitude], {
+                    radius: 8, color: "#FFFFFF", weight: 2,
+                    fillColor: CORES[local.categoria], fillOpacity: 0.95
+                }).addTo(camada).bindPopup(popup(local));
+            });
+
+            const parceirosVisiveis = chkParceiro.checked
+                ? parceiros.filter(p => {
+                    const dentroDoRaio = pontoCentral.distanceTo([p.latitude, p.longitude]) <= centro.raio;
+                    if (!dentroDoRaio) return false;
+
+                    if (termoInsumo) {
+                        const temProduto = p.produtos.some(prod => prod.toLowerCase().includes(termoInsumo));
+                        const nomeMatch = p.nome.toLowerCase().includes(termoInsumo);
+                        return temProduto || nomeMatch;
+                    }
+                    return true;
+                })
+                : [];
+
+            parceirosVisiveis.forEach(p => {
+                L.circleMarker([p.latitude, p.longitude], {
+                    radius: 11, color: "#000000", weight: 3,
+                    fillColor: CORES_PARCEIRO[p.tipo] || "#46944B", fillOpacity: 1
+                }).addTo(camada).bindPopup(popupParceiro(p));
+            });
+
+            const nF = visiveis.filter(l => l.categoria === "fornecedor").length;
+            const nD = visiveis.length - nF;
+            
+            let textoFiltro = termoInsumo ? ` filtrados por "${termoInsumo}"` : "";
+            contador.textContent =
+                `${nF} fornecedor(es), ${nD} ponto(s) de doação e ` +
+                `${parceirosVisiveis.length} parceiro(s) verificado(s)${textoFiltro} em ${centro.nome}`;
+
+            avisoLimite.textContent = avisoAtual;
+
+            if (ajustarMapa) mapa.fitBounds(circulo.getBounds());
+        }
+
+        async function carregarParceiros() {
+            try {
+                const resposta = await fetch(URL_API_PARCEIROS);
+                if (!resposta.ok) throw new Error("Erro " + resposta.status);
+                const dados = await resposta.json();
+                parceiros = dados.parceiros;
+                desenhar(false);
+            } catch (erro) {
+                console.error("Não foi possível carregar os parceiros:", erro);
+            }
+        }
+
+        async function buscar() {
+            const q = campoBusca.value.trim();
+            const insumo = campoInsumo.value.trim();
+
+            if (!q) {
+                contador.textContent = "Digite uma cidade, bairro ou endereço para buscar.";
+                return;
+            }
+            contador.textContent = "Buscando...";
+            avisoLimite.textContent = "";
+
+            try {
+                const url = `${URL_API_LOCAIS}?q=${encodeURIComponent(q)}&raio=${campoRaio.value}&insumo=${encodeURIComponent(insumo)}`;
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+                if (!resposta.ok) throw new Error(dados.erro || "Erro " + resposta.status);
+                centro = dados.centro;
+                locais = dados.locais;
+                avisoAtual = dados.aviso || "";
+                desenhar(true);
+            } catch (erro) {
+                console.error(erro);
+                contador.textContent = erro.message;
+            }
+        }
+
+        document.getElementById("botao-buscar").addEventListener("click", buscar);
+        campoBusca.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+        campoInsumo.addEventListener("keydown", e => { if (e.key === "Enter") buscar(); });
+
+        chkFornecedor.addEventListener("change", () => desenhar(false));
+        chkDoacao.addEventListener("change", () => desenhar(false));
+        chkBanco.addEventListener("change", () => desenhar(false));
+        chkSocial.addEventListener("change", () => desenhar(false));
+        chkComunitario.addEventListener("change", () => desenhar(false));
+        chkIgreja.addEventListener("change", () => desenhar(false));
+        chkParceiro.addEventListener("change", () => desenhar(false));
+
+        const botaoFiltros = document.getElementById("botao-filtros");
+        const painelFiltros = document.getElementById("painel-filtros");
+        botaoFiltros.addEventListener("click", () => {
+            const aberto = painelFiltros.classList.toggle("aberto");
+            botaoFiltros.setAttribute("aria-expanded", aberto);
+        });
+
+        desenhar(false);
+        carregarParceiros();
+        setTimeout(() => mapa.invalidateSize(), 100);
+    </script>
+{% endblock %}

@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -21,9 +22,7 @@
             color: #1f2937;
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
+        /* NAVBAR */
 
         .navbar {
             width: 100%;
@@ -36,8 +35,6 @@
             border-bottom: 1px solid #e5e7eb;
             position: relative;
         }
-
-        /* LOGO */
 
         .logo {
             display: flex;
@@ -55,8 +52,6 @@
             object-fit: contain;
             border-radius: 5px;
         }
-
-        /* MENU CENTRAL */
 
         .menu {
             height: 100%;
@@ -90,9 +85,7 @@
             font-weight: 700;
         }
 
-        /* =========================
-           CONTA
-        ========================= */
+        /* CONTA */
 
         .conta-container {
             display: flex;
@@ -191,9 +184,7 @@
             background: #fef2f2;
         }
 
-        /* =========================
-           CONTEÚDO
-        ========================= */
+        /* CONTEÚDO */
 
         .conteudo {
             max-width: 1100px;
@@ -297,9 +288,7 @@
             margin: 0;
         }
 
-        /* =========================
-           CARDS
-        ========================= */
+        /* CARDS */
 
         .titulo-pagina {
             font-family: Georgia, "Times New Roman", serif;
@@ -340,9 +329,7 @@
             font-size: 14px;
         }
 
-        /* =========================
-           RODAPÉ
-        ========================= */
+        /* RODAPÉ */
 
         .rodape {
             text-align: center;
@@ -352,12 +339,9 @@
             padding-bottom: 25px;
         }
 
-        /* =========================
-           RESPONSIVO
-        ========================= */
+        /* RESPONSIVO */
 
         @media (max-width: 1000px) {
-
             .navbar {
                 grid-template-columns: auto 1fr auto;
                 padding: 0 15px;
@@ -378,7 +362,6 @@
         }
 
         @media (max-width: 700px) {
-
             .navbar {
                 height: auto;
                 min-height: 64px;
@@ -430,25 +413,18 @@
 
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================= -->
+    <!-- NAVBAR -->
 
     <nav class="navbar">
 
-        <!-- LOGO -->
-
         <div class="logo">
-
             <img
                 src="{% static 'imagens/logo.jpg' %}"
                 alt="Logo Guardião ESG"
             >
 
             <span>Guardião ESG</span>
-
         </div>
-
 
         <!-- MENU CENTRAL -->
 
@@ -468,22 +444,23 @@
                 Metas
             </button>
 
+            <!-- ABRE O MAPA COMPLETO -->
+
             <button
-                class="aba"
-                onclick="abrirAba(2)"
+                type="button"
+                onclick="window.location.href='{% url 'empresas:mapa_esg' %}'"
             >
                 Fornecedores / Doações
             </button>
 
             <button
                 class="aba"
-                onclick="abrirAba(3)"
+                onclick="abrirAba(2)"
             >
                 QR CODE
             </button>
 
         </div>
-
 
         <!-- CONTA -->
 
@@ -508,7 +485,6 @@
 
             </button>
 
-
             <!-- MENU DROPDOWN -->
 
             <div
@@ -527,7 +503,6 @@
                     </span>
 
                 </div>
-
 
                 <form
                     method="POST"
@@ -551,10 +526,7 @@
 
     </nav>
 
-
-    <!-- =========================
-         CONTEÚDO
-    ========================= -->
+    <!-- CONTEÚDO -->
 
     <main class="conteudo">
 
@@ -584,13 +556,21 @@
 
                 <form method="post" action="{% url 'guardiao:iniciar' %}">
                     {% csrf_token %}
+
                     <button type="submit" class="botao-principal">
-                        {% if ultimo %}Refazer diagnóstico{% else %}Começar diagnóstico{% endif %}
+                        {% if ultimo %}
+                            Refazer diagnóstico
+                        {% else %}
+                            Começar diagnóstico
+                        {% endif %}
                     </button>
                 </form>
 
                 {% if ultimo %}
-                    <a class="botao-secundario" href="{% url 'guardiao:ultimo_resultado' %}">
+                    <a
+                        class="botao-secundario"
+                        href="{% url 'guardiao:ultimo_resultado' %}"
+                    >
                         Ver último resultado
                     </a>
                 {% endif %}
@@ -605,18 +585,24 @@
 
             </div>
 
-            <div id="comoFunciona" class="card" style="margin-top: 28px; max-width: 750px;" hidden>
+            <div
+                id="comoFunciona"
+                class="card"
+                style="margin-top: 28px; max-width: 750px;"
+                hidden
+            >
                 <h3>Como funciona</h3>
+
                 <p>
                     Você responde 16 perguntas sobre o dia a dia do restaurante.
                     Cada resposta vale de 0 a 3 pontos e gera uma nota de 0 a 100
                     para os pilares Ambiental, Social e Governança. As respostas mais
                     fracas viram missões simples no seu plano de ação.
                 </p>
+
             </div>
 
         </section>
-
 
         <!-- METAS -->
 
@@ -634,6 +620,7 @@
 
                 <div class="card">
                     <h3>Reduzir desperdício</h3>
+
                     <p>
                         Defina uma meta para reduzir o desperdício de alimentos
                         e acompanhe sua evolução.
@@ -642,6 +629,7 @@
 
                 <div class="card">
                     <h3>Economizar água</h3>
+
                     <p>
                         Crie objetivos para reduzir o consumo de água durante
                         as atividades do restaurante.
@@ -650,6 +638,7 @@
 
                 <div class="card">
                     <h3>Economizar energia</h3>
+
                     <p>
                         Acompanhe ações para diminuir o consumo de energia
                         e reduzir custos.
@@ -659,51 +648,6 @@
             </div>
 
         </section>
-
-
-        <!-- FORNECEDORES / DOAÇÕES -->
-
-        <section class="slide">
-
-            <h1 class="titulo-pagina">
-                Fornecedores / Doações
-            </h1>
-
-            <p class="subtitulo">
-                Organize seus fornecedores e registre ações de doação
-                realizadas pelo restaurante.
-            </p>
-
-            <div class="cards">
-
-                <div class="card">
-                    <h3>Fornecedores</h3>
-                    <p>
-                        Cadastre fornecedores e acompanhe práticas relacionadas
-                        à sustentabilidade.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3>Doações</h3>
-                    <p>
-                        Registre alimentos e outros recursos destinados
-                        para doação.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <h3>Histórico</h3>
-                    <p>
-                        Consulte as ações realizadas pelo restaurante
-                        ao longo do tempo.
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
 
         <!-- QR CODE -->
 
@@ -743,17 +687,13 @@
 
         </section>
 
-
         <div class="rodape">
             Projeto Impacta · Dados temporários para análise
         </div>
 
     </main>
 
-
-    <!-- =========================
-         JAVASCRIPT
-    ========================= -->
+    <!-- JAVASCRIPT -->
 
     <script>
 
@@ -784,19 +724,32 @@
         }
 
 
-        // Abre a aba indicada na URL (#metas, #fornecedores, #qrcode)
+        // Abre a aba indicada na URL (#metas ou #qrcode).
 
         (function () {
-            var abas = { "#metas": 1, "#fornecedores": 2, "#qrcode": 3 };
-            var indice = abas[window.location.hash];
+
+            const abas = {
+                "#metas": 1,
+                "#qrcode": 2
+            };
+
+            const indice = abas[window.location.hash];
 
             if (indice !== undefined) {
                 abrirAba(indice);
             }
+
+            // Compatibilidade com links antigos.
+            // O mapa agora é uma página separada.
+
+            if (window.location.hash === "#fornecedores") {
+                window.location.href = "{% url 'empresas:mapa_esg' %}";
+            }
+
         })();
 
 
-        // Fecha o menu da conta ao clicar fora dele
+        // Fecha o menu da conta ao clicar fora dele.
 
         document.addEventListener("click", function(event) {
 

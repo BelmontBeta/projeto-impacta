@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'contas',
     'guardiao',
     'gastos',
+    'empresas',
 ]
 
 MIDDLEWARE = [
@@ -197,4 +198,12 @@ LOGGING = {
             "propagate": False,
         },
     },
+}
+
+# Cache interno para otimizar as buscas no OpenStreetMap (mapa de fornecedores/doações)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "cache-unico-mapaesg",
+    }
 }
