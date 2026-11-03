@@ -1,6 +1,8 @@
-
+import hashlib
 import json
 import logging
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -11,7 +13,6 @@ from django.shortcuts import render
 
 from .models import EmpresaESG, Parceiro
 
-
 # ---------------------------------------------------------------
 # Página do mapa ESG
 # ---------------------------------------------------------------
@@ -19,7 +20,6 @@ from .models import EmpresaESG, Parceiro
 @login_required
 def mapa_esg(request):
     return render(request, "guardiao/mapa_esg.html")
-
 
 # ---------------------------------------------------------------
 # API de empresas
@@ -53,7 +53,6 @@ def api_empresas(request):
     ]
 
     return JsonResponse({"empresas": dados})
-
 
 # ---------------------------------------------------------------
 # API de parceiros
@@ -91,14 +90,17 @@ def api_parceiros(request):
 
     return JsonResponse({"parceiros": dados})
 
-
 # ---------------------------------------------------------------
 # Busca de fornecedores e pontos de doação (OpenStreetMap)
 # ---------------------------------------------------------------
 
 logger = logging.getLogger(__name__)
 
-USER_AGENT = "MapaESG-Solucao3/1.0 (projeto academico)"
+# Troque pelo seu e-mail de contato.
+USER_AGENT = (
+    "MapaESG-Solucao3/1.0 "
+    "(projeto academico Impacta; contato: seu-email@exemplo.com)"
+)
 
 LOJAS_FORNECEDORES = {
     "farm": "Fazenda / produtor",
@@ -109,11 +111,21 @@ LOJAS_FORNECEDORES = {
     "wholesale": "Atacado",
 }
 
+# O overpass-api.de fica por último porque a rede atual
+# bloqueia a porta 443 dele.
 OVERPASS_URLS = [
-    "https://overpass-api.de/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass-api.de/api/interpreter",
 ]
 
+TIMEOUT_REQUISICAO = 10      # segundos por servidor
+PAUSA_429 = 30               # bloqueio após "Too Many Requests"
+CACHE_FALHA = 30             # bloqueio após falha geral
+CACHE_RESULTADO = 3600       # 1 hora
+LIMITE_RESULTADOS = 300
+
+CHAVE_FALHA_OVERPASS = "overpass:falha"
 
 # ---------------------------------------------------------------
 # Faz uma consulta a um serviço externo
@@ -129,45 +141,52 @@ def _consultar(url, dados=None):
         },
     )
 
-    with urllib.request.urlopen(pedido, timeout=45) as resposta:
+    with urllib.request.urlopen(
+        pedido, timeout=TIMEOUT_REQUISICAO
+    ) as resposta:
         return json.loads(resposta.read().decode("utf-8"))
-
 
 # ---------------------------------------------------------------
 # Consulta os servidores Overpass
 # ---------------------------------------------------------------
 
 def _overpass(consulta):
-    corpo = urllib.parse.urlencode(
-        {"data": consulta}
-    ).encode()
+    if cache.get(CHAVE_FALHA_OVERPASS):
+        raise RuntimeError("Overpass indisponível (falha recente).")
 
+    corpo = urllib.parse.urlencode({"data": consulta}).encode()
     ultimo_erro = None
 
     for url in OVERPASS_URLS:
+        try:
+            logger.info("Consultando Overpass: %s", url)
+            dados = _consultar(url, corpo)
 
-        # Tenta duas vezes em cada servidor.
-        for tentativa in range(2):
-            try:
-                logger.info(
-                    "Consultando Overpass: %s (tentativa %s)",
-                    url,
-                    tentativa + 1,
-                )
+            # O Overpass pode responder 200 com resultado incompleto.
+            remark = str(dados.get("remark", "")).lower()
+            if "timed out" in remark or "out of memory" in remark:
+                raise TimeoutError(dados["remark"])
 
-                return _consultar(url, corpo)
+            return dados
 
-            except Exception as erro:
-                logger.warning(
-                    "Falha no Overpass %s: %s",
-                    url,
-                    erro,
-                )
+        except urllib.error.HTTPError as erro:
+            logger.warning("Falha no Overpass %s: %s", url, erro)
+            ultimo_erro = erro
 
-                ultimo_erro = erro
+            if erro.code == 429:
+                # O servidor pediu para esperar: não insiste.
+                cache.set(CHAVE_FALHA_OVERPASS, True, PAUSA_429)
+                raise
 
-    raise ultimo_erro
+            time.sleep(1)
 
+        except Exception as erro:
+            logger.warning("Falha no Overpass %s: %s", url, erro)
+            ultimo_erro = erro
+            time.sleep(1)
+
+    cache.set(CHAVE_FALHA_OVERPASS, True, CACHE_FALHA)
+    raise ultimo_erro or RuntimeError("Nenhum servidor Overpass respondeu.")
 
 # ---------------------------------------------------------------
 # Identifica o tipo de estabelecimento
@@ -185,23 +204,17 @@ def _classificar(tags):
 
     if local == "place_of_worship":
         igreja = tags.get("religion") == "christian"
-
-        return "doacao", (
-            "Igreja" if igreja else "Local de culto"
-        )
+        return "doacao", ("Igreja" if igreja else "Local de culto")
 
     if local == "social_facility":
-
         if tags.get("social_facility") == "food_bank":
             return "doacao", "Banco de alimentos"
-
         return "doacao", "Instituição social"
 
     if local == "community_centre":
         return "doacao", "Centro comunitário"
 
     return None, None
-
 
 # ---------------------------------------------------------------
 # Monta o endereço do estabelecimento
@@ -223,10 +236,7 @@ def _endereco(tags):
         tags.get("addr:city"),
     ]
 
-    return ", ".join(
-        p for p in partes if p
-    )
-
+    return ", ".join(p for p in partes if p)
 
 # ---------------------------------------------------------------
 # API de busca de fornecedores e pontos de doação
@@ -245,18 +255,19 @@ def api_locais(request):
         )
 
     try:
-        raio = int(request.GET.get("raio", 5000))
-
+        raio = int(request.GET.get("raio", 2000))
     except (ValueError, TypeError):
-        raio = 5000
+        raio = 2000
 
     raio = max(500, min(raio, 20000))
 
-    chave = f"locais:{q.lower()}:{raio}:{insumo}"
+    # Chave sem espaços nem acentos (compatível com memcached).
+    bruto = f"{q.lower()}|{raio}|{insumo}"
+    chave = "locais:" + hashlib.md5(bruto.encode("utf-8")).hexdigest()
 
     resultado = cache.get(chave)
 
-    if resultado:
+    if resultado is not None:
         return JsonResponse(resultado)
 
     # -----------------------------------------------------------
@@ -283,10 +294,7 @@ def api_locais(request):
         lon = float(geo[0]["lon"])
 
     except Exception:
-        logger.exception(
-            "Falha ao localizar %r no Nominatim",
-            q,
-        )
+        logger.exception("Falha ao localizar %r no Nominatim", q)
 
         return JsonResponse(
             {
@@ -299,70 +307,31 @@ def api_locais(request):
         )
 
     # -----------------------------------------------------------
-    # Consulta de fornecedores
+    # Consulta única: fornecedores e pontos de doação
     # -----------------------------------------------------------
 
-    consulta_fornecedores = f"""
-    [out:json][timeout:25];
-    nwr(around:{raio},{lat},{lon})
-    ["shop"~"^(farm|greengrocer|butcher|seafood|dairy|wholesale)$"];
-    out center 301;
+    consulta = f"""
+    [out:json][timeout:20];
+    (
+      nwr(around:{raio},{lat},{lon})
+        ["shop"~"^(farm|greengrocer|butcher|seafood|dairy|wholesale)$"];
+      nwr(around:{raio},{lat},{lon})
+        ["amenity"~"^(marketplace|place_of_worship|social_facility|community_centre)$"];
+    );
+    out center {LIMITE_RESULTADOS + 1};
     """
 
-    # -----------------------------------------------------------
-    # Consulta de pontos de doação
-    # -----------------------------------------------------------
-
-    consulta_doacao = f"""
-    [out:json][timeout:25];
-    nwr(around:{raio},{lat},{lon})
-    ["amenity"~"^(marketplace|place_of_worship|social_facility|community_centre)$"];
-    out center 301;
-    """
-
-    # -----------------------------------------------------------
-    # Executa cada consulta independentemente
-    # -----------------------------------------------------------
-
-    dados_fornecedores = None
-    dados_doacao = None
-
-    erro_fornecedores = False
-    erro_doacao = False
-
     try:
-        dados_fornecedores = _overpass(
-            consulta_fornecedores
-        )
+        dados = _overpass(consulta)
 
     except Exception:
-        erro_fornecedores = True
+        logger.exception("Falha na busca de locais para %r", q)
 
-        logger.exception(
-            "Falha na busca de fornecedores para %r",
-            q,
-        )
-
-    try:
-        dados_doacao = _overpass(
-            consulta_doacao
-        )
-
-    except Exception:
-        erro_doacao = True
-
-        logger.exception(
-            "Falha na busca de doações para %r",
-            q,
-        )
-
-    # Se as duas consultas falharem, retorna erro.
-    if erro_fornecedores and erro_doacao:
         return JsonResponse(
             {
                 "erro": (
                     "Os serviços de mapas estão indisponíveis "
-                    "no momento. Tente novamente mais tarde."
+                    "no momento. Tente novamente em alguns minutos."
                 )
             },
             status=502,
@@ -372,30 +341,9 @@ def api_locais(request):
     # Organiza os resultados
     # -----------------------------------------------------------
 
-    elementos_fornecedores = (
-        dados_fornecedores.get("elements", [])
-        if dados_fornecedores else []
-    )
-
-    elementos_doacao = (
-        dados_doacao.get("elements", [])
-        if dados_doacao else []
-    )
-
-    limite = 300
-
-    limite_fornecedores = (
-        len(elementos_fornecedores) > limite
-    )
-
-    limite_doacao = (
-        len(elementos_doacao) > limite
-    )
-
-    elementos = (
-        elementos_fornecedores[:limite]
-        + elementos_doacao[:limite]
-    )
+    todos = dados.get("elements", [])
+    limite_atingido = len(todos) > LIMITE_RESULTADOS
+    elementos = todos[:LIMITE_RESULTADOS]
 
     locais = []
     ids_encontrados = set()
@@ -406,10 +354,7 @@ def api_locais(request):
 
         categoria, tipo = _classificar(tags)
 
-        ponto = (
-            el if "lat" in el
-            else el.get("center")
-        )
+        ponto = el if "lat" in el else el.get("center")
 
         if not categoria or not ponto:
             continue
@@ -448,29 +393,19 @@ def api_locais(request):
         })
 
     # -----------------------------------------------------------
-    # Cria avisos para o usuário
+    # Avisos para o usuário
     # -----------------------------------------------------------
 
     avisos = []
 
-    if erro_fornecedores:
+    if limite_atingido:
         avisos.append(
-            "Não foi possível carregar os fornecedores nesta busca."
-        )
-
-    if erro_doacao:
-        avisos.append(
-            "Não foi possível carregar os pontos de doação nesta busca."
-        )
-
-    if limite_fornecedores or limite_doacao:
-        avisos.append(
-            "Uma ou mais consultas atingiram o limite de resultados. "
+            "A consulta atingiu o limite de resultados. "
             "Reduza o raio para ver resultados mais detalhados."
         )
 
     # -----------------------------------------------------------
-    # Prepara a resposta para o JavaScript
+    # Resposta para o JavaScript
     # -----------------------------------------------------------
 
     resultado = {
@@ -484,15 +419,14 @@ def api_locais(request):
         "locais": locais,
 
         "limites": {
-            "fornecedores": limite_fornecedores,
-            "doacao": limite_doacao,
-            "limite_por_consulta": limite,
+            "fornecedores": limite_atingido,
+            "doacao": limite_atingido,
+            "limite_por_consulta": LIMITE_RESULTADOS,
         },
 
         "aviso": " ".join(avisos),
     }
 
-    # Guarda o resultado por uma hora.
-    cache.set(chave, resultado, 3600)
+    cache.set(chave, resultado, CACHE_RESULTADO)
 
     return JsonResponse(resultado)
