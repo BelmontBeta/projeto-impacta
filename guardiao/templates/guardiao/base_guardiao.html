@@ -1,4 +1,5 @@
-{% load static %}<!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@0,600;0,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'guardiao/css/guardiao.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
@@ -23,32 +24,70 @@
         </a>
 
         <div class="g-menu">
-            <a {% if request.resolver_match.app_name != 'empresas' %}class="ativo"{% endif %} href="{% url 'guardiao:boas_vindas' %}">Diagnóstico</a>
-            <a href="{% url 'guardiao:boas_vindas' %}#metas">Metas</a>
-            <a {% if request.resolver_match.app_name == 'empresas' %}class="ativo"{% endif %} href="{% url 'empresas:mapa_esg' %}">Fornecedores / Doações</a>
-            <a href="{% url 'guardiao:boas_vindas' %}#qrcode">QR CODE</a>
-            <a href="{% url 'minha_conta' %}">Minha conta</a>
+            <a
+                {% if request.resolver_match.app_name != 'empresas' %}
+                    class="ativo"
+                {% endif %}
+                href="{% url 'guardiao:boas_vindas' %}"
+            >
+                Diagnóstico
+            </a>
+
+            <a href="{% url 'guardiao:boas_vindas' %}#metas">
+                Metas
+            </a>
+
+            <a
+                {% if request.resolver_match.app_name == 'empresas' %}
+                    class="ativo"
+                {% endif %}
+                href="{% url 'empresas:mapa_esg' %}"
+            >
+                Fornecedores / Doações
+            </a>
+
+            <a href="{% url 'guardiao:boas_vindas' %}#qrcode">
+                QR CODE
+            </a>
         </div>
 
         <div class="g-conta">
-            <button class="g-conta-botao" type="button" id="botaoConta"
-                    aria-haspopup="true" aria-expanded="false">
+            <button
+                class="g-conta-botao"
+                type="button"
+                id="botaoConta"
+                aria-haspopup="true"
+                aria-expanded="false"
+            >
                 <div class="g-conta-icone">
                     {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
                 </div>
-                <span class="g-conta-nome">Minha conta</span>
+
+                <span class="g-conta-nome">
+                    {{ request.user.first_name|default:"Minha conta" }}
+                </span>
+
                 <span class="g-conta-seta">▼</span>
             </button>
 
             <div class="g-conta-menu" id="menuConta">
                 <div class="g-conta-dados">
-                    <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                    <strong>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </strong>
+
                     <span>{{ request.user.email }}</span>
                 </div>
 
+                <a class="g-conta-editar" href="{% url 'minha_conta' %}">
+                    Editar minha conta
+                </a>
+
                 <form method="post" action="{% url 'sair' %}">
                     {% csrf_token %}
-                    <button type="submit" class="g-sair">Sair da conta</button>
+                    <button type="submit" class="g-sair">
+                        Sair da conta
+                    </button>
                 </form>
             </div>
         </div>
@@ -62,9 +101,13 @@
             var botao = document.getElementById("botaoConta");
             var menu = document.getElementById("menuConta");
 
+            if (!botao || !menu) {
+                return;
+            }
+
             botao.addEventListener("click", function () {
                 var aberto = menu.classList.toggle("aberto");
-                botao.setAttribute("aria-expanded", aberto);
+                botao.setAttribute("aria-expanded", String(aberto));
             });
 
             document.addEventListener("click", function (evento) {
@@ -75,6 +118,7 @@
             });
         })();
     </script>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

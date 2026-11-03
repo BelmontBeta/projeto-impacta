@@ -173,6 +173,17 @@ main {
     background: currentColor;
 }
 
+.g-conta-opcao {
+    display: block;
+    padding: 10px 16px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.g-conta-opcao:hover {
+    background: #f2f6fa;
+}
+
 /* Página inicial: hero */
 
 .hero {
@@ -245,29 +256,39 @@ main {
 
 .section {
     padding: 64px 0;
+    background: #eeeeee;
 }
 
 .section-alternativa {
-    background: var(--cinza);
+    background: #eeeeee;
 }
 
 .section-title {
     margin: 0 0 24px;
-    color: var(--azul-escuro);
+    color: #111111;
+    font-family: var(--fonte-titulos);
     font-size: 2rem;
+    font-weight: 500;
     text-align: center;
+    text-shadow: 1px 2px 3px rgb(0 0 0 / 25%);
 }
 
 .section > .container > p {
     max-width: 800px;
     margin: 0 auto 16px;
+    color: #111111;
+    font-family: var(--fonte-texto);
     text-align: center;
 }
 
 .lista-destaques {
     max-width: 800px;
     margin-inline: auto;
-    padding-left: 22px;
+    padding-left: 0;
+    color: #111111;
+    font-family: var(--fonte-texto);
+    list-style: none;
+    text-align: center;
 }
 
 /* Cards e grades */
@@ -627,6 +648,36 @@ main {
 .auth-troca a {
     color: var(--azul-principal);
     font-weight: 700;
+}
+
+.g-conta-editar,
+.botao-editar-conta {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #374151;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.g-conta-editar:hover,
+.botao-editar-conta:hover {
+    background: #f1f5f9;
+    color: #1769aa;
+    text-decoration: none;
+}
+
+.g-conta-editar:focus-visible,
+.botao-editar-conta:focus-visible {
+    outline: 2px solid #1769aa;
+    outline-offset: 2px;
 }
 
 /* Rodapé */

@@ -5,172 +5,26 @@
 
 {% block content %}
 
-<!-- Estilos exclusivos da barra lateral (o restante vem do style.css) -->
 <style>
-  /* Rolagem suave só para quem não desativou animações no sistema */
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
     }
   }
 
-  /* Recuo para o conteúdo principal não ficar sob a barra */
   .main-content-wrapper {
-    margin-left: 80px;
+    margin-left: 0;
   }
 
-  /* ---------- Sidebar fixa (abaixo do cabeçalho) ---------- */
-  .sidebar-desk {
-    position: fixed;
-    top: var(--altura-header);
-    left: 0;
-    height: calc(100vh - var(--altura-header));
-    width: 72px;
-    background-color: var(--azul-escuro);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 0;
-    z-index: 1000;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
-  }
-
-  .sidebar-brand {
-    font-size: 22px;
-    color: var(--branco);
-    margin-bottom: 32px;
-  }
-
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    align-items: center;
-  }
-
-  .nav-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    color: #b6cfe6;
-    text-decoration: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 18px;
-  }
-
-  .nav-item:hover {
-    color: var(--branco);
-    background-color: rgba(255, 255, 255, 0.12);
-  }
-
-  .nav-item:focus-visible {
-    outline: 2px solid var(--branco);
-    outline-offset: 2px;
-  }
-
-  .nav-item.active {
-    color: var(--branco);
-    background-color: var(--azul-principal);
-    box-shadow: 0 4px 12px rgba(21, 94, 158, 0.45);
-  }
-
-  /* Tooltip com o nome da seção (mouse e teclado) */
-  .nav-label {
-    position: absolute;
-    left: 62px;
-    background-color: var(--texto);
-    color: var(--branco);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-8px);
-    transition: all 0.2s ease;
-    pointer-events: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .nav-item:hover .nav-label,
-  .nav-item:focus-visible .nav-label {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-  }
-
-  /* ---------- Celular: a barra vira um menu inferior ---------- */
   @media (max-width: 768px) {
     .main-content-wrapper {
       margin-left: 0;
     }
-
-    .sidebar-desk {
-      top: auto;
-      bottom: 0;
-      width: 100vw;
-      height: 64px;
-      flex-direction: row;
-      justify-content: space-around;
-      padding: 0 16px;
-      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .sidebar-brand {
-      display: none;
-    }
-
-    .sidebar-nav {
-      flex-direction: row;
-      justify-content: space-around;
-    }
-
-    .nav-label {
-      display: none;
-    }
   }
 </style>
 
-<!-- Sidebar de navegação -->
-<nav class="sidebar-desk" aria-label="Navegação principal">
-  <div class="sidebar-brand" aria-hidden="true">
-    <i class="fas fa-leaf"></i>
-  </div>
-
-  <div class="sidebar-nav">
-    <a href="#sobre" class="nav-item active" data-section="sobre" aria-label="Sobre">
-      <i class="fas fa-info-circle" aria-hidden="true"></i>
-      <span class="nav-label">Sobre</span>
-    </a>
-    <a href="#objetivos" class="nav-item" data-section="objetivos" aria-label="Objetivos">
-      <i class="fas fa-bullseye" aria-hidden="true"></i>
-      <span class="nav-label">Objetivos</span>
-    </a>
-    <a href="#metodologia" class="nav-item" data-section="metodologia" aria-label="Metodologia">
-      <i class="fas fa-project-diagram" aria-hidden="true"></i>
-      <span class="nav-label">Metodologia</span>
-    </a>
-    <a href="#quem-somos" class="nav-item" data-section="quem-somos" aria-label="Equipe">
-      <i class="fas fa-users" aria-hidden="true"></i>
-      <span class="nav-label">Equipe</span>
-    </a>
-    <a href="#nossa-proposta" class="nav-item" data-section="nossa-proposta" aria-label="Proposta">
-      <i class="fas fa-lightbulb" aria-hidden="true"></i>
-      <span class="nav-label">Proposta</span>
-    </a>
-  </div>
-</nav>
-
-<!-- Conteúdo principal -->
 <main class="main-content-wrapper">
 
-  <!-- 1. Sobre: Fundo Branco (padrão) -->
   <section id="sobre" class="section">
     <div class="container">
       <h1 class="section-title">Sobre o projeto</h1>
@@ -190,7 +44,6 @@
     </div>
   </section>
 
-  <!-- 2. Objetivos: Fundo Cinza Claro -->
   <section id="objetivos" class="section section-alternativa">
     <div class="container">
       <h2 class="section-title">Objetivo geral</h2>
@@ -200,52 +53,11 @@
         atividades do ramo alimentício, considerando seus impactos
         ambientais, sociais e organizacionais.
       </p>
-
-      <h2 class="section-title">Objetivos específicos</h2>
-
-      <ul class="lista-destaques">
-        <li>Apresentar o conceito de ESG;</li>
-        <li>Relacionar os pilares ESG ao setor alimentício;</li>
-        <li>Identificar os principais desafios da área;</li>
-        <li>Promover a conscientização sobre práticas responsáveis;</li>
-        <li>Estabelecer uma base para futuras soluções.</li>
-      </ul>
     </div>
   </section>
 
-  <!-- 3. Metodologia: Fundo Branco -->
-  <section id="metodologia" class="section">
-    <div class="container">
-      <h2 class="section-title">Metodologia</h2>
-
-      <p>
-        O desenvolvimento será realizado por meio de pesquisa, análise de
-        informações e criação de uma aplicação web utilizando Django.
-      </p>
-
-      <div class="cards">
-        <article class="card">
-          <h3>Pesquisa</h3>
-          <p>Levantamento de informações sobre ESG e sustentabilidade.</p>
-        </article>
-
-        <article class="card">
-          <h3>Análise</h3>
-          <p>Estudo dos impactos e desafios do setor alimentício.</p>
-        </article>
-
-        <article class="card">
-          <h3>Desenvolvimento</h3>
-          <p>Criação de uma plataforma para apresentar o conhecimento obtido.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. Equipe (Quem somos): Fundo Cinza Claro -->
   <section id="quem-somos" class="section section-alternativa">
     <div class="container">
-
       <h2 class="section-title">Quem somos</h2>
 
       <p>
@@ -261,73 +73,118 @@
       <div class="cards equipe">
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/belmont.jpg' %}"
-               alt="Foto de Caio Henrique de Sena Belmont"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/belmont.jpg' %}"
+            alt="Foto de Caio Henrique de Sena Belmont"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Caio Henrique de Sena Belmont</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/caio.jpg' %}"
-               alt="Foto de Caio Freitas de Andrade Medeiros"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/caio.jpg' %}"
+            alt="Foto de Caio Freitas de Andrade Medeiros"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Caio Freitas de Andrade Medeiros</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/mariana.jpg' %}"
-               alt="Foto de Mariana Moreira de Andrade Lima"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/mariana.jpg' %}"
+            alt="Foto de Mariana Moreira de Andrade Lima"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Mariana Moreira de Andrade Lima</h3>
           <p>Design · Identidade visual e apresentação do projeto.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
-               alt="Foto de José Henrique Carneiro Lapa"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
+            alt="Foto de José Henrique Carneiro Lapa"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>José Henrique Carneiro Lapa</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/furtado.jpg' %}"
-               alt="Foto de Gabriel Furtado Corrêa Miller"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/furtado.jpg' %}"
+            alt="Foto de Gabriel Furtado Corrêa Miller"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Gabriel Furtado Corrêa Miller</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/taina.jpg' %}"
-               alt="Foto de Tainá Wanderley Carneiro Leão"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/taina.jpg' %}"
+            alt="Foto de Tainá Wanderley Carneiro Leão"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Tainá Wanderley Carneiro Leão</h3>
           <p>Design · Identidade visual e apresentação do projeto.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/geovanna.jpg' %}"
-               alt="Foto de Geovanna Eduarda da Silva França"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/geovanna.jpg' %}"
+            alt="Foto de Geovanna Eduarda da Silva França"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Geovanna Eduarda da Silva França</h3>
           <p>Design · Identidade visual e apresentação do projeto.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/guedes.jpg' %}"
-               alt="Foto de João Pedro Guedes Alcoforado Carneiro Leão"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/guedes.jpg' %}"
+            alt="Foto de João Pedro Guedes Alcoforado Carneiro Leão"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>João Pedro Guedes Alcoforado Carneiro Leão</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
 
         <article class="card membro">
-          <img src="{% static 'imagens/equipe/cassemiro.jpg' %}"
-               alt="Foto de Gabriel Cassemiro Romualdo Filgueira Pino"
-               class="foto-membro" width="120" height="120" loading="lazy">
+          <img
+            src="{% static 'imagens/equipe/cassemiro.jpg' %}"
+            alt="Foto de Gabriel Cassemiro Romualdo Filgueira Pino"
+            class="foto-membro"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
           <h3>Gabriel Cassemiro Romualdo Filgueira Pino</h3>
           <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
         </article>
@@ -335,8 +192,7 @@
       </div>
     </div>
   </section>
-
-  <!-- 5. Nossa Proposta: Fundo Branco -->
+{% comment %}
   <section id="nossa-proposta" class="section">
     <div class="container">
       <h2 class="section-title">Nossa proposta</h2>
@@ -347,43 +203,8 @@
       </p>
     </div>
   </section>
+{% endcomment %}
 
 </main>
 
-<!-- Scrollspy: muda o ícone ativo conforme a rolagem -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const sections = document.querySelectorAll('section[id]');
-    const navItems = document.querySelectorAll('.nav-item');
-
-    function ativar(id) {
-      navItems.forEach(item => {
-        item.classList.toggle('active', item.dataset.section === id);
-      });
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          ativar(entry.target.id);
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
-    });
-
-    sections.forEach(section => observer.observe(section));
-
-    // Ao chegar no fim da página, garante que o último item fique ativo
-    window.addEventListener('scroll', () => {
-      const noFim = window.innerHeight + window.scrollY >= document.body.offsetHeight - 2;
-      if (noFim) {
-        ativar(sections[sections.length - 1].id);
-      }
-    });
-  });
-</script>
-
-{% endblock %}
+{% endblock %} 

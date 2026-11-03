@@ -7,6 +7,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 
     <style>
+        /* Link "Editar minha conta" no menu da conta (mesmo padrão do "Sair da conta") */
+        .g-conta-menu a.g-conta-editar,
+        .g-conta-menu a.g-conta-editar:link,
+        .g-conta-menu a.g-conta-editar:visited {
+            display: block !important;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 11px 12px;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: #374151 !important;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: left;
+            text-decoration: none !important;
+            cursor: pointer;
+        }
+
+        .g-conta-menu a.g-conta-editar:hover,
+        .g-conta-menu a.g-conta-editar:focus-visible {
+            background: #f1f5f9;
+            color: #1769aa !important;
+            text-decoration: none !important;
+        }
+
+        .g-conta-menu a.g-conta-editar:focus-visible {
+            outline: 2px solid #1769aa;
+            outline-offset: 2px;
+        }
+
         .mapa-esg {
             --azul: #497ECC;
             --verde: #46944B;
@@ -18,9 +52,6 @@
             --fonte-texto: "Open Sans", sans-serif;
         }
         .mapa-esg *, .mapa-esg *::before, .mapa-esg *::after { box-sizing: border-box; }
-        
-        
-
 
         /* conteúdo */
         .mapa-esg .mapa-conteudo { max-width: 1240px; margin: 0 auto; padding: 36px 40px 40px; }
@@ -168,7 +199,7 @@
         const campoBusca = document.getElementById("campo-busca");
         const campoInsumo = document.getElementById("campo-insumo");
         const campoRaio = document.getElementById("campo-raio");
-        
+
         const chkFornecedor = document.getElementById("chk-fornecedor");
         const chkDoacao = document.getElementById("chk-doacao");
         const chkBanco = document.getElementById("chk-banco");
@@ -176,7 +207,7 @@
         const chkComunitario = document.getElementById("chk-comunitario");
         const chkIgreja = document.getElementById("chk-igreja");
         const chkParceiro = document.getElementById("chk-parceiro");
-        
+
         const contador = document.getElementById("contador");
         const avisoLimite = document.getElementById("aviso-limite");
 
@@ -298,7 +329,7 @@
 
             const nF = visiveis.filter(l => l.categoria === "fornecedor").length;
             const nD = visiveis.length - nF;
-            
+
             let textoFiltro = termoInsumo ? ` filtrados por "${termoInsumo}"` : "";
             contador.textContent =
                 `${nF} fornecedor(es), ${nD} ponto(s) de doação e ` +
