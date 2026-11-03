@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Contato - ESG no Ramo Alimentício
@@ -14,45 +15,59 @@
             Envie uma dúvida, sugestão ou feedback sobre o projeto.
         </p>
 
-        {% if sucesso %}
-            <p class="mensagem-sucesso">Mensagem enviada com sucesso!</p>
-        {% endif %}
+        <div class="contato-card">
+            <h2 class="contato-card-titulo">Envie sua mensagem</h2>
 
-        {% if erros %}
-            <div class="erros">
-                <ul>
-                    {% for erro in erros %}
-                        <li>{{ erro }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+            {% if sucesso %}
+                <p class="mensagem-sucesso">Mensagem enviada com sucesso!</p>
+            {% endif %}
 
-        <form method="post" class="form-contato">
-            {% csrf_token %}
+            {% if erros %}
+                <div class="erros">
+                    <ul>
+                        {% for erro in erros %}
+                            <li>{{ erro }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-            <div class="form-grupo">
-                <label for="nome">Nome</label>
-                <input type="text" id="nome" name="nome">
-            </div>
+            <form method="post" class="contato-form">
+                {% csrf_token %}
 
-            <div class="form-grupo">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email">
-            </div>
+                <div class="form-grupo">
+                    <label for="nome">Nome completo</label>
+                    <div class="campo-com-icone">
+                        <img src="{% static 'imagens/icones/usuario.png' %}" alt="" class="campo-icone">
+                        <input type="text" id="nome" name="nome"
+                               placeholder="Seu nome completo" value="{{ dados.nome }}">
+                    </div>
+                </div>
 
-            <div class="form-grupo">
-                <label for="assunto">Assunto</label>
-                <input type="text" id="assunto" name="assunto">
-            </div>
+                <div class="form-grupo">
+                    <label for="email">Seu e-mail</label>
+                    <div class="campo-com-icone">
+                        <img src="{% static 'imagens/icones/envelope.png' %}" alt="" class="campo-icone">
+                        <input type="email" id="email" name="email"
+                               placeholder="seu.email@exemplo.com" value="{{ dados.email }}">
+                    </div>
+                </div>
 
-            <div class="form-grupo">
-                <label for="mensagem">Mensagem</label>
-                <textarea id="mensagem" name="mensagem"></textarea>
-            </div>
+                <div class="form-grupo">
+                    <label for="mensagem">Escreva sua mensagem</label>
+                    <div class="campo-com-icone campo-com-icone-topo">
+                        <img src="{% static 'imagens/icones/lapis.png' %}" alt="" class="campo-icone">
+                        <textarea id="mensagem" name="mensagem"
+                                  placeholder="Digite sua mensagem aqui...">{{ dados.mensagem }}</textarea>
+                    </div>
+                </div>
 
-            <button type="submit" class="botao-formulario">Enviar</button>
-        </form>
+                <button type="submit" class="botao-formulario">
+                    <img src="{% static 'imagens/icones/envelope.png' %}" alt="" class="botao-icone">
+                    Enviar mensagem
+                </button>
+            </form>
+        </div>
     </div>
 </section>
 
