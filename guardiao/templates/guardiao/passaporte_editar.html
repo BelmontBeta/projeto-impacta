@@ -1,0 +1,144 @@
+
+{% extends "guardiao/base_guardiao.html" %}
+{% load static %}
+
+{% block title %}Gerenciar Passaporte de Sabores{% endblock %}
+
+{% block extra_head %}
+<style>
+    .passaporte-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .passaporte-titulo {
+        color: #245c3d;
+        margin-bottom: 10px;
+    }
+
+    .passaporte-descricao {
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .passaporte-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .passaporte-card h2 {
+        color: #245c3d;
+        margin-bottom: 20px;
+    }
+
+    .passaporte-campo {
+        margin-bottom: 20px;
+    }
+
+    .passaporte-campo label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .passaporte-campo input,
+    .passaporte-campo textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font: inherit;
+        box-sizing: border-box;
+    }
+
+    .passaporte-campo textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .passaporte-botao {
+        background: #245c3d;
+        color: white;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 8px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .passaporte-botao:hover {
+        background: #19462d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="passaporte-container">
+
+    <h1 class="passaporte-titulo">Passaporte de Sabores</h1>
+    <p class="passaporte-descricao">
+        Gerencie as informações do seu restaurante e compartilhe
+        sua história com seus clientes.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <section class="passaporte-card">
+            <h2>Informações do restaurante</h2>
+
+            <div class="passaporte-campo">
+                <label for="nome_restaurante">Nome do restaurante</label>
+                <input
+                    type="text"
+                    id="nome_restaurante"
+                    name="nome_restaurante"
+                    value="{{ passaporte.nome_restaurante|default:'' }}"
+                    maxlength="150"
+                    required
+                >
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="historia">História do restaurante</label>
+                <textarea
+                    id="historia"
+                    name="historia"
+                    required
+                >{{ passaporte.historia|default:'' }}</textarea>
+            </div>
+        </section>
+
+        <section class="passaporte-card">
+            <h2>Impacto e sustentabilidade</h2>
+
+            <div class="passaporte-campo">
+                <label for="impacto_comunitario">Impacto na comunidade</label>
+                <textarea
+                    id="impacto_comunitario"
+                    name="impacto_comunitario"
+                >{{ passaporte.impacto_comunitario|default:'' }}</textarea>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="programa_fidelidade">Programa de fidelidade</label>
+                <textarea
+                    id="programa_fidelidade"
+                    name="programa_fidelidade"
+                >{{ passaporte.programa_fidelidade|default:'' }}</textarea>
+            </div>
+        </section>
+
+        <button type="submit" class="passaporte-botao">
+            Salvar Passaporte
+        </button>
+    </form>
+
+</main>
+{% endblock %}

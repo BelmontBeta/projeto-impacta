@@ -5,6 +5,13 @@ from django.db import models
 
 class Passaporte(models.Model):
     nome_restaurante = models.CharField(max_length=150)
+    proprietario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="passaportes",
+        null=True,
+        blank=True
+    )
     slug = models.SlugField(unique=True)
     historia = models.TextField()
     impacto_comunitario = models.TextField(blank=True)
