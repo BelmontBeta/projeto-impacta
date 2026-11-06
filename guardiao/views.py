@@ -327,3 +327,55 @@ def missao_alternar(request, pk, missao_id):
     registro.save(update_fields=[campo])
 
     return redirect(_destino_seguro(request, reverse("guardiao:plano", args=[pk])))
+
+
+#permite que o usuario conectado crie ou edite seu proprio passaporte
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils.text import slugify
+from .models import Passaporte
+
+
+@login_required
+def editar_passaporte(request):
+    passaporte = Passaporte.objects.filter(
+        proprietario=request.user
+    ).first()
+
+    if request.method == "POST":
+        nome = request.POST.get("nome_restaurante", "").strip()
+        historia = request.POST.get("historia", "").strip()
+        impacto = request.POST.get("impacto_comunitario", "").strip()
+        fidelidade = request.POST.get("programa_fidelidade", "").strip()
+
+        if not nome or not historia:
+            return render(request, "guardiao/passaporte_editar.html", {
+                "passaporte": passaporte,
+                "erro": "Preencha o nome e a história do restaurante."
+            })
+
+        if passaporte is None:
+            slug_base = slugify(nome) or "restaurante"
+            slug = slug_base
+            contador = 2
+
+            while Passaporte.objects.filter(slug=slug).exists():
+                slug = f"{slug_base}-{contador}"
+                contador += 1
+
+            passaporte = Passaporte(
+                proprietario=request.user,
+                slug=slug
+            )
+
+        passaporte.nome_restaurante = nome
+        passaporte.historia = historia
+        passaporte.impacto_comunitario = impacto
+        passaporte.programa_fidelidade = fidelidade
+        passaporte.save()
+
+        return redirect("guardiao:editar_passaporte")
+
+    return render(request, "guardiao/passaporte_editar.html", {
+        "passaporte": passaporte
+    })
