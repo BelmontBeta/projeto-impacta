@@ -55,4 +55,10 @@ urlpatterns = [
         views.missao_alternar,
         name="missao_alternar"
     ),
+    # solução 4
+    path(
+        "passaporte/editar/", 
+        views.editar_passaporte,
+        name="editar_passaporte"
+    ),
 ]
