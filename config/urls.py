@@ -5,13 +5,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', include('core.urls')),
+    path("gastos/", include("gastos.urls")),
     path('', include('contato.urls')),
     path('', include('contas.urls')),
     path('guardiao/', include('guardiao.urls')),
 ]
 from django.urls import path, include
 
-urlpatterns = [
-    # ... suas rotas atuais
-    path("gastos/", include("gastos.urls")),
-]

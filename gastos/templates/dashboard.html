@@ -1,38 +1,3 @@
-<h1>Novo gasto</h1>
-
-{% if erros %}
-  <ul class="erros">
-    {% for e in erros %}<li>{{ e }}</li>{% endfor %}
-  </ul>
-{% endif %}
-
-<form method="post">
-  {% csrf_token %}
-
-  <label>Categoria</label>
-  <select name="categoria">
-    <option value="">Selecione...</option>
-    {% for valor, nome in categorias %}
-      <option value="{{ valor }}" {% if dados.categoria == valor %}selected{% endif %}>
-        {{ nome }}
-      </option>
-    {% endfor %}
-  </select>
-
-  <label>Descrição (opcional)</label>
-  <input type="text" name="descricao" maxlength="150" value="{{ dados.descricao }}">
-
-  <label>Valor (R$)</label>
-  <input type="text" name="valor" inputmode="decimal" value="{{ dados.valor }}">
-
-  <label>Data</label>
-  <input type="date" name="data" value="{{ dados.data }}">
-
-  <button type="submit">Salvar gasto</button>
-</form>
-
-<a href="{% url 'gastos:dashboard' %}">Voltar ao dashboard</a>
-
 <h1>Dashboard de gastos</h1>
 <a href="{% url 'gastos:adicionar' %}">+ Novo gasto</a>
 
