@@ -1,19 +1,19 @@
-from django.core.serializers import python
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
-import manage
 
 class Gasto(models.Model):
     CATEGORIAS = [
-        ("insumos", "Insumos e ingredientes"),
-        ("folha", "Folha de pagamento"),
-        ("aluguel", "Aluguel"),
-        ("energia", "Energia"),
-        ("agua", "Água"),
-        ("gas", "Gás"),
-        ("manutencao", "Manutenção"),
-        ("marketing", "Marketing"),
-        ("outros", "Outros"),
+        ('insumos', 'Insumos e ingredientes'),
+        ('folha', 'Folha de pagamento'),
+        ('aluguel', 'Aluguel'),
+        ('energia', 'Energia'),
+        ('agua', 'Água'),
+        ('gas', 'Gás'),
+        ('manutencao', 'Manutenção'),
+        ('marketing', 'Marketing'),
+        ('outros', 'Outros'),
     ]
 
     categoria = models.CharField(max_length=20, choices=CATEGORIAS)
@@ -23,105 +23,83 @@ class Gasto(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.get_categoria_display()} - R$ {self.valor}"
-
-from datetime import date
-from decimal import Decimal, InvalidOperation
-
-from django.db.models import Sum
-from django.shortcuts import render, redirect, get_object_or_404
-
-from .models import Gasto
+        return f'{self.get_categoria_display()} - R$ {self.valor}'
 
 
-def dashboard(request):
-    gastos = Gasto.objects.order_by("-data", "-criado_em")
-
-    total = gastos.aggregate(total=Sum("valor"))["total"] or Decimal("0")
-
-    por_categoria = (
-        gastos.values("categoria")
-        .annotate(total=Sum("valor"))
-        .order_by("-total")
-    )
-
-    nomes = dict(Gasto.CATEGORIAS)
-    resumo = [
-        {"nome": nomes[c["categoria"]], "total": c["total"]}
-        for c in por_categoria
+class Registro(models.Model):
+    TIPOS = [
+        ('agua', 'Água (L)'),
+        ('energia', 'Energia (kWh)'),
+        ('desperdicio', 'Desperdício de alimentos (kg)'),
+        ('doacao', 'Alimentos doados (kg)'),
     ]
-    grafico = {
-        "labels": [r["nome"] for r in resumo],
-        "valores": [float(r["total"]) for r in resumo],
-    }
 
-    contexto = {
-        "total": total,
-        "resumo": resumo,
-        "grafico": grafico,
-        "ultimos": gastos[:10],
-    }
-    return render(request, "gastos/dashboard.html", contexto)
+    tipo = models.CharField(max_length=20, choices=TIPOS)
+    quantidade = models.FloatField()
+    data = models.DateField(default=timezone.localdate)
+    observacao = models.CharField(max_length=200, blank=True)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.get_tipo_display()}: {self.quantidade} em {self.data}'
 
 
-def adicionar(request):
-    erros = []
-    dados = {}
+class MetaConsumo(models.Model):
+    TIPOS = [
+        ('agua', 'Água (L por dia)'),
+        ('energia', 'Energia (kWh por dia)'),
+        ('desperdicio', 'Desperdício (kg por dia)'),
+    ]
 
-    if request.method == "POST":
-        categoria = request.POST.get("categoria", "")
-        descricao = request.POST.get("descricao", "").strip()
-        valor_txt = request.POST.get("valor", "").strip().replace(",", ".")
-        data_txt = request.POST.get("data", "")
+    tipo = models.CharField(max_length=20, choices=TIPOS, unique=True)
+    valor_diario = models.FloatField()
 
-        dados = {
-            "categoria": categoria,
-            "descricao": descricao,
-            "valor": request.POST.get("valor", ""),
-            "data": data_txt,
-        }
+    class Meta:
+        verbose_name = 'meta de consumo'
+        verbose_name_plural = 'metas de consumo'
 
-        # validação manual
-        if categoria not in dict(Gasto.CATEGORIAS):
-            erros.append("Escolha uma categoria válida.")
-
-        valor = None
-        try:
-            valor = Decimal(valor_txt)
-            if valor <= 0:
-                erros.append("O valor deve ser maior que zero.")
-        except InvalidOperation:
-            erros.append("Informe um valor numérico válido.")
-
-        data_gasto = None
-        try:
-            data_gasto = date.fromisoformat(data_txt)
-        except ValueError:
-            erros.append("Informe uma data válida.")
-
-        if not erros:
-            Gasto.objects.create(
-                categoria=categoria,
-                descricao=descricao,
-                valor=valor,
-                data=data_gasto,
-            )
-            return redirect("gastos:dashboard")
-
-    categorias = Gasto.CATEGORIAS
-    return render(
-        request,
-        "gastos/adicionar.html",
-        {"erros": erros, "dados": dados, "categorias": categorias},
-    )
+    def __str__(self):
+        return f'Meta de {self.get_tipo_display()}: {self.valor_diario}'
 
 
-def excluir(request, pk):
-    gasto = get_object_or_404(Gasto, pk=pk)
-    if request.method == "POST":
-        gasto.delete()
-    return redirect("gastos:dashboard")
+class Sugestao(models.Model):
+    texto = models.CharField(max_length=300)
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    criado_em = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'sugestão'
+        verbose_name_plural = 'sugestões'
+
+    def __str__(self):
+        return self.texto
+
+
+class Apoio(models.Model):
+    sugestao = models.ForeignKey(Sugestao, on_delete=models.CASCADE, related_name='apoios')
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['sugestao', 'usuario'],
+                name='apoio_unico_por_usuario',
+            ),
+        ]
+
+
+class Treinamento(models.Model):
+    titulo = models.CharField(max_length=150)
+    minutos = models.PositiveIntegerField(default=5)
+    link = models.URLField(blank=True)
+    ordem = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['ordem']
+
+    def __str__(self):
+        return self.titulo
     
 
     
