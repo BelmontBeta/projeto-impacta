@@ -78,5 +78,10 @@ urlpatterns = [
        views.editar_ingrediente,
        name="editar_ingrediente"
     ),
+    path(
+    "passaporte/<slug:slug>/",
+    views.passaporte_publico,
+    name="passaporte_publico"
+    ),
 ]
 

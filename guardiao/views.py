@@ -447,3 +447,22 @@ def editar_ingrediente(request, ingrediente_id):
         ingrediente.save()
 
     return redirect("guardiao:editar_passaporte")
+
+
+def passaporte_publico(request, slug):
+    passaporte = get_object_or_404(
+        Passaporte,
+        slug=slug,
+        ativo=True
+    )
+
+    ingredientes = passaporte.ingredientes.all()
+
+    return render(
+        request,
+        "guardiao/passaporte_publico.html",
+        {
+            "passaporte": passaporte,
+            "ingredientes": ingredientes,
+        }
+    )
