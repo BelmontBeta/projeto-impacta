@@ -1,44 +1,116 @@
+
 {% extends "guardiao/base_guardiao.html" %}
 
 {% block content %}
-<main class="container py-4">
+<style>
+    .publico-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Outfit', sans-serif;
+    }
 
-    <h1>{{ passaporte.nome_restaurante }}</h1>
+    .publico-titulo {
+        color: #245c3d;
+        margin-bottom: 30px;
+        text-align: center;
+    }
 
-    <section>
+    .publico-card {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .publico-card h2 {
+        color: #245c3d;
+        margin-bottom: 20px;
+    }
+
+    .publico-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .publico-item {
+        padding: 20px;
+        background: #f5f9f6;
+        border: 1px solid #dce9df;
+        border-radius: 10px;
+    }
+
+    .publico-item h3 {
+        color: #245c3d;
+        margin-bottom: 12px;
+    }
+
+    .publico-item p {
+        margin-bottom: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 600px) {
+        .publico-container {
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .publico-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<main class="publico-container">
+
+    <h1 class="publico-titulo">
+        {{ passaporte.nome_restaurante }}
+    </h1>
+
+    <section class="publico-card">
         <h2>História do restaurante</h2>
         <p>{{ passaporte.historia|linebreaksbr }}</p>
     </section>
 
-    <section>
+    <section class="publico-card">
         <h2>Origem dos ingredientes</h2>
 
-        {% for ingrediente in ingredientes %}
-            <article>
-                <h3>{{ ingrediente.nome }}</h3>
-                <p><strong>Origem:</strong> {{ ingrediente.origem }}</p>
-                <p><strong>Fornecedor:</strong> {{ ingrediente.fornecedor }}</p>
+        <div class="publico-grid">
+            {% for ingrediente in ingredientes %}
+                <article class="publico-item">
+                    <h3>{{ ingrediente.nome }}</h3>
+                    <p><strong>Origem:</strong> {{ ingrediente.origem }}</p>
+                    <p><strong>Fornecedor:</strong> {{ ingrediente.fornecedor }}</p>
 
-                {% if ingrediente.descricao %}
-                    <p>{{ ingrediente.descricao }}</p>
-                {% endif %}
-            </article>
-        {% empty %}
-            <p>Nenhum ingrediente cadastrado.</p>
-        {% endfor %}
+                    {% if ingrediente.descricao %}
+                        <p>{{ ingrediente.descricao }}</p>
+                    {% endif %}
+                </article>
+            {% empty %}
+                <p>Nenhum ingrediente cadastrado.</p>
+            {% endfor %}
+        </div>
     </section>
 
-    <section>
+    <section class="publico-card">
         <h2>Fornecedores parceiros</h2>
 
-        {% for ingrediente in ingredientes %}
-            <p>{{ ingrediente.fornecedor }}</p>
-        {% empty %}
-            <p>Nenhum fornecedor cadastrado.</p>
-        {% endfor %}
+        <div class="publico-grid">
+            {% for ingrediente in ingredientes %}
+                <article class="publico-item">
+                    <h3>{{ ingrediente.fornecedor }}</h3>
+                    <p>Parceiro no fornecimento de {{ ingrediente.nome }}.</p>
+                </article>
+            {% empty %}
+                <p>Nenhum fornecedor cadastrado.</p>
+            {% endfor %}
+        </div>
     </section>
 
-    <section>
+    <section class="publico-card">
         <h2>Ações sustentáveis e impacto</h2>
         <p>{{ passaporte.impacto_comunitario|linebreaksbr }}</p>
     </section>
