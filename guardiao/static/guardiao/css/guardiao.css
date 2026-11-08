@@ -1187,3 +1187,267 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
 .g-rodape a:hover {
     text-decoration: underline;
 }
+/* =====================================================
+   PAINEL DA COZINHA E REGISTRO DE CONSUMO (app gastos)
+   Classes com prefixo p- para não misturar com o resto.
+   ===================================================== */
+
+.p-pagina {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+}
+
+.p-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.p-titulo {
+    font-family: var(--g-fonte-titulo);
+    font-size: 2rem;
+    color: var(--g-navy);
+    margin: 0 0 8px;
+}
+
+.p-alerta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+    color: #b42318;
+    font-weight: 600;
+}
+
+/* Botões em abas: Hoje / Semana / Mês e Água / Energia / Desperdício */
+.p-abas {
+    display: inline-flex;
+    margin-bottom: 12px;
+    border: 1px solid var(--g-borda);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--g-azul-claro);
+}
+
+.p-topo .p-abas {
+    margin-bottom: 0;
+}
+
+.p-abas a {
+    padding: 8px 16px;
+    color: var(--g-texto);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.p-abas a.ativa {
+    background: var(--g-azul);
+    color: var(--g-branco);
+}
+
+/* Aviso de painel vazio */
+.p-vazio {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    border: 1px solid var(--g-borda);
+    border-radius: 12px;
+    background: var(--g-azul-claro);
+    color: var(--g-navy);
+}
+
+/* Cartões e caixas */
+.p-cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.p-cartao,
+.p-caixa {
+    background: var(--g-branco);
+    border: 1px solid var(--g-borda);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.p-cartao h2,
+.p-caixa h2 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    color: var(--g-navy);
+}
+
+.p-valor,
+.p-numero {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--g-navy);
+}
+
+.p-numero {
+    margin-top: 14px;
+}
+
+.p-cartao small,
+.p-resultado small {
+    color: var(--g-suave);
+}
+
+/* Situação da meta: dentro (verde) ou acima (vermelho) */
+.p-status {
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--g-suave);
+}
+
+.p-status.dentro {
+    color: var(--g-verde);
+}
+
+.p-status.acima {
+    color: #b42318;
+}
+
+/* Barra de progresso da meta */
+.p-barra {
+    height: 8px;
+    margin: 10px 0 6px;
+    border-radius: 4px;
+    background: var(--g-trilho);
+    overflow: hidden;
+}
+
+.p-barra div {
+    height: 100%;
+    background: var(--g-azul);
+}
+
+.p-barra div.estourou {
+    background: #b42318;
+}
+
+/* Dica abaixo do gráfico */
+.p-dica {
+    margin: 12px 0 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--g-azul-claro);
+    color: var(--g-navy);
+    font-size: 0.9rem;
+}
+
+/* Gráfico + resultado lado a lado */
+.p-linha {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* Tela de registro */
+.p-colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.p-duas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.p-form label {
+    display: block;
+    margin: 12px 0 4px;
+    font-weight: 600;
+}
+
+.p-form input,
+.p-form select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--g-borda);
+    border-radius: 8px;
+    background: var(--g-branco);
+}
+
+.p-form button {
+    margin-top: 16px;
+}
+
+.p-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--g-borda);
+}
+
+.p-mensagem {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--g-verde-bg);
+    color: var(--g-verde);
+    font-weight: 600;
+}
+
+.errorlist {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    color: #b42318;
+    font-size: 0.9rem;
+}
+
+/* Botões */
+.p-botao {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--g-azul);
+    color: var(--g-branco);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.p-botao:hover {
+    background: var(--g-azul-escuro);
+}
+
+.p-botao-leve {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--g-azul-claro);
+    color: var(--g-azul-escuro);
+    font-size: 0.85rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Celular */
+@media (max-width: 800px) {
+    .p-linha,
+    .p-colunas,
+    .p-duas {
+        grid-template-columns: 1fr;
+    }
+}
