@@ -172,6 +172,24 @@
             </button>
         </form>
     </section>
+    
+    <section class="passaporte-card">
+        <h2>Ingredientes cadastrados</h2>
+
+        {% for ingrediente in passaporte.ingredientes.all %}
+            <div class="passaporte-campo">
+                <h3>{{ ingrediente.nome }}</h3>
+                <p><strong>Origem:</strong> {{ ingrediente.origem }}</p>
+                <p><strong>Fornecedor:</strong> {{ ingrediente.fornecedor }}</p>
+
+                {% if ingrediente.descricao %}
+                    <p><strong>Descrição:</strong> {{ ingrediente.descricao }}</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Nenhum ingrediente cadastrado ainda.</p>
+        {% endfor %}
+    </section>
     {% endif %}
 
 </main>
