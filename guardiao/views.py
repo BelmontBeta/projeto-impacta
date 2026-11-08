@@ -327,3 +327,171 @@ def missao_alternar(request, pk, missao_id):
     registro.save(update_fields=[campo])
 
     return redirect(_destino_seguro(request, reverse("guardiao:plano", args=[pk])))
+
+
+#permite que o usuario conectado crie ou edite seu proprio passaporte
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.utils.text import slugify
+from .models import Passaporte
+
+
+@login_required
+def editar_passaporte(request):
+    passaporte = Passaporte.objects.filter(
+        proprietario=request.user
+    ).first()
+
+    if request.method == "POST":
+        nome = request.POST.get("nome_restaurante", "").strip()
+        historia = request.POST.get("historia", "").strip()
+        impacto = request.POST.get("impacto_comunitario", "").strip()
+        fidelidade = request.POST.get("programa_fidelidade", "").strip()
+
+        if not nome or not historia:
+            return render(request, "guardiao/passaporte_editar.html", {
+                "passaporte": passaporte,
+                "erro": "Preencha o nome e a história do restaurante."
+            })
+
+        if passaporte is None:
+            slug_base = slugify(nome) or "restaurante"
+            slug = slug_base
+            contador = 2
+
+            while Passaporte.objects.filter(slug=slug).exists():
+                slug = f"{slug_base}-{contador}"
+                contador += 1
+
+            passaporte = Passaporte(
+                proprietario=request.user,
+                slug=slug
+            )
+
+        passaporte.nome_restaurante = nome
+        passaporte.historia = historia
+        passaporte.impacto_comunitario = impacto
+        passaporte.programa_fidelidade = fidelidade
+        passaporte.ativo = request.POST.get("ativo") == "ativo"
+        passaporte.save()
+
+        return redirect("guardiao:editar_passaporte")
+
+    return render(request, "guardiao/passaporte_editar.html", {
+        "passaporte": passaporte
+    })
+
+
+from .models import Ingrediente
+
+
+@login_required
+def adicionar_ingrediente(request):
+    passaporte = Passaporte.objects.filter(
+        proprietario=request.user
+    ).first()
+
+    if passaporte is None:
+        return redirect("guardiao:editar_passaporte")
+
+    if request.method == "POST":
+        nome = request.POST.get("nome", "").strip()
+        origem = request.POST.get("origem", "").strip()
+        fornecedor = request.POST.get("fornecedor", "").strip()
+        descricao = request.POST.get("descricao", "").strip()
+
+        if nome and origem and fornecedor:
+            Ingrediente.objects.create(
+                passaporte=passaporte,
+                nome=nome,
+                origem=origem,
+                fornecedor=fornecedor,
+                descricao=descricao
+            )
+
+    return redirect("guardiao:editar_passaporte")
+
+
+@login_required
+@require_POST
+def excluir_ingrediente(request, ingrediente_id):
+    ingrediente = get_object_or_404(
+        Ingrediente,
+        pk=ingrediente_id,
+        passaporte__proprietario=request.user
+    )
+
+    ingrediente.delete()
+    return redirect("guardiao:editar_passaporte")
+
+
+
+@login_required
+@require_POST
+def editar_ingrediente(request, ingrediente_id):
+    ingrediente = get_object_or_404(
+        Ingrediente,
+        pk=ingrediente_id,
+        passaporte__proprietario=request.user
+    )
+
+    nome = request.POST.get("nome", "").strip()
+    origem = request.POST.get("origem", "").strip()
+    fornecedor = request.POST.get("fornecedor", "").strip()
+    descricao = request.POST.get("descricao", "").strip()
+
+    if nome and origem and fornecedor:
+        ingrediente.nome = nome
+        ingrediente.origem = origem
+        ingrediente.fornecedor = fornecedor
+        ingrediente.descricao = descricao
+        ingrediente.save()
+
+    return redirect("guardiao:editar_passaporte")
+
+
+def passaporte_publico(request, slug):
+    passaporte = get_object_or_404(
+        Passaporte,
+        slug=slug,
+        ativo=True
+    )
+
+    ingredientes = passaporte.ingredientes.all()
+
+    return render(
+        request,
+        "guardiao/passaporte_publico.html",
+        {
+            "passaporte": passaporte,
+            "ingredientes": ingredientes,
+        }
+    )
+
+
+import io
+import qrcode
+
+from django.http import HttpResponse
+
+
+@login_required
+def qr_code_passaporte(request):
+    passaporte = get_object_or_404(
+        Passaporte,
+        proprietario=request.user
+    )
+
+    url_publica = request.build_absolute_uri(
+        reverse("guardiao:passaporte_publico", args=[passaporte.slug])
+    )
+
+    imagem = qrcode.make(url_publica)
+
+    buffer = io.BytesIO()
+    imagem.save(buffer, format="PNG")
+
+    return HttpResponse(
+        buffer.getvalue(),
+        content_type="image/png"
+    )

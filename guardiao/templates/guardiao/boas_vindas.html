@@ -267,27 +267,28 @@
             sustentáveis realizadas pelo restaurante.
         </p>
 
-        <div class="card">
+      
+<div class="card">
 
-            <h3>QR Code do restaurante</h3>
+    <h3>QR Code do restaurante</h3>
 
-            <p>
-                Em breve será possível gerar um QR Code personalizado
-                para compartilhar os resultados e iniciativas ESG
-                do restaurante.
-            </p>
+    <p>
+        Acesse o Passaporte de Sabores do seu restaurante,
+        gerencie as informações e visualize o QR Code
+        para compartilhar com seus clientes.
+    </p>
 
-            <br>
+    <br>
 
-            <button
-                class="botao-principal"
-                type="button"
-                onclick="alert('A geração do QR Code será implementada aqui!')"
-            >
-                Gerar QR Code
-            </button>
+    <a
+        href="{% url 'guardiao:editar_passaporte' %}"
+        class="botao-principal"
+        style="display: inline-block; text-decoration: none;"
+    >
+        Acessar Passaporte de Sabores
+    </a>
 
-        </div>
+</div>
 
     </section>
 

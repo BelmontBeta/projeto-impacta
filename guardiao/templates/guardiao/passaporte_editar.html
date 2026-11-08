@@ -1,0 +1,305 @@
+
+{% extends "guardiao/base_guardiao.html" %}
+{% load static %}
+
+{% block title %}Gerenciar Passaporte de Sabores{% endblock %}
+
+{% block extra_head %}
+<style>
+    .passaporte-container {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .passaporte-titulo {
+        color: #245c3d;
+        margin-bottom: 10px;
+    }
+
+    .passaporte-descricao {
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .passaporte-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .passaporte-card h2 {
+        color: #245c3d;
+        margin-bottom: 20px;
+    }
+
+    .passaporte-campo {
+        margin-bottom: 20px;
+    }
+
+    .passaporte-campo label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .passaporte-campo input,
+    .passaporte-campo textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font: inherit;
+        box-sizing: border-box;
+    }
+
+    .passaporte-campo textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .passaporte-botao {
+        background: #245c3d;
+        color: white;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 8px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .passaporte-botao:hover {
+        background: #19462d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="passaporte-container">
+
+    <h1 class="passaporte-titulo">Passaporte de Sabores</h1>
+    <p class="passaporte-descricao">
+        Gerencie as informações do seu restaurante e compartilhe
+        sua história com seus clientes.
+    </p>
+
+    {% if passaporte %}
+    <section class="passaporte-card">
+        <h2>Painel do restaurante</h2>
+
+        <p>
+            <strong>Restaurante:</strong>
+            {{ passaporte.nome_restaurante }}
+        </p>
+
+        <p>
+            <strong>Status do Passaporte:</strong>
+            {% if passaporte.ativo %}
+                Ativo
+            {% else %}
+                Inativo
+            {% endif %}
+        </p>
+
+        {% if passaporte.ativo %}
+            <a
+                href="{% url 'guardiao:passaporte_publico' passaporte.slug %}"
+                class="passaporte-botao"
+                style="display: inline-block; text-decoration: none;"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Visualizar página pública
+            </a>
+                        <div style="margin-top: 25px;">
+                <h3>QR Code do restaurante</h3>
+                <p>Escaneie para acessar o Passaporte de Sabores.</p>
+
+                <img
+                    src="{% url 'guardiao:qr_code_passaporte' %}"
+                    alt="QR Code do Passaporte de Sabores"
+                    width="200"
+                    height="200"
+                    style="max-width: 100%;"
+                >
+            </div>
+        {% else %}
+            <p>
+                Ative o Passaporte e salve as alterações para
+                disponibilizar a página pública.
+            </p>
+        {% endif %}
+    </section>
+    {% endif %}   
+
+    <form method="post">
+        {% csrf_token %}
+
+        <section class="passaporte-card">
+            <h2>Status do Passaporte</h2>
+
+            <p>Escolha se os clientes poderão visualizar seu restaurante.</p>
+
+            <div class="passaporte-campo">
+                <label for="ativo">Visibilidade do Passaporte</label>
+
+                <select id="ativo" name="ativo">
+                    <option value="ativo" {% if not passaporte or passaporte.ativo %}selected{% endif %}>
+                        Ativo — visível para os clientes
+                    </option>
+
+                    <option value="inativo" {% if passaporte and not passaporte.ativo %}selected{% endif %}>
+                        Inativo — oculto para os clientes
+                    </option>
+                </select>
+            </div>
+        </section>
+
+        <section class="passaporte-card">
+            <h2>Informações do restaurante</h2>
+
+            <div class="passaporte-campo">
+                <label for="nome_restaurante">Nome do restaurante</label>
+                <input
+                    type="text"
+                    id="nome_restaurante"
+                    name="nome_restaurante"
+                    value="{{ passaporte.nome_restaurante|default:'' }}"
+                    maxlength="150"
+                    required
+                >
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="historia">História do restaurante</label>
+                <textarea
+                    id="historia"
+                    name="historia"
+                    required
+                >{{ passaporte.historia|default:'' }}</textarea>
+            </div>
+        </section>
+
+        <section class="passaporte-card">
+            <h2>Impacto e sustentabilidade</h2>
+
+            <div class="passaporte-campo">
+                <label for="impacto_comunitario">Impacto na comunidade</label>
+                <textarea
+                    id="impacto_comunitario"
+                    name="impacto_comunitario"
+                >{{ passaporte.impacto_comunitario|default:'' }}</textarea>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="programa_fidelidade">Programa de fidelidade</label>
+                <textarea
+                    id="programa_fidelidade"
+                    name="programa_fidelidade"
+                >{{ passaporte.programa_fidelidade|default:'' }}</textarea>
+            </div>
+        </section>
+
+        <button type="submit" class="passaporte-botao">
+            Salvar Passaporte
+        </button>
+    </form>
+
+    {% if passaporte %}
+    <section class="passaporte-card">
+        <h2>Cadastrar ingrediente</h2>
+
+        <form method="post" action="{% url 'guardiao:adicionar_ingrediente' %}">
+            {% csrf_token %}
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_nome">Nome do ingrediente</label>
+                <input type="text" id="ingrediente_nome" name="nome" maxlength="120" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_origem">Origem</label>
+                <input type="text" id="ingrediente_origem" name="origem" maxlength="150" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_fornecedor">Fornecedor</label>
+                <input type="text" id="ingrediente_fornecedor" name="fornecedor" maxlength="150" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_descricao">Descrição</label>
+                <textarea id="ingrediente_descricao" name="descricao"></textarea>
+            </div>
+
+            <button type="submit" class="passaporte-botao">
+                Adicionar ingrediente
+            </button>
+        </form>
+    </section>
+    
+    <section class="passaporte-card">
+        <h2>Ingredientes cadastrados</h2>
+
+        {% for ingrediente in passaporte.ingredientes.all %}
+            <div class="passaporte-campo">
+                <h3>{{ ingrediente.nome }}</h3>
+                <p><strong>Origem:</strong> {{ ingrediente.origem }}</p>
+                <p><strong>Fornecedor:</strong> {{ ingrediente.fornecedor }}</p>
+
+                {% if ingrediente.descricao %}
+                    <p><strong>Descrição:</strong> {{ ingrediente.descricao }}</p>
+                {% endif %}
+                
+                <details>
+                    <summary>Editar ingrediente</summary>
+
+                    <form method="post" action="{% url 'guardiao:editar_ingrediente' ingrediente.id %}">
+                        {% csrf_token %}
+
+                        <div class="passaporte-campo">
+                            <label for="nome_{{ ingrediente.id }}">Nome</label>
+                            <input type="text" id="nome_{{ ingrediente.id }}" name="nome" value="{{ ingrediente.nome }}" maxlength="120" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="origem_{{ ingrediente.id }}">Origem</label>
+                            <input type="text" id="origem_{{ ingrediente.id }}" name="origem" value="{{ ingrediente.origem }}" maxlength="150" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="fornecedor_{{ ingrediente.id }}">Fornecedor</label>
+                            <input type="text" id="fornecedor_{{ ingrediente.id }}" name="fornecedor" value="{{ ingrediente.fornecedor }}" maxlength="150" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="descricao_{{ ingrediente.id }}">Descrição</label>
+                            <textarea id="descricao_{{ ingrediente.id }}" name="descricao">{{ ingrediente.descricao }}</textarea>
+                        </div>
+
+                        <button type="submit" class="passaporte-botao">
+                            Salvar alterações
+                        </button>
+                    </form>
+                </details>
+
+                <form method="post" action="{% url 'guardiao:excluir_ingrediente' ingrediente.id %}">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Deseja realmente excluir este ingrediente?');">
+                        Excluir
+                    </button>
+                </form>
+
+            </div>
+        {% empty %}
+            <p>Nenhum ingrediente cadastrado ainda.</p>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+</main>
+{% endblock %}

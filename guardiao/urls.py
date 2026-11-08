@@ -55,4 +55,38 @@ urlpatterns = [
         views.missao_alternar,
         name="missao_alternar"
     ),
+
+   
+    # solução 4
+    path(
+        "passaporte/editar/",
+        views.editar_passaporte,
+        name="editar_passaporte"
+    ),
+    path(
+        "passaporte/ingredientes/adicionar/",
+        views.adicionar_ingrediente,
+        name="adicionar_ingrediente"
+    ),
+    path(
+        "passaporte/ingredientes/<int:ingrediente_id>/excluir/", 
+        views.excluir_ingrediente, 
+        name="excluir_ingrediente"
+    ),
+    path(
+      "passaporte/ingredientes/<int:ingrediente_id>/editar/",
+       views.editar_ingrediente,
+       name="editar_ingrediente"
+    ),
+    path(
+        "passaporte/qrcode/", 
+        views.qr_code_passaporte,
+        name="qr_code_passaporte"
+    ),
+    path(
+        "passaporte/<slug:slug>/",
+        views.passaporte_publico,
+        name="passaporte_publico"
+    ),
 ]
+
