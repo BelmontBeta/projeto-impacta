@@ -54,6 +54,15 @@
                 </div>
 
                 <div class="form-grupo">
+                    <label for="assunto">Assunto</label>
+                    <div class="campo-com-icone">
+                        <img src="{% static 'imagens/icones/etiqueta.png' %}" alt="" class="campo-icone">
+                        <input type="text" id="assunto" name="assunto" maxlength="150"
+                            placeholder="Digite o assunto da sua mensagem" value="{{ dados.assunto }}">
+                    </div>
+                </div>
+
+                <div class="form-grupo">
                     <label for="mensagem">Escreva sua mensagem</label>
                     <div class="campo-com-icone campo-com-icone-topo">
                         <img src="{% static 'imagens/icones/lapis.png' %}" alt="" class="campo-icone">

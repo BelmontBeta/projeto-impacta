@@ -1,0 +1,88 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Registrar e equipe · Guardião ESG{% endblock %}
+
+{% block content %}
+<main class="p-pagina">
+  <h1 class="p-titulo">Registrar e equipe</h1>
+
+  {% for m in messages %}
+    <p class="p-mensagem">{{ m }}</p>
+  {% endfor %}
+
+  <section class="p-colunas">
+
+    <div class="p-caixa">
+      <h2>Registrar consumo</h2>
+      <form method="post" class="p-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <label for="{{ form.tipo.id_for_label }}">Tipo *</label>
+        {{ form.tipo }}
+        {{ form.tipo.errors }}
+
+        <div class="p-duas">
+          <div>
+            <label for="{{ form.quantidade.id_for_label }}">Quantidade *</label>
+            {{ form.quantidade }}
+            {{ form.quantidade.errors }}
+          </div>
+          <div>
+            <label for="{{ form.data.id_for_label }}">Data *</label>
+            {{ form.data }}
+            {{ form.data.errors }}
+          </div>
+        </div>
+
+        <label for="{{ form.observacao.id_for_label }}">Observação</label>
+        {{ form.observacao }}
+        {{ form.observacao.errors }}
+
+        <button type="submit" class="p-botao">Salvar registro</button>
+      </form>
+    </div>
+
+    <div class="p-caixa">
+      <h2>Mural da equipe</h2>
+      {% for s in sugestoes %}
+        <div class="p-item">
+          <span>{{ s.texto }}<br><small>{{ s.autor.first_name|default:"Equipe" }}</small></span>
+          <form method="post" action="{% url 'gastos:apoiar' s.id %}">
+            {% csrf_token %}
+            <button type="submit" class="p-botao-leve">Apoiar ({{ s.total_apoios }})</button>
+          </form>
+        </div>
+      {% empty %}
+        <p>Nenhuma sugestão ainda. Seja o primeiro!</p>
+      {% endfor %}
+
+      <form method="post" action="{% url 'gastos:nova_sugestao' %}" class="p-form">
+        {% csrf_token %}
+        <label for="{{ sugestao_form.texto.id_for_label }}">Nova sugestão</label>
+        {{ sugestao_form.texto }}
+        <button type="submit" class="p-botao">Enviar</button>
+      </form>
+    </div>
+
+  </section>
+
+  <section class="p-caixa">
+    <h2>Microtreinamentos</h2>
+    {% for t in treinamentos %}
+      <div class="p-item">
+        <span>Treinamento {{ forloop.counter }} · {{ t.titulo }} <small>({{ t.minutos }} min)</small></span>
+        {% if t.link %}
+          <a class="p-botao-leve" href="{{ t.link }}" target="_blank" rel="noopener">Abrir</a>
+        {% else %}
+          <small>Em breve</small>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p>Nenhum treinamento cadastrado.</p>
+    {% endfor %}
+  </section>
+
+  <p><a href="{% url 'gastos:painel' %}">← Voltar ao painel da cozinha</a></p>
+</main>
+{% endblock %}

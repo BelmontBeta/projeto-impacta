@@ -25,31 +25,38 @@
         </a>
 
         <div class="g-menu">
-            <a
-                {% if request.resolver_match.app_name != 'empresas' %}
-                    class="ativo"
-                {% endif %}
-                href="{% url 'guardiao:boas_vindas' %}"
-            >
-                Diagnóstico
-            </a>
+            <div class="g-menu">
+    <a
+        {% if request.resolver_match.app_name == 'guardiao' %}
+            class="ativo"
+        {% endif %}
+        href="{% url 'guardiao:boas_vindas' %}"
+    >
+        Diagnóstico
+    </a>
 
-            <a href="{% url 'guardiao:boas_vindas' %}#metas">
-                Metas
-            </a>
+    <a
+        {% if request.resolver_match.app_name == 'gastos' %}
+            class="ativo"
+        {% endif %}
+        href="{% url 'gastos:painel' %}"
+    >
+        Dashboard
+    </a>
 
-            <a
-                {% if request.resolver_match.app_name == 'empresas' %}
-                    class="ativo"
-                {% endif %}
-                href="{% url 'empresas:mapa_esg' %}"
-            >
-                Fornecedores / Doações
-            </a>
+    <a
+        {% if request.resolver_match.app_name == 'empresas' %}
+            class="ativo"
+        {% endif %}
+        href="{% url 'empresas:mapa_esg' %}"
+    >
+        Fornecedores / Doações
+    </a>
 
-            <a href="{% url 'guardiao:boas_vindas' %}#qrcode">
-                QR CODE
-            </a>
+    <a href="{% url 'guardiao:boas_vindas' %}#qrcode">
+        QR CODE
+    </a>
+</div>
         </div>
 
         <div class="g-conta">

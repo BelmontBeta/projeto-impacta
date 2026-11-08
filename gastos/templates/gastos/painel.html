@@ -1,0 +1,101 @@
+{% extends "guardiao/base_guardiao.html" %}
+
+{% block title %}Painel da cozinha · Guardião ESG{% endblock %}
+
+{% block content %}
+<main class="p-pagina">
+
+  <header class="p-topo">
+    <div>
+      <h1 class="p-titulo">Painel da cozinha</h1>
+      {% if alerta %}
+        <p class="p-alerta">
+          Alerta: {{ alerta }}
+          <a class="p-botao-leve" href="?periodo={{ periodo }}&grafico=energia#grafico">Ver causa</a>
+        </p>
+      {% endif %}
+    </div>
+
+    <nav class="p-abas" aria-label="Período">
+      <a href="?periodo=hoje&grafico={{ tipo_grafico }}" class="{% if periodo == 'hoje' %}ativa{% endif %}">Hoje</a>
+      <a href="?periodo=semana&grafico={{ tipo_grafico }}" class="{% if periodo == 'semana' %}ativa{% endif %}">Semana</a>
+      <a href="?periodo=mes&grafico={{ tipo_grafico }}" class="{% if periodo == 'mes' %}ativa{% endif %}">Mês</a>
+    </nav>
+  </header>
+
+  {% if not tem_registros %}
+    <div class="p-vazio">
+      <strong>Ainda não há dados disponíveis.</strong>
+      Registre os primeiros indicadores para ver o painel funcionando.
+      <a class="p-botao" href="{% url 'gastos:registrar' %}">Registrar agora</a>
+    </div>
+  {% endif %}
+
+  <section class="p-cartoes" aria-label="Resumo do período">
+    {% for c in cartoes %}
+      <article class="p-cartao">
+        <h2>{{ c.nome }}</h2>
+        <p class="p-valor">{{ c.total }} {{ c.unidade }}</p>
+        <div class="p-barra" role="img" aria-label="{{ c.pct }}% da meta">
+          <div class="{% if c.estourou %}estourou{% endif %}" style="width: {{ c.barra }}%"></div>
+        </div>
+        <small>{{ c.pct }}% da meta de {{ c.meta }} {{ c.unidade }}</small>
+        <p class="p-status {% if c.estourou %}acima{% elif c.dentro %}dentro{% endif %}">
+          {% if c.sem_registro %}Sem registros no período{% elif c.estourou %}Acima da meta{% else %}Dentro da meta{% endif %}
+        </p>
+      </article>
+    {% endfor %}
+  </section>
+
+  <section class="p-linha">
+    <div class="p-caixa" id="grafico">
+      <h2>Consumo da semana × meta</h2>
+      <nav class="p-abas" aria-label="Tipo do gráfico">
+        {% for chave, nome in abas_grafico %}
+          <a href="?periodo={{ periodo }}&grafico={{ chave }}#grafico" class="{% if tipo_grafico == chave %}ativa{% endif %}">{{ nome }}</a>
+        {% endfor %}
+      </nav>
+      <canvas id="grafico-canvas" height="140"></canvas>
+      <small>Linha tracejada = meta · alternar tipo: Água, Energia, Desperdício</small>
+      <p class="p-dica"><strong>Dica:</strong> {{ dica }}</p>
+    </div>
+
+    <aside class="p-caixa p-resultado">
+      <h2>Resultado do período</h2>
+      <p class="p-numero">{{ menos_desperdicio }}%</p>
+      <small>menos desperdício</small>
+      <p class="p-numero">R$ {{ economia }}</p>
+      <small>economia estimada</small>
+      <p class="p-numero">{{ doados }} kg</p>
+      <small>doados à comunidade</small>
+    </aside>
+  </section>
+
+  <p><a class="p-botao" href="{% url 'gastos:registrar' %}">Registrar consumo e equipe</a></p>
+
+  {{ labels|json_script:"dados-labels" }}
+  {{ valores|json_script:"dados-valores" }}
+  {{ linha_meta|json_script:"dados-meta" }}
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const labels = JSON.parse(document.getElementById('dados-labels').textContent);
+  const valores = JSON.parse(document.getElementById('dados-valores').textContent);
+  const meta = JSON.parse(document.getElementById('dados-meta').textContent);
+
+  new Chart(document.getElementById('grafico-canvas'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { type: 'bar', label: 'Consumo ({{ unidade_grafico }})', data: valores, backgroundColor: '#2563a8' },
+        { type: 'line', label: 'Meta', data: meta, borderColor: '#1a3556', borderDash: [6, 6], pointRadius: 0 }
+      ]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+</script>
+{% endblock %}

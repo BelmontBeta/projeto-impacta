@@ -1,6 +1,3 @@
-"""
-Configurações do projeto config.
-"""
 import os
 from pathlib import Path
 
@@ -18,6 +15,7 @@ except ImportError:
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
+
 if not SECRET_KEY:
     if DEBUG:
         SECRET_KEY = 'chave-temporaria-apenas-para-desenvolvimento'

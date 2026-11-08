@@ -526,11 +526,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
-## 🌐 Deployment / Evidências (em andamento)
-
-### Vídeo das Histórias implementadas (em andamento)
-
-[Vídeo Histórias]()
+## 🌐 Deployment / Evidências
 
 ### Vídeo explicando Código Django
 
@@ -555,7 +551,7 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ![Sprint 03 no Jira](docs/print-sprint03.png)
 
-### Fluxos (em andamento)
+### Fluxos
 
 - docs/entrega-03-implementadas.png — prints das páginas/fluxos implementados (formulário, admin, export CSV)
 
@@ -573,10 +569,117 @@ As histórias completas, com cenários BDD e critérios de aceitação, além da
 
 ---
 
+## 📋 Entrega 04
+
+### Descrição
+
+Nesta entrega, serão implementadas as histórias restantes, com no mínimo três histórias nesta sprint. Também serão realizados testes de sistema automatizados com Selenium, configurada a pipeline de CI/CD para build e deploy automatizados e atualizadas as evidências e a documentação do projeto.
+
+### 📆 Data
+
+09/11/2026
+
+---
+
+### 🎯 Objetivos
+
+- Implementar as histórias restantes, com no mínimo três histórias na sprint;
+- Criar uma nova sprint no Jira;
+- Manter o versionamento ativo, com commits frequentes — no mínimo semanais, incluindo código;
+- Publicar as novas histórias no ambiente de produção;
+- Automatizar testes de sistema (E2E) com Selenium;
+- Configurar CI/CD para integração contínua, execução dos testes e deploy automatizado;
+- Atualizar este README com as evidências e os links da entrega;
+- Disponibilizar documentação clara para facilitar a contribuição com o projeto.
+
+---
+
+## 📝 Histórias implementadas
+
+- **História 1:** [adicionar descrição]
+- **História 2:** [adicionar descrição]
+- **História 3:** [adicionar descrição]
+
+---
+
+### 📌 Tarefas administrativas
+
+- [ ] Criar a Sprint 04 no Jira;
+- [ ] Atualizar o backlog e o quadro da sprint;
+- [ ] Registrar as histórias implementadas no Jira;
+- [ ] Manter commits frequentes e versionamento ativo;
+- [ ] Atualizar as issues do GitHub relacionadas às histórias e aos bugs;
+- [ ] Atualizar o README com os links e as evidências da entrega.
+
+---
+
+## 🧪 Testes de Sistema (E2E) com Selenium
+
+Implementar testes automatizados de sistema com Selenium para validar as histórias e os principais fluxos da aplicação.
+
+- [ ] Automatizar os cenários das histórias desta entrega;
+- [ ] Confirmar a execução dos testes na pipeline;
+- [ ] Gravar um screencast da execução dos testes, com áudio;
+- [ ] Adicionar o link do screencast abaixo.
+
+---
+
+## Screencast da execução dos testes
+
+### 🔄 CI/CD e deploy automatizado
+
+Configurar uma pipeline no GitHub para executar os testes e automatizar o build e o deploy da aplicação.
+
+- [ ] Criar ou atualizar a pipeline de CI/CD;
+- [ ] Confirmar que os testes são executados na pipeline;
+- [ ] Confirmar o build e o deploy automatizados;
+- [ ] Gravar um screencast com áudio mostrando a pipeline, a execução dos testes, o build e o deploy;
+- [ ] Adicionar o link do screencast abaixo.
+
+### Screencast de CI/CD e deploy 
+[Vídeo CI/CD e Deploy]()
+
+### 🎥 Screencast das histórias implementadas
+
+[Screencast das histórias]()
+
+### 🎥 Screencast de explicação do código Django
+
+[Screencast código]()
+
+---
+
+### 📅 Sprint 04 no Jira
+
+![Sprint 04 Jira]()
+
+---
+
+### 📂 Evidências da entrega
+
+- [ ] Screenshot do quadro atualizado da Sprint 04;
+- [ ] Evidência dos testes automatizados com Selenium;
+- [ ] Evidência da pipeline de CI/CD e do deploy;
+- [ ] Screencast das histórias implementadas;
+- [ ] Screencast da execução dos testes, com áudio;
+- [ ] Screencast de CI/CD, build e deploy, com áudio;
+- [ ] Screencast de explicação do código Django, com áudio;
+- [ ] Links e instruções atualizados neste README.
+
+---
+
+### 🤝 Como contribuir
+
+A documentação do projeto deve ser clara e objetiva, permitindo que qualquer pessoa entenda como contribuir com o projeto. Consulte o guia:
+
+[Guia de contribuição](CONTRIBUTING.md)
+
+---
+
 ## 📞 Contato
 
 Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
 
 ---
 
-**Última atualização:** 21/10/2026
+**Última atualização:** 07/11/2026
