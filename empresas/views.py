@@ -1,4 +1,3 @@
-
 import hashlib
 import json
 import logging
@@ -14,19 +13,9 @@ from django.shortcuts import render
 
 from .models import EmpresaESG, Parceiro
 
-
-# ---------------------------------------------------------------
-# Página do mapa ESG
-# ---------------------------------------------------------------
-
 @login_required
 def mapa_esg(request):
     return render(request, "guardiao/mapa_esg.html")
-
-
-# ---------------------------------------------------------------
-# API de empresas
-# ---------------------------------------------------------------
 
 def api_empresas(request):
     empresas = EmpresaESG.objects.all()
@@ -56,11 +45,6 @@ def api_empresas(request):
     ]
 
     return JsonResponse({"empresas": dados})
-
-
-# ---------------------------------------------------------------
-# API de parceiros
-# ---------------------------------------------------------------
 
 def api_parceiros(request):
     parceiros = Parceiro.objects.all()
@@ -94,21 +78,13 @@ def api_parceiros(request):
 
     return JsonResponse({"parceiros": dados})
 
-
-# ---------------------------------------------------------------
-# Busca de fornecedores e pontos de doação (OpenStreetMap)
-# ---------------------------------------------------------------
-
 logger = logging.getLogger(__name__)
 
-# Identificação do projeto nas consultas ao OpenStreetMap.
 USER_AGENT = os.environ.get(
     "MAPA_USER_AGENT",
     "ImpactaESG/1.0 (projeto academico)",
 ).strip()
 
-# Base URL copiada do painel do Overpass.ch.
-# A chave fica no arquivo .env.
 OVERPASS_BASE_URL = (
     os.environ.get("OVERPASS_BASE_URL", "").strip().rstrip("/")
 )
@@ -144,11 +120,6 @@ class OverpassRateLimitError(RuntimeError):
             "Limite de consultas do Overpass.ch atingido."
         )
 
-
-# ---------------------------------------------------------------
-# Faz uma consulta a um serviço externo
-# ---------------------------------------------------------------
-
 def _consultar(url, dados=None, timeout=TIMEOUT_REQUISICAO):
     pedido = urllib.request.Request(
         url,
@@ -159,24 +130,14 @@ def _consultar(url, dados=None, timeout=TIMEOUT_REQUISICAO):
         },
     )
 
-    with urllib.request.urlopen(
-        pedido,
-        timeout=timeout
-    ) as resposta:
-        return json.loads(
-            resposta.read().decode("utf-8")
-        )
+    with urllib.request.urlopen(pedido, timeout=timeout) as resposta:
+        return json.loads(resposta.read().decode("utf-8"))
 
-
-# ---------------------------------------------------------------
-# Consulta o Overpass.ch
-# ---------------------------------------------------------------
 
 def _overpass(consulta):
-
     if not OVERPASS_BASE_URL:
         raise OverpassConfiguracaoError(
-            "Configure OVERPASS_BASE_URL no arquivo .env."
+            "Configure OVERPASS_BASE_URL nas variáveis de ambiente."
         )
 
     # Evita repetir chamadas enquanto o serviço estiver
@@ -184,7 +145,7 @@ def _overpass(consulta):
     if cache.get(CHAVE_RATE_LIMIT):
         raise OverpassRateLimitError(60)
 
-    # A URL-base já contém a chave.
+    # A URL-base configurada deve conter a chave.
     # Acrescentamos /interpreter para realizar a consulta.
     url = f"{OVERPASS_BASE_URL}/interpreter"
 
@@ -203,10 +164,7 @@ def _overpass(consulta):
 
     except urllib.error.HTTPError as erro:
 
-        # Não registrar a URL, pois ela contém a chave da API.
-
         if erro.code == 429:
-
             try:
                 retry_after = int(
                     erro.headers.get("Retry-After", "60")
@@ -222,14 +180,12 @@ def _overpass(consulta):
                 timeout=retry_after,
             )
 
-            raise OverpassRateLimitError(
-                retry_after
-            ) from erro
+            raise OverpassRateLimitError(retry_after) from erro
 
         if erro.code == 401:
             raise OverpassConfiguracaoError(
                 "O Overpass.ch não reconheceu a chave. "
-                "Confira OVERPASS_BASE_URL no arquivo .env."
+                "Confira a variável de ambiente OVERPASS_BASE_URL."
             ) from erro
 
         logger.warning(
@@ -241,9 +197,7 @@ def _overpass(consulta):
 
     # O serviço pode retornar HTTP 200 mesmo quando
     # a consulta não foi concluída.
-    remark = str(
-        dados.get("remark", "")
-    ).lower()
+    remark = str(dados.get("remark", "")).lower()
 
     if "timed out" in remark or "out of memory" in remark:
         raise TimeoutError(dados["remark"])
@@ -251,12 +205,7 @@ def _overpass(consulta):
     return dados
 
 
-# ---------------------------------------------------------------
-# Identifica o tipo de estabelecimento
-# ---------------------------------------------------------------
-
 def _classificar(tags):
-
     loja = tags.get("shop")
     local = tags.get("amenity")
 
@@ -274,7 +223,6 @@ def _classificar(tags):
         )
 
     if local == "social_facility":
-
         if tags.get("social_facility") == "food_bank":
             return "doacao", "Banco de alimentos"
 
@@ -291,7 +239,6 @@ def _classificar(tags):
 # ---------------------------------------------------------------
 
 def _endereco(tags):
-
     rua = " ".join(
         p
         for p in [
@@ -307,9 +254,7 @@ def _endereco(tags):
         tags.get("addr:city"),
     ]
 
-    return ", ".join(
-        p for p in partes if p
-    )
+    return ", ".join(p for p in partes if p)
 
 
 # ---------------------------------------------------------------
@@ -318,11 +263,8 @@ def _endereco(tags):
 
 @login_required
 def api_locais(request):
-
     q = request.GET.get("q", "").strip()
-    insumo = request.GET.get(
-        "insumo", ""
-    ).strip().lower()
+    insumo = request.GET.get("insumo", "").strip().lower()
 
     if not q:
         return JsonResponse(
@@ -335,16 +277,14 @@ def api_locais(request):
             {
                 "erro": (
                     "Configure OVERPASS_BASE_URL "
-                    "no arquivo .env."
+                    "nas variáveis de ambiente."
                 )
             },
             status=503,
         )
 
     try:
-        raio = int(
-            request.GET.get("raio", 2000)
-        )
+        raio = int(request.GET.get("raio", 2000))
     except (ValueError, TypeError):
         raio = 2000
 
@@ -355,9 +295,7 @@ def api_locais(request):
 
     chave = (
         "locais:overpass_ch:"
-        + hashlib.md5(
-            bruto.encode("utf-8")
-        ).hexdigest()
+        + hashlib.md5(bruto.encode("utf-8")).hexdigest()
     )
 
     resultado = cache.get(chave)
@@ -370,7 +308,6 @@ def api_locais(request):
     # -----------------------------------------------------------
 
     try:
-
         geo = _consultar(
             "https://nominatim.openstreetmap.org/search?"
             + urllib.parse.urlencode(
@@ -392,7 +329,6 @@ def api_locais(request):
         lon = float(geo[0]["lon"])
 
     except Exception:
-
         logger.exception(
             "Falha ao localizar %r no Nominatim",
             q,
@@ -425,11 +361,9 @@ def api_locais(request):
     """
 
     try:
-
         dados = _overpass(consulta)
 
     except OverpassConfiguracaoError as erro:
-
         logger.error(
             "Configuração do Overpass.ch: %s",
             erro,
@@ -441,7 +375,6 @@ def api_locais(request):
         )
 
     except OverpassRateLimitError as erro:
-
         resposta = JsonResponse(
             {
                 "erro": (
@@ -452,15 +385,12 @@ def api_locais(request):
             status=429,
         )
 
-        resposta["Retry-After"] = str(
-            erro.retry_after
-        )
+        resposta["Retry-After"] = str(erro.retry_after)
 
         return resposta
 
     except urllib.error.HTTPError as erro:
-
-        # Não registrar a URL, pois ela contém a chave da API.
+        # Não registrar a URL, pois ela pode conter a chave da API.
         logger.error(
             "Erro HTTP na consulta ao Overpass.ch: %s",
             erro.code,
@@ -477,7 +407,6 @@ def api_locais(request):
         )
 
     except Exception as erro:
-
         # Registra apenas o tipo do erro, sem expor a URL.
         logger.error(
             "Falha na busca de locais para %r (%s)",
@@ -502,25 +431,18 @@ def api_locais(request):
 
     todos = dados.get("elements", [])
 
-    limite_atingido = (
-        len(todos) > LIMITE_RESULTADOS
-    )
-
+    limite_atingido = len(todos) > LIMITE_RESULTADOS
     elementos = todos[:LIMITE_RESULTADOS]
 
     locais = []
     ids_encontrados = set()
 
     for el in elementos:
-
         tags = el.get("tags", {})
 
         categoria, tipo = _classificar(tags)
 
-        ponto = (
-            el if "lat" in el
-            else el.get("center")
-        )
+        ponto = el if "lat" in el else el.get("center")
 
         if not categoria or not ponto:
             continue
@@ -529,7 +451,6 @@ def api_locais(request):
 
         # Filtro de insumos.
         if insumo and categoria == "fornecedor":
-
             texto_busca = (
                 f"{nome} {tipo} "
                 f"{tags.get('description', '')} "
@@ -539,9 +460,7 @@ def api_locais(request):
             if insumo not in texto_busca:
                 continue
 
-        identificador = (
-            f'{el["type"]}{el["id"]}'
-        )
+        identificador = f'{el["type"]}{el["id"]}'
 
         if identificador in ids_encontrados:
             continue
@@ -585,15 +504,12 @@ def api_locais(request):
             "longitude": lon,
             "raio": raio,
         },
-
         "locais": locais,
-
         "limites": {
             "fornecedores": limite_atingido,
             "doacao": limite_atingido,
             "limite_por_consulta": LIMITE_RESULTADOS,
         },
-
         "aviso": " ".join(avisos),
     }
 
