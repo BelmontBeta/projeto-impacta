@@ -68,5 +68,9 @@ urlpatterns = [
         views.adicionar_ingrediente,
         name="adicionar_ingrediente"
     ),
+    path(
+    "passaporte/ingredientes/<int:ingrediente_id>/excluir/", 
+    views.excluir_ingrediente, 
+    name="excluir_ingrediente"),
 ]
 

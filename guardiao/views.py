@@ -409,3 +409,16 @@ def adicionar_ingrediente(request):
             )
 
     return redirect("guardiao:editar_passaporte")
+
+
+@login_required
+@require_POST
+def excluir_ingrediente(request, ingrediente_id):
+    ingrediente = get_object_or_404(
+        Ingrediente,
+        pk=ingrediente_id,
+        passaporte__proprietario=request.user
+    )
+
+    ingrediente.delete()
+    return redirect("guardiao:editar_passaporte")

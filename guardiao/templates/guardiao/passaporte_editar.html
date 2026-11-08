@@ -185,6 +185,14 @@
                 {% if ingrediente.descricao %}
                     <p><strong>Descrição:</strong> {{ ingrediente.descricao }}</p>
                 {% endif %}
+                
+                <form method="post" action="{% url 'guardiao:excluir_ingrediente' ingrediente.id %}">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Deseja realmente excluir este ingrediente?');">
+                        Excluir
+                    </button>
+                </form>
+
             </div>
         {% empty %}
             <p>Nenhum ingrediente cadastrado ainda.</p>
