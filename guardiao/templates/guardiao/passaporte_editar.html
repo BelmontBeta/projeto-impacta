@@ -87,9 +87,47 @@
         sua história com seus clientes.
     </p>
 
+    {% if passaporte %}
+    <section class="passaporte-card">
+        <h2>Painel do restaurante</h2>
+
+        <p>
+            <strong>Restaurante:</strong>
+            {{ passaporte.nome_restaurante }}
+        </p>
+
+        <p>
+            <strong>Status do Passaporte:</strong>
+            {% if passaporte.ativo %}
+                Ativo
+            {% else %}
+                Inativo
+            {% endif %}
+        </p>
+
+        {% if passaporte.ativo %}
+            <a
+                href="{% url 'guardiao:passaporte_publico' passaporte.slug %}"
+                class="passaporte-botao"
+                style="display: inline-block; text-decoration: none;"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Visualizar página pública
+            </a>
+        {% else %}
+            <p>
+                Ative o Passaporte e salve as alterações para
+                disponibilizar a página pública.
+            </p>
+        {% endif %}
+    </section>
+    {% endif %}   
+
     <form method="post">
         {% csrf_token %}
-            <section class="passaporte-card">
+
+        <section class="passaporte-card">
             <h2>Status do Passaporte</h2>
 
             <p>Escolha se os clientes poderão visualizar seu restaurante.</p>
