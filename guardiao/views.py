@@ -372,6 +372,7 @@ def editar_passaporte(request):
         passaporte.historia = historia
         passaporte.impacto_comunitario = impacto
         passaporte.programa_fidelidade = fidelidade
+        passaporte.ativo = request.POST.get("ativo") == "ativo"
         passaporte.save()
 
         return redirect("guardiao:editar_passaporte")

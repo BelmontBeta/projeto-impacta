@@ -89,6 +89,25 @@
 
     <form method="post">
         {% csrf_token %}
+            <section class="passaporte-card">
+            <h2>Status do Passaporte</h2>
+
+            <p>Escolha se os clientes poderão visualizar seu restaurante.</p>
+
+            <div class="passaporte-campo">
+                <label for="ativo">Visibilidade do Passaporte</label>
+
+                <select id="ativo" name="ativo">
+                    <option value="ativo" {% if not passaporte or passaporte.ativo %}selected{% endif %}>
+                        Ativo — visível para os clientes
+                    </option>
+
+                    <option value="inativo" {% if passaporte and not passaporte.ativo %}selected{% endif %}>
+                        Inativo — oculto para os clientes
+                    </option>
+                </select>
+            </div>
+        </section>
 
         <section class="passaporte-card">
             <h2>Informações do restaurante</h2>
