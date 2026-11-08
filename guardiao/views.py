@@ -467,3 +467,31 @@ def passaporte_publico(request, slug):
             "ingredientes": ingredientes,
         }
     )
+
+
+import io
+import qrcode
+
+from django.http import HttpResponse
+
+
+@login_required
+def qr_code_passaporte(request):
+    passaporte = get_object_or_404(
+        Passaporte,
+        proprietario=request.user
+    )
+
+    url_publica = request.build_absolute_uri(
+        reverse("guardiao:passaporte_publico", args=[passaporte.slug])
+    )
+
+    imagem = qrcode.make(url_publica)
+
+    buffer = io.BytesIO()
+    imagem.save(buffer, format="PNG")
+
+    return HttpResponse(
+        buffer.getvalue(),
+        content_type="image/png"
+    )

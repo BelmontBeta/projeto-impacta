@@ -70,7 +70,7 @@ urlpatterns = [
     ),
     path(
         "passaporte/ingredientes/<int:ingrediente_id>/excluir/", 
-         views.excluir_ingrediente, 
+        views.excluir_ingrediente, 
         name="excluir_ingrediente"
     ),
     path(
@@ -79,9 +79,14 @@ urlpatterns = [
        name="editar_ingrediente"
     ),
     path(
-    "passaporte/<slug:slug>/",
-    views.passaporte_publico,
-    name="passaporte_publico"
+        "passaporte/qrcode/", 
+        views.qr_code_passaporte,
+        name="qr_code_passaporte"
+    ),
+    path(
+        "passaporte/<slug:slug>/",
+        views.passaporte_publico,
+        name="passaporte_publico"
     ),
 ]
 

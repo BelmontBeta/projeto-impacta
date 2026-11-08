@@ -115,6 +115,18 @@
             >
                 Visualizar página pública
             </a>
+                        <div style="margin-top: 25px;">
+                <h3>QR Code do restaurante</h3>
+                <p>Escaneie para acessar o Passaporte de Sabores.</p>
+
+                <img
+                    src="{% url 'guardiao:qr_code_passaporte' %}"
+                    alt="QR Code do Passaporte de Sabores"
+                    width="200"
+                    height="200"
+                    style="max-width: 100%;"
+                >
+            </div>
         {% else %}
             <p>
                 Ative o Passaporte e salve as alterações para
