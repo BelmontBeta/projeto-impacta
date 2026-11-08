@@ -140,5 +140,39 @@
         </button>
     </form>
 
+    {% if passaporte %}
+    <section class="passaporte-card">
+        <h2>Cadastrar ingrediente</h2>
+
+        <form method="post" action="{% url 'guardiao:adicionar_ingrediente' %}">
+            {% csrf_token %}
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_nome">Nome do ingrediente</label>
+                <input type="text" id="ingrediente_nome" name="nome" maxlength="120" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_origem">Origem</label>
+                <input type="text" id="ingrediente_origem" name="origem" maxlength="150" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_fornecedor">Fornecedor</label>
+                <input type="text" id="ingrediente_fornecedor" name="fornecedor" maxlength="150" required>
+            </div>
+
+            <div class="passaporte-campo">
+                <label for="ingrediente_descricao">Descrição</label>
+                <textarea id="ingrediente_descricao" name="descricao"></textarea>
+            </div>
+
+            <button type="submit" class="passaporte-botao">
+                Adicionar ingrediente
+            </button>
+        </form>
+    </section>
+    {% endif %}
+
 </main>
 {% endblock %}
