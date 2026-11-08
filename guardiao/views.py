@@ -379,3 +379,33 @@ def editar_passaporte(request):
     return render(request, "guardiao/passaporte_editar.html", {
         "passaporte": passaporte
     })
+
+
+from .models import Ingrediente
+
+
+@login_required
+def adicionar_ingrediente(request):
+    passaporte = Passaporte.objects.filter(
+        proprietario=request.user
+    ).first()
+
+    if passaporte is None:
+        return redirect("guardiao:editar_passaporte")
+
+    if request.method == "POST":
+        nome = request.POST.get("nome", "").strip()
+        origem = request.POST.get("origem", "").strip()
+        fornecedor = request.POST.get("fornecedor", "").strip()
+        descricao = request.POST.get("descricao", "").strip()
+
+        if nome and origem and fornecedor:
+            Ingrediente.objects.create(
+                passaporte=passaporte,
+                nome=nome,
+                origem=origem,
+                fornecedor=fornecedor,
+                descricao=descricao
+            )
+
+    return redirect("guardiao:editar_passaporte")
