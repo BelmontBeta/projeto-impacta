@@ -422,3 +422,28 @@ def excluir_ingrediente(request, ingrediente_id):
 
     ingrediente.delete()
     return redirect("guardiao:editar_passaporte")
+
+
+
+@login_required
+@require_POST
+def editar_ingrediente(request, ingrediente_id):
+    ingrediente = get_object_or_404(
+        Ingrediente,
+        pk=ingrediente_id,
+        passaporte__proprietario=request.user
+    )
+
+    nome = request.POST.get("nome", "").strip()
+    origem = request.POST.get("origem", "").strip()
+    fornecedor = request.POST.get("fornecedor", "").strip()
+    descricao = request.POST.get("descricao", "").strip()
+
+    if nome and origem and fornecedor:
+        ingrediente.nome = nome
+        ingrediente.origem = origem
+        ingrediente.fornecedor = fornecedor
+        ingrediente.descricao = descricao
+        ingrediente.save()
+
+    return redirect("guardiao:editar_passaporte")

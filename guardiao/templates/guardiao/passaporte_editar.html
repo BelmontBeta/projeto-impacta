@@ -186,6 +186,38 @@
                     <p><strong>Descrição:</strong> {{ ingrediente.descricao }}</p>
                 {% endif %}
                 
+                <details>
+                    <summary>Editar ingrediente</summary>
+
+                    <form method="post" action="{% url 'guardiao:editar_ingrediente' ingrediente.id %}">
+                        {% csrf_token %}
+
+                        <div class="passaporte-campo">
+                            <label for="nome_{{ ingrediente.id }}">Nome</label>
+                            <input type="text" id="nome_{{ ingrediente.id }}" name="nome" value="{{ ingrediente.nome }}" maxlength="120" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="origem_{{ ingrediente.id }}">Origem</label>
+                            <input type="text" id="origem_{{ ingrediente.id }}" name="origem" value="{{ ingrediente.origem }}" maxlength="150" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="fornecedor_{{ ingrediente.id }}">Fornecedor</label>
+                            <input type="text" id="fornecedor_{{ ingrediente.id }}" name="fornecedor" value="{{ ingrediente.fornecedor }}" maxlength="150" required>
+                        </div>
+
+                        <div class="passaporte-campo">
+                            <label for="descricao_{{ ingrediente.id }}">Descrição</label>
+                            <textarea id="descricao_{{ ingrediente.id }}" name="descricao">{{ ingrediente.descricao }}</textarea>
+                        </div>
+
+                        <button type="submit" class="passaporte-botao">
+                            Salvar alterações
+                        </button>
+                    </form>
+                </details>
+
                 <form method="post" action="{% url 'guardiao:excluir_ingrediente' ingrediente.id %}">
                     {% csrf_token %}
                     <button type="submit" onclick="return confirm('Deseja realmente excluir este ingrediente?');">
