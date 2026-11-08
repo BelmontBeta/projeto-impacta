@@ -10,6 +10,10 @@ urlpatterns = [
     # Páginas do Guardião
     path("guardiao/", include("guardiao.urls")),
 
+    # Painel da cozinha, registro de consumo e gastos
+    path("gastos/", include("gastos.urls")),
+
+
     # Páginas principais
     path("", include("core.urls")),
     path("", include("contato.urls")),
