@@ -27,6 +27,16 @@ from .models import Diagnostico, Ingrediente, MissaoPlano, Passaporte
 # Chave da sessão onde ficam as respostas até o fim do questionário.
 SESSAO_RESPOSTAS = "guardiao_respostas"
 
+# Limites iguais aos dos campos do banco (o PostgreSQL recusa texto maior).
+LIMITE_NOME_RESTAURANTE = 150
+LIMITE_SLUG = 40  # o SlugField aceita 50; sobra espaço para o sufixo "-2", "-3"...
+LIMITE_INGREDIENTE_NOME = 120
+LIMITE_INGREDIENTE_ORIGEM = 150
+LIMITE_INGREDIENTE_FORNECEDOR = 150
+
+# Slugs que colidiriam com rotas fixas em passaporte/<slug>/.
+SLUGS_RESERVADOS = {"editar", "qrcode", "ingredientes"}
+
 # Circunferência do anel do resultado.
 CIRCUNFERENCIA_ANEL = 389.56
 
@@ -530,9 +540,22 @@ def editar_passaporte(request):
 
             return redirect("guardiao:editar_passaporte")
 
+        if len(nome) > LIMITE_NOME_RESTAURANTE:
+
+            messages.error(
+                request,
+                f"O nome do restaurante pode ter no máximo "
+                f"{LIMITE_NOME_RESTAURANTE} caracteres."
+            )
+
+            return redirect("guardiao:editar_passaporte")
+
         if passaporte is None:
 
-            slug_base = slugify(nome) or "restaurante"
+            slug_base = (slugify(nome) or "restaurante")[:LIMITE_SLUG].strip("-")
+
+            if not slug_base or slug_base in SLUGS_RESERVADOS:
+                slug_base = f"{slug_base or 'restaurante'}-restaurante"
 
             slug = slug_base
 
@@ -606,6 +629,22 @@ def adicionar_ingrediente(request):
 
         return redirect("guardiao:editar_passaporte")
 
+    if (
+        len(nome) > LIMITE_INGREDIENTE_NOME
+        or len(origem) > LIMITE_INGREDIENTE_ORIGEM
+        or len(fornecedor) > LIMITE_INGREDIENTE_FORNECEDOR
+    ):
+
+        messages.error(
+            request,
+            "Algum campo do ingrediente passou do tamanho permitido "
+            f"(nome: {LIMITE_INGREDIENTE_NOME}, origem: "
+            f"{LIMITE_INGREDIENTE_ORIGEM}, fornecedor: "
+            f"{LIMITE_INGREDIENTE_FORNECEDOR} caracteres)."
+        )
+
+        return redirect("guardiao:editar_passaporte")
+
     Ingrediente.objects.create(
         passaporte=passaporte,
         nome=nome,
@@ -660,6 +699,22 @@ def editar_ingrediente(request, ingrediente_id):
         messages.error(
             request,
             "Preencha o nome, a origem e o fornecedor do ingrediente."
+        )
+
+        return redirect("guardiao:editar_passaporte")
+
+    if (
+        len(nome) > LIMITE_INGREDIENTE_NOME
+        or len(origem) > LIMITE_INGREDIENTE_ORIGEM
+        or len(fornecedor) > LIMITE_INGREDIENTE_FORNECEDOR
+    ):
+
+        messages.error(
+            request,
+            "Algum campo do ingrediente passou do tamanho permitido "
+            f"(nome: {LIMITE_INGREDIENTE_NOME}, origem: "
+            f"{LIMITE_INGREDIENTE_ORIGEM}, fornecedor: "
+            f"{LIMITE_INGREDIENTE_FORNECEDOR} caracteres)."
         )
 
         return redirect("guardiao:editar_passaporte")

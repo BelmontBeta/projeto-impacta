@@ -4,7 +4,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import os
 import time
+import unittest
 
+# Teste visual: abre o Chrome e espera vários segundos entre os passos.
+# Só roda quando você pedir:  set RODAR_SELENIUM=1  (Windows)  /  RODAR_SELENIUM=1 python manage.py test
+@unittest.skipUnless(
+    os.environ.get("RODAR_SELENIUM"),
+    "Teste visual com Chrome: defina RODAR_SELENIUM=1 para executar.",
+)
 class HistoriaTest(StaticLiveServerTestCase):
     def setUp(self):
         opts = webdriver.ChromeOptions()
