@@ -61,7 +61,7 @@ class HistoriaTest(StaticLiveServerTestCase):
         self.passo_lento(4)
         self.assertIn("<body", self.browser.page_source.lower())
 
-        print("Testando: Contato e Preenchimento de Formulário...")
+        print("Testando: Contato e Envio do Formulário...")
         self.browser.get(self.live_server_url + "/contato/")
         self.passo_lento(3)
         self.assertIn("<body", self.browser.page_source.lower())
@@ -69,14 +69,21 @@ class HistoriaTest(StaticLiveServerTestCase):
         try:
             campo_nome = self.browser.find_element(By.CSS_SELECTOR, "input[type='text']")
             campo_nome.send_keys("Testador Automatizado Selenium")
-            self.passo_lento(2)
+            self.passo_lento(1)
             
             try:
                 campo_email = self.browser.find_element(By.CSS_SELECTOR, "input[type='email']")
                 campo_email.send_keys("teste@impacta.com")
-                self.passo_lento(2)
+                self.passo_lento(1)
             except Exception:
                 pass
+
+            try:
+                campo_assunto = self.browser.find_element(By.CSS_SELECTOR, "input[name='assunto'], input[name='subject'], input[placeholder*='assunto' i]")
+                campo_assunto.send_keys("Feedback do Teste do Sistema")
+                self.passo_lento(1)
+            except Exception:
+                print("Aviso: Campo 'assunto' não encontrado pelos seletores padrão. Tentando prosseguir...")
 
             try:
                 campo_mensagem = self.browser.find_element(By.TAG_NAME, "textarea")
@@ -85,12 +92,12 @@ class HistoriaTest(StaticLiveServerTestCase):
             except Exception:
                 pass
             
-            botao_enviar = self.browser.find_element(By.CSS_SELECTOR, "button, input[type='submit']")
-            print("Formulário de contato interagido com sucesso!")
+            botao_enviar = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit'], input[type='submit']")
+            botao_enviar.click()
+            print("Formulário de contato enviado com sucesso!")
+            self.passo_lento(4) 
         except Exception as e:
-            print("Aviso: Não foi possível preencher todos os campos do formulário de contato:", e)
-
-        self.passo_lento(2)
+            print("Aviso: Erro ao interagir com o formulário de contato:", e)
 
         print("Testando: Módulo de Gastos...")
         self.browser.get(self.live_server_url + "/gastos/")
@@ -102,6 +109,10 @@ class HistoriaTest(StaticLiveServerTestCase):
 
         print("Testando: Módulo de Fornecedores...")
         self.browser.get(self.live_server_url + "/guardiao/fornecedores/")
+        self.passo_lento(4)
+
+        print("Testando: QR code...")
+        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/#qrcode")
         self.passo_lento(4)
 
         print("Todos os fluxos foram testados visualmente com sucesso!")
