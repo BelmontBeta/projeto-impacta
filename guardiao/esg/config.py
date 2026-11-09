@@ -51,7 +51,7 @@ NIVEIS = [
         "nome": "Inicial",
         "classe": "inicial",
         "explicacao": "Você está no começo. Pequenos passos já vão fazer diferença.",
-        "frase_geral": "Todo começo conta — comece pelas ações mais simples.",
+        "frase_geral": "Todo começo conta - comece pelas ações mais simples.",
         "frase_pilar": "Comece por uma ação simples para sair do lugar.",
     },
     {
@@ -59,15 +59,15 @@ NIVEIS = [
         "nome": "Em Desenvolvimento",
         "classe": "desenvolvimento",
         "explicacao": "Você já tem boas práticas, mas muitas ainda sem registro ou rotina.",
-        "frase_geral": "Boa base — foque nas oportunidades para avançar.",
-        "frase_pilar": "Boa base — algumas ações podem acelerar o progresso.",
+        "frase_geral": "Boa base - foque nas oportunidades para avançar.",
+        "frase_pilar": "Boa base - algumas ações podem acelerar o progresso.",
     },
     {
         "limite": 75,
         "nome": "Estruturado",
         "classe": "estruturado",
         "explicacao": "Suas práticas estão organizadas. Falta acompanhar os resultados.",
-        "frase_geral": "Práticas organizadas — falta acompanhar os resultados.",
+        "frase_geral": "Práticas organizadas - falta acompanhar os resultados.",
         "frase_pilar": "Práticas organizadas. Acompanhar os números é o próximo passo.",
     },
     {
