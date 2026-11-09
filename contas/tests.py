@@ -98,13 +98,13 @@ class HistoriaTest(StaticLiveServerTestCase):
             self.passo_lento(4) 
         except Exception as e:
             print("Aviso: Erro ao interagir com o formulário de contato:", e)
-
-        print("Testando: Módulo de Gastos...")
-        self.browser.get(self.live_server_url + "/gastos/")
-        self.passo_lento(4) 
         
         print("Testando: Painel do Guardião...")
         self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
+        self.passo_lento(4) 
+
+         print("Testando: Módulo de Gastos...")
+        self.browser.get(self.live_server_url + "/gastos/painel/")
         self.passo_lento(4) 
 
         print("Testando: Módulo de Fornecedores...")
