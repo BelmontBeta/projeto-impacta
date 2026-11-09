@@ -11,15 +11,15 @@
       {% if alerta %}
         <p class="p-alerta">
           Alerta: {{ alerta }}
-          <a class="p-botao-leve" href="?periodo={{ periodo }}&grafico=energia#grafico">Ver causa</a>
+          <a class="p-botao-leve" href="?periodo={{ periodo }}&amp;grafico=energia#grafico">Ver causa</a>
         </p>
       {% endif %}
     </div>
 
     <nav class="p-abas" aria-label="Período">
-      <a href="?periodo=hoje&grafico={{ tipo_grafico }}" class="{% if periodo == 'hoje' %}ativa{% endif %}">Hoje</a>
-      <a href="?periodo=semana&grafico={{ tipo_grafico }}" class="{% if periodo == 'semana' %}ativa{% endif %}">Semana</a>
-      <a href="?periodo=mes&grafico={{ tipo_grafico }}" class="{% if periodo == 'mes' %}ativa{% endif %}">Mês</a>
+      <a href="?periodo=hoje&amp;grafico={{ tipo_grafico }}" class="{% if periodo == 'hoje' %}ativa{% endif %}">Hoje</a>
+      <a href="?periodo=semana&amp;grafico={{ tipo_grafico }}" class="{% if periodo == 'semana' %}ativa{% endif %}">Semana</a>
+      <a href="?periodo=mes&amp;grafico={{ tipo_grafico }}" class="{% if periodo == 'mes' %}ativa{% endif %}">Mês</a>
     </nav>
   </header>
 
@@ -35,13 +35,19 @@
     {% for c in cartoes %}
       <article class="p-cartao">
         <h2>{{ c.nome }}</h2>
-        <p class="p-valor">{{ c.total }} {{ c.unidade }}</p>
-        <div class="p-barra" role="img" aria-label="{{ c.pct }}% da meta">
+        <p class="p-valor">{{ c.total|floatformat:"-1g" }} {{ c.unidade }}</p>
+        <div class="p-barra" role="img" aria-label="{% if c.sem_meta %}Meta não definida{% else %}{{ c.pct }}% da meta{% endif %}">
           <div class="{% if c.estourou %}estourou{% endif %}" style="width: {{ c.barra }}%"></div>
         </div>
-        <small>{{ c.pct }}% da meta de {{ c.meta }} {{ c.unidade }}</small>
+        <small>
+          {% if c.sem_meta %}
+            Meta não definida (cadastre em Metas de consumo no admin)
+          {% else %}
+            {{ c.pct }}% da meta de {{ c.meta|floatformat:"-1g" }} {{ c.unidade }}
+          {% endif %}
+        </small>
         <p class="p-status {% if c.estourou %}acima{% elif c.dentro %}dentro{% endif %}">
-          {% if c.sem_registro %}Sem registros no período{% elif c.estourou %}Acima da meta{% else %}Dentro da meta{% endif %}
+          {% if c.sem_registro %}Sem registros no período{% elif c.sem_meta %}Sem meta para comparar{% elif c.estourou %}Acima da meta{% else %}Dentro da meta{% endif %}
         </p>
       </article>
     {% endfor %}
@@ -49,24 +55,37 @@
 
   <section class="p-linha">
     <div class="p-caixa" id="grafico">
-      <h2>Consumo da semana × meta</h2>
+      <h2>Consumo dos últimos 7 dias × meta</h2>
       <nav class="p-abas" aria-label="Tipo do gráfico">
         {% for chave, nome in abas_grafico %}
-          <a href="?periodo={{ periodo }}&grafico={{ chave }}#grafico" class="{% if tipo_grafico == chave %}ativa{% endif %}">{{ nome }}</a>
+          <a href="?periodo={{ periodo }}&amp;grafico={{ chave }}#grafico" class="{% if tipo_grafico == chave %}ativa{% endif %}">{{ nome }}</a>
         {% endfor %}
       </nav>
-      <canvas id="grafico-canvas" height="140"></canvas>
+      <div class="p-grafico">
+        <canvas id="grafico-canvas" aria-label="Gráfico de consumo dos últimos 7 dias" role="img"></canvas>
+      </div>
       <small>Linha tracejada = meta · alternar tipo: Água, Energia, Desperdício</small>
       <p class="p-dica"><strong>Dica:</strong> {{ dica }}</p>
     </div>
 
     <aside class="p-caixa p-resultado">
       <h2>Resultado do período</h2>
-      <p class="p-numero">{{ menos_desperdicio }}%</p>
-      <small>menos desperdício</small>
-      <p class="p-numero">R$ {{ economia }}</p>
+
+      {% if variacao_desperdicio is None %}
+        <p class="p-numero">—</p>
+        <small>desperdício (sem dados do período anterior para comparar)</small>
+      {% elif variacao_desperdicio < 0 %}
+        <p class="p-numero">{{ variacao_abs }}%</p>
+        <small>mais desperdício que no período anterior</small>
+      {% else %}
+        <p class="p-numero">{{ variacao_abs }}%</p>
+        <small>menos desperdício</small>
+      {% endif %}
+
+      <p class="p-numero">R$ {{ economia|floatformat:"2g" }}</p>
       <small>economia estimada</small>
-      <p class="p-numero">{{ doados }} kg</p>
+
+      <p class="p-numero">{{ doados|floatformat:"-1g" }} kg</p>
       <small>doados à comunidade</small>
     </aside>
   </section>
@@ -82,20 +101,26 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-  const labels = JSON.parse(document.getElementById('dados-labels').textContent);
-  const valores = JSON.parse(document.getElementById('dados-valores').textContent);
-  const meta = JSON.parse(document.getElementById('dados-meta').textContent);
+  (function () {
+    var labels = JSON.parse(document.getElementById('dados-labels').textContent);
+    var valores = JSON.parse(document.getElementById('dados-valores').textContent);
+    var meta = JSON.parse(document.getElementById('dados-meta').textContent);
 
-  new Chart(document.getElementById('grafico-canvas'), {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [
-        { type: 'bar', label: 'Consumo ({{ unidade_grafico }})', data: valores, backgroundColor: '#2563a8' },
-        { type: 'line', label: 'Meta', data: meta, borderColor: '#1a3556', borderDash: [6, 6], pointRadius: 0 }
-      ]
-    },
-    options: { scales: { y: { beginAtZero: true } } }
-  });
+    new Chart(document.getElementById('grafico-canvas'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { type: 'bar', label: 'Consumo ({{ unidade_grafico }})', data: valores, backgroundColor: '#2563a8' },
+          { type: 'line', label: 'Meta', data: meta, borderColor: '#1a3556', borderDash: [6, 6], pointRadius: 0 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  })();
 </script>
 {% endblock %}

@@ -12,6 +12,11 @@ from .forms import RegistroForm, SugestaoForm
 from .models import Apoio, Gasto, MetaConsumo, Registro, Sugestao, Treinamento
 
 
+# ---------------------------------------------------------------
+# DASHBOARD DE GASTOS (financeiro)
+# ---------------------------------------------------------------
+
+@login_required
 def dashboard(request):
     gastos = Gasto.objects.order_by("-data", "-criado_em")
 
@@ -25,7 +30,7 @@ def dashboard(request):
 
     nomes = dict(Gasto.CATEGORIAS)
     resumo = [
-        {"nome": nomes[c["categoria"]], "total": c["total"]}
+        {"nome": nomes.get(c["categoria"], c["categoria"]), "total": c["total"]}
         for c in por_categoria
     ]
     grafico = {
@@ -42,6 +47,7 @@ def dashboard(request):
     return render(request, "gastos/dashboard.html", contexto)
 
 
+@login_required
 def adicionar(request):
     erros = []
     dados = {}
@@ -65,8 +71,13 @@ def adicionar(request):
         valor = None
         try:
             valor = Decimal(valor_txt)
-            if valor <= 0:
+            if not valor.is_finite():
+                erros.append("Informe um valor numérico válido.")
+            elif valor <= 0:
                 erros.append("O valor deve ser maior que zero.")
+            elif valor >= Decimal("100000000"):
+                # o campo aceita no máximo 10 dígitos (8 inteiros + 2 decimais)
+                erros.append("O valor é grande demais.")
         except InvalidOperation:
             erros.append("Informe um valor numérico válido.")
 
@@ -80,7 +91,7 @@ def adicionar(request):
             Gasto.objects.create(
                 categoria=categoria,
                 descricao=descricao,
-                valor=valor,
+                valor=valor.quantize(Decimal("0.01")),
                 data=data_gasto,
             )
             return redirect("gastos:dashboard")
@@ -93,10 +104,11 @@ def adicionar(request):
     )
 
 
+@login_required
+@require_POST
 def excluir(request, pk):
     gasto = get_object_or_404(Gasto, pk=pk)
-    if request.method == "POST":
-        gasto.delete()
+    gasto.delete()
     return redirect("gastos:dashboard")
 
 
@@ -109,6 +121,7 @@ def excluir(request, pk):
 PRECO_POR_UNIDADE = {'agua': 0.01, 'energia': 0.90, 'desperdicio': 8.00}
 UNIDADES = {'agua': 'L', 'energia': 'kWh', 'desperdicio': 'kg'}
 NOMES = {'agua': 'Água', 'energia': 'Energia', 'desperdicio': 'Desperdício de alimentos'}
+TIPOS_CARTAO = ['agua', 'energia', 'desperdicio']
 ABAS_GRAFICO = [('agua', 'Água'), ('energia', 'Energia'), ('desperdicio', 'Desperdício')]
 ROTULO_PERIODO = {'hoje': 'de hoje', 'semana': 'da semana', 'mes': 'do mês'}
 DICAS = {
@@ -140,21 +153,31 @@ def somar(tipo, inicio, fim):
     return resultado['total'] or 0
 
 
-def meta_diaria(tipo):
-    meta = MetaConsumo.objects.filter(tipo=tipo).first()
-    return meta.valor_diario if meta else 0
+def metas_diarias():
+    '''Devolve {tipo: meta por dia} com uma única consulta.'''
+    return dict(MetaConsumo.objects.values_list('tipo', 'valor_diario'))
 
 
 @login_required
 def painel(request):
     periodo, inicio, fim, dias = intervalo(request.GET.get('periodo', 'hoje'))
+    metas = metas_diarias()
 
     # ---- Os 3 cartões ----
     cartoes = []
-    for tipo in ['agua', 'energia', 'desperdicio']:
+    economia = 0
+    for tipo in TIPOS_CARTAO:
         total = somar(tipo, inicio, fim)
-        meta = meta_diaria(tipo) * dias
-        pct = round(total / meta * 100) if meta else 0
+        meta = metas.get(tipo, 0) * dias
+        tem_meta = meta > 0
+        pct = round(total / meta * 100) if tem_meta else 0
+        estourou = tem_meta and pct > 100
+
+        # Economia = o que ficou abaixo da meta, vezes o preço.
+        # Só conta o tipo que tem meta e em que alguém registrou algo.
+        if tem_meta and total > 0:
+            economia += max(meta - total, 0) * PRECO_POR_UNIDADE[tipo]
+
         cartoes.append({
             'tipo': tipo,
             'nome': NOMES[tipo],
@@ -163,13 +186,14 @@ def painel(request):
             'meta': round(meta, 1),
             'pct': pct,
             'barra': min(pct, 100),   # a barra nunca passa de 100%
-            'estourou': pct > 100,
-            'dentro': total > 0 and pct <= 100,
+            'estourou': estourou,
+            'dentro': tem_meta and total > 0 and not estourou,
             'sem_registro': total == 0,
+            'sem_meta': not tem_meta,
         })
 
     # ---- Alerta de energia ----
-    energia = cartoes[1]
+    energia = next(c for c in cartoes if c['tipo'] == 'energia')
     alerta = None
     if energia['estourou']:
         alerta = 'energia %d%% acima da meta %s' % (
@@ -182,25 +206,36 @@ def painel(request):
         tipo_grafico = 'agua'
     hoje = timezone.localdate()
     ultimos_dias = [hoje - timedelta(days=i) for i in range(6, -1, -1)]
+
+    # Uma consulta só, agrupada por dia (antes eram 7 consultas).
+    por_dia = {
+        linha['data']: linha['total']
+        for linha in (
+            Registro.objects
+            .filter(tipo=tipo_grafico, data__range=(ultimos_dias[0], hoje))
+            .values('data')
+            .annotate(total=Sum('quantidade'))
+            .order_by()
+        )
+    }
     labels = [d.strftime('%d/%m') for d in ultimos_dias]
-    valores = [round(somar(tipo_grafico, d, d), 1) for d in ultimos_dias]
-    linha_meta = [meta_diaria(tipo_grafico)] * 7
+    valores = [round(por_dia.get(d, 0), 1) for d in ultimos_dias]
+
+    meta_grafico = metas.get(tipo_grafico, 0)
+    # Sem meta cadastrada: None vira "null" no JSON e o Chart.js não desenha a linha.
+    linha_meta = [meta_grafico if meta_grafico > 0 else None] * 7
 
     # ---- Resultado do período ----
-    # Compara com o período anterior, do mesmo tamanho.
+    # Compara o desperdício com o período anterior, do mesmo tamanho.
     fim_ant = inicio - timedelta(days=1)
     inicio_ant = fim_ant - timedelta(days=dias - 1)
     desp_atual = somar('desperdicio', inicio, fim)
     desp_ant = somar('desperdicio', inicio_ant, fim_ant)
-    menos_desperdicio = round((desp_ant - desp_atual) / desp_ant * 100) if desp_ant else 0
 
-    # Economia = o que ficou abaixo da meta, vezes o preço.
-    # Só conta o tipo em que alguém registrou algo.
-    economia = 0
-    for c in cartoes:
-        if c['total'] > 0:
-            sobra = max(c['meta'] - c['total'], 0)
-            economia += sobra * PRECO_POR_UNIDADE[c['tipo']]
+    if desp_ant:
+        variacao = round((desp_ant - desp_atual) / desp_ant * 100)
+    else:
+        variacao = None   # sem período anterior para comparar
 
     doados = round(somar('doacao', inicio, fim), 1)
 
@@ -216,7 +251,9 @@ def painel(request):
         'linha_meta': linha_meta,
         'unidade_grafico': UNIDADES[tipo_grafico],
         'dica': DICAS[tipo_grafico],
-        'menos_desperdicio': menos_desperdicio,
+        # variação > 0: reduziu; < 0: aumentou; None: sem base de comparação
+        'variacao_desperdicio': variacao,
+        'variacao_abs': abs(variacao) if variacao is not None else None,
         'economia': round(economia, 2),
         'doados': doados,
     }
@@ -260,6 +297,8 @@ def nova_sugestao(request):
         sugestao.autor = request.user
         sugestao.save()
         messages.success(request, 'Sugestão enviada!')
+    else:
+        messages.error(request, 'Escreva uma sugestão de até 300 caracteres.')
     return redirect('gastos:registrar')
 
 

@@ -7,7 +7,7 @@
   <h1 class="p-titulo">Registrar e equipe</h1>
 
   {% for m in messages %}
-    <p class="p-mensagem">{{ m }}</p>
+    <p class="p-mensagem {{ m.tags }}">{{ m }}</p>
   {% endfor %}
 
   <section class="p-colunas">

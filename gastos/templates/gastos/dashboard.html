@@ -8,20 +8,22 @@
     <h1 class="section-title">Dashboard de gastos</h1>
     <a href="{% url 'gastos:adicionar' %}">+ Novo gasto</a>
 
-    <h2>Total geral: R$ {{ total }}</h2>
+    <h2>Total geral: R$ {{ total|floatformat:"2g" }}</h2>
 
     <h3>Por categoria</h3>
     <ul>
       {% for r in resumo %}
-        <li>{{ r.nome }}: R$ {{ r.total }}</li>
+        <li>{{ r.nome }}: R$ {{ r.total|floatformat:"2g" }}</li>
       {% empty %}
         <li>Nenhum gasto cadastrado ainda.</li>
       {% endfor %}
     </ul>
 
-    <div style="max-width:420px">
-      <canvas id="grafico"></canvas>
-    </div>
+    {% if resumo %}
+      <div style="max-width:420px">
+        <canvas id="grafico" aria-label="Gastos por categoria" role="img"></canvas>
+      </div>
+    {% endif %}
 
     <h3>Últimos lançamentos</h3>
     <table>
@@ -33,32 +35,43 @@
           <td>{{ g.data|date:"d/m/Y" }}</td>
           <td>{{ g.get_categoria_display }}</td>
           <td>{{ g.descricao }}</td>
-          <td>R$ {{ g.valor }}</td>
+          <td>R$ {{ g.valor|floatformat:"2g" }}</td>
           <td>
-            <form method="post" action="{% url 'gastos:excluir' g.pk %}">
+            <form method="post" action="{% url 'gastos:excluir' g.pk %}"
+                  onsubmit="return confirm('Excluir este lançamento?');">
               {% csrf_token %}
               <button type="submit">Excluir</button>
             </form>
           </td>
         </tr>
+      {% empty %}
+        <tr><td colspan="5">Nenhum lançamento ainda.</td></tr>
       {% endfor %}
     </table>
   </div>
 </section>
 
-{{ grafico|json_script:"dados-grafico" }}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-  const dados = JSON.parse(document.getElementById("dados-grafico").textContent);
-  new Chart(document.getElementById("grafico"), {
-    type: "doughnut",
-    data: {
-      labels: dados.labels,
-      datasets: [{
-        data: dados.valores,
-        backgroundColor: ["#497ECC", "#46944B", "#000000", "#8FB0E3", "#8CC78F", "#666666"],
-      }],
-    },
-  });
-</script>
+{% if resumo %}
+  {{ grafico|json_script:"dados-grafico" }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      var dados = JSON.parse(document.getElementById("dados-grafico").textContent);
+      new Chart(document.getElementById("grafico"), {
+        type: "doughnut",
+        data: {
+          labels: dados.labels,
+          datasets: [{
+            data: dados.valores,
+            // 9 cores: uma para cada categoria de Gasto.CATEGORIAS
+            backgroundColor: [
+              "#497ECC", "#46944B", "#000000", "#8FB0E3", "#8CC78F",
+              "#666666", "#DE6B3D", "#D97706", "#B42318"
+            ],
+          }],
+        },
+      });
+    })();
+  </script>
+{% endif %}
 {% endblock %}
