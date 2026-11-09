@@ -35,7 +35,7 @@ class HistoriaTest(StaticLiveServerTestCase):
         
        
         print("Testando: Painel do Guardião...")
-        self.browser.get(self.live_server_url + "/guardiao/")
+        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
         self.passo_lento(4) # Tempo para narrar o dashboard do Guardião
 
         
