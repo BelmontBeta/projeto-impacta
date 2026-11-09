@@ -1,9 +1,8 @@
 from django.test import TestCase
-
-   from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-   from selenium import webdriver
-   from selenium.webdriver.common.by import By
-   import os
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import os
 
    class HistoriaTest(StaticLiveServerTestCase):
        def setUp(self):
