@@ -604,10 +604,10 @@ Nesta entrega, serão implementadas as histórias restantes, com no mínimo trê
 
 ### 📌 Tarefas administrativas
 
-- [ ] Criar a Sprint 04 no Jira;
-- [ ] Atualizar o backlog e o quadro da sprint;
+- [x] Criar a Sprint 04 no Jira;
+- [x] Atualizar o backlog e o quadro da sprint;
 - [ ] Registrar as histórias implementadas no Jira;
-- [ ] Manter commits frequentes e versionamento ativo;
+- [x] Manter commits frequentes e versionamento ativo;
 - [ ] Atualizar as issues do GitHub relacionadas às histórias e aos bugs;
 - [ ] Atualizar o README com os links e as evidências da entrega.
 
@@ -617,9 +617,9 @@ Nesta entrega, serão implementadas as histórias restantes, com no mínimo trê
 
 Implementar testes automatizados de sistema com Selenium para validar as histórias e os principais fluxos da aplicação.
 
-- [ ] Automatizar os cenários das histórias desta entrega;
-- [ ] Confirmar a execução dos testes na pipeline;
-- [ ] Gravar um screencast da execução dos testes, com áudio;
+- [x] Automatizar os cenários das histórias desta entrega;
+- [x] Confirmar a execução dos testes na pipeline;
+- [x] Gravar um screencast da execução dos testes, com áudio;
 - [ ] Adicionar o link do screencast abaixo.
 
 ---
@@ -682,4 +682,4 @@ Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros
 
 ---
 
-**Última atualização:** 07/11/2026
+**Última atualização:** 09/11/2026
