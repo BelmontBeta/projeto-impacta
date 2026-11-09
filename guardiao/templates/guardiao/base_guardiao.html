@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -25,8 +26,10 @@
         </a>
 
         <div class="g-menu">
-                    <a
-                {% if request.resolver_match.app_name == 'guardiao' %}
+
+            <!-- DIAGNÓSTICO -->
+            <a
+                {% if request.resolver_match.url_name == 'boas_vindas' or request.resolver_match.url_name == 'iniciar' or request.resolver_match.url_name == 'pergunta' or request.resolver_match.url_name == 'ultimo_resultado' or request.resolver_match.url_name == 'resultado' or request.resolver_match.url_name == 'resultado_detalhado' or request.resolver_match.url_name == 'plano' or request.resolver_match.url_name == 'missao' or request.resolver_match.url_name == 'missao_alternar' %}
                     class="ativo"
                 {% endif %}
                 href="{% url 'guardiao:boas_vindas' %}"
@@ -34,6 +37,7 @@
                 Diagnóstico
             </a>
 
+            <!-- DASHBOARD -->
             <a
                 {% if request.resolver_match.app_name == 'gastos' %}
                     class="ativo"
@@ -43,6 +47,7 @@
                 Dashboard
             </a>
 
+            <!-- FORNECEDORES / DOAÇÕES -->
             <a
                 {% if request.resolver_match.app_name == 'empresas' %}
                     class="ativo"
@@ -52,12 +57,21 @@
                 Fornecedores / Doações
             </a>
 
-            <a href="{% url 'guardiao:boas_vindas' %}#qrcode">
+            <!-- QR CODE / PASSAPORTE DE SABORES -->
+            <a
+                {% if request.resolver_match.url_name == 'editar_passaporte' or request.resolver_match.url_name == 'adicionar_ingrediente' or request.resolver_match.url_name == 'editar_ingrediente' or request.resolver_match.url_name == 'excluir_ingrediente' or request.resolver_match.url_name == 'qr_code_passaporte' %}
+                    class="ativo"
+                {% endif %}
+                href="{% url 'guardiao:boas_vindas' %}#qrcode"
+            >
                 QR CODE
             </a>
+
         </div>
 
+        <!-- CONTA DO USUÁRIO -->
         <div class="g-conta">
+
             <button
                 class="g-conta-botao"
                 type="button"
@@ -77,6 +91,7 @@
             </button>
 
             <div class="g-conta-menu" id="menuConta">
+
                 <div class="g-conta-dados">
                     <strong>
                         {{ request.user.get_full_name|default:request.user.username }}
@@ -95,6 +110,7 @@
                         Sair da conta
                     </button>
                 </form>
+
             </div>
         </div>
 
@@ -126,5 +142,6 @@
     </script>
 
     {% block scripts %}{% endblock %}
+
 </body>
 </html>

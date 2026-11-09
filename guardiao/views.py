@@ -1,9 +1,14 @@
+import io
+import qrcode
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.text import slugify
 from django.views.decorators.http import require_POST
 
 from .esg.analise import (
@@ -16,31 +21,38 @@ from .esg.analise import (
 from .esg.config import ESCALAS, PILARES
 from .esg.missoes import missoes
 from .esg.perguntas import perguntas
-from .models import Diagnostico, MissaoPlano
+from .models import Diagnostico, Ingrediente, MissaoPlano, Passaporte
+
 
 # Chave da sessão onde ficam as respostas até o fim do questionário.
 SESSAO_RESPOSTAS = "guardiao_respostas"
 
-# Circunferência do anel do resultado (raio 62 no SVG da tela).
+# Circunferência do anel do resultado.
 CIRCUNFERENCIA_ANEL = 389.56
 
 
-# =========================
+# =========================================================
 # AUXILIARES
-# =========================
+# =========================================================
 
 def _formatar(valor):
-    """Número como texto com ponto decimal, seguro para usar em CSS/SVG."""
+    """Número como texto com ponto decimal, seguro para CSS/SVG."""
     return f"{valor:.1f}"
 
 
 def _pilar_info(nome):
-    padrao = {"letra": nome[:1].upper(), "classe": "ambiental", "descricao": ""}
+    padrao = {
+        "letra": nome[:1].upper(),
+        "classe": "ambiental",
+        "descricao": "",
+    }
+
     return {**padrao, **PILARES.get(nome, {})}
 
 
 def _dados_pilar(nome, nota):
     nivel = definir_nivel(nota)
+
     return {
         "nome": nome,
         "nota": round(nota),
@@ -53,16 +65,22 @@ def _dados_pilar(nome, nota):
 def _contexto_resultado(diagnostico):
     nota = diagnostico.nota_geral
     nivel = definir_nivel(nota)
+
     anterior = (
         Diagnostico.objects
-        .filter(usuario=diagnostico.usuario, criado_em__lt=diagnostico.criado_em)
+        .filter(
+            usuario=diagnostico.usuario,
+            criado_em__lt=diagnostico.criado_em
+        )
         .order_by("-criado_em")
         .first()
     )
 
     evolucao = None
+
     if anterior:
         diferenca = round(nota) - round(anterior.nota_geral)
+
         evolucao = {
             "diferenca": diferenca,
             "sinal": "+" if diferenca > 0 else "",
@@ -74,7 +92,9 @@ def _contexto_resultado(diagnostico):
         "nota": round(nota),
         "nivel": nivel,
         "anel_tracado": _formatar(CIRCUNFERENCIA_ANEL),
-        "anel_offset": _formatar(CIRCUNFERENCIA_ANEL * (1 - nota / 100)),
+        "anel_offset": _formatar(
+            CIRCUNFERENCIA_ANEL * (1 - nota / 100)
+        ),
         "pilares": [
             _dados_pilar(pilar, valor)
             for pilar, valor in diagnostico.pilares.items()
@@ -84,62 +104,89 @@ def _contexto_resultado(diagnostico):
 
 
 def _diagnostico_do_usuario(request, pk):
-    return get_object_or_404(Diagnostico, pk=pk, usuario=request.user)
+    return get_object_or_404(
+        Diagnostico,
+        pk=pk,
+        usuario=request.user
+    )
 
 
 def _destino_seguro(request, padrao):
     destino = request.POST.get("voltar", "")
+
     if destino and url_has_allowed_host_and_scheme(
         destino,
         allowed_hosts={request.get_host()},
         require_https=request.is_secure(),
     ):
         return destino
+
     return padrao
 
 
-# =========================
-# TELA INICIAL (abas)
-# =========================
+# =========================================================
+# TELA INICIAL
+# =========================================================
 
 @login_required
 def boas_vindas(request):
     ultimo = request.user.diagnosticos.first()
-    return render(request, "guardiao/boas_vindas.html", {"ultimo": ultimo})
+
+    return render(
+        request,
+        "guardiao/boas_vindas.html",
+        {"ultimo": ultimo}
+    )
 
 
-# =========================
+# =========================================================
 # QUESTIONÁRIO
-# =========================
+# =========================================================
 
 @login_required
 @require_POST
 def iniciar(request):
     """Começa um diagnóstico novo, descartando respostas parciais."""
+
     request.session[SESSAO_RESPOSTAS] = {}
-    return redirect("guardiao:pergunta", numero=1)
+
+    return redirect(
+        "guardiao:pergunta",
+        numero=1
+    )
 
 
 @login_required
 def pergunta(request, numero):
     total = len(perguntas)
+
     if not 1 <= numero <= total:
         raise Http404("Pergunta não encontrada.")
 
     respostas = request.session.get(SESSAO_RESPOSTAS)
+
     if respostas is None:
         return redirect("guardiao:boas_vindas")
 
-    # Primeira pergunta ainda sem resposta: não dá para pular etapas.
     primeira_pendente = next(
-        (i for i, item in enumerate(perguntas, start=1) if item["id"] not in respostas),
+        (
+            i
+            for i, item in enumerate(perguntas, start=1)
+            if item["id"] not in respostas
+        ),
         total + 1,
     )
+
     if numero > primeira_pendente:
-        return redirect("guardiao:pergunta", numero=primeira_pendente)
+        return redirect(
+            "guardiao:pergunta",
+            numero=primeira_pendente
+        )
 
     item = perguntas[numero - 1]
+
     opcoes = list(enumerate(ESCALAS[item["tipo"]]))
+
     erro = ""
 
     if request.method == "POST":
@@ -150,23 +197,34 @@ def pergunta(request, numero):
 
         if pontos is None or not 0 <= pontos < len(opcoes):
             erro = "Escolha uma das opções para continuar."
+
         else:
             respostas[item["id"]] = pontos
+
             request.session[SESSAO_RESPOSTAS] = respostas
             request.session.modified = True
 
             if numero < total:
-                return redirect("guardiao:pergunta", numero=numero + 1)
+                return redirect(
+                    "guardiao:pergunta",
+                    numero=numero + 1
+                )
+
             return _finalizar(request, respostas)
 
     lateral = []
+
     for posicao, outra in enumerate(perguntas, start=1):
+
         if posicao == numero:
             estado = "atual"
+
         elif outra["id"] in respostas:
             estado = "feita"
+
         else:
             estado = "pendente"
+
         lateral.append({
             "numero": posicao,
             "texto": outra["pergunta"],
@@ -186,26 +244,47 @@ def pergunta(request, numero):
         "lateral": lateral,
         "ultima": numero == total,
     }
-    return render(request, "guardiao/pergunta.html", contexto)
+
+    return render(
+        request,
+        "guardiao/pergunta.html",
+        contexto
+    )
 
 
 def _finalizar(request, respostas_sessao):
     """Calcula o resultado, salva no banco e limpa a sessão."""
+
     respostas = [
-        {"id": item["id"], "pilar": item["pilar"], "pontos": respostas_sessao[item["id"]]}
+        {
+            "id": item["id"],
+            "pilar": item["pilar"],
+            "pontos": respostas_sessao[item["id"]],
+        }
         for item in perguntas
     ]
+
     pilares = analisar(respostas)
+
     geral = calcular_nota_geral(respostas)
-    plano = gerar_plano_de_acao(respostas, missoes)
+
+    plano = gerar_plano_de_acao(
+        respostas,
+        missoes
+    )
 
     with transaction.atomic():
+
         diagnostico = Diagnostico.objects.create(
             usuario=request.user,
             nota_geral=round(geral, 1),
-            pilares={pilar: round(valor, 1) for pilar, valor in pilares.items()},
+            pilares={
+                pilar: round(valor, 1)
+                for pilar, valor in pilares.items()
+            },
             respostas=respostas,
         )
+
         MissaoPlano.objects.bulk_create([
             MissaoPlano(
                 diagnostico=diagnostico,
@@ -217,24 +296,34 @@ def _finalizar(request, respostas_sessao):
         ])
 
     request.session.pop(SESSAO_RESPOSTAS, None)
-    return redirect("guardiao:resultado", pk=diagnostico.pk)
+
+    return redirect(
+        "guardiao:resultado",
+        pk=diagnostico.pk
+    )
 
 
-# =========================
+# =========================================================
 # RESULTADOS
-# =========================
+# =========================================================
 
 @login_required
 def ultimo_resultado(request):
     ultimo = request.user.diagnosticos.first()
+
     if ultimo is None:
         return redirect("guardiao:boas_vindas")
-    return redirect("guardiao:resultado", pk=ultimo.pk)
+
+    return redirect(
+        "guardiao:resultado",
+        pk=ultimo.pk
+    )
 
 
 @login_required
 def resultado(request, pk):
     diagnostico = _diagnostico_do_usuario(request, pk)
+
     return render(
         request,
         "guardiao/resultado.html",
@@ -245,32 +334,58 @@ def resultado(request, pk):
 @login_required
 def resultado_detalhado(request, pk):
     diagnostico = _diagnostico_do_usuario(request, pk)
+
     contexto = _contexto_resultado(diagnostico)
 
-    tipos = {item["id"]: item for item in perguntas}
+    tipos = {
+        item["id"]: item
+        for item in perguntas
+    }
+
     respostas_por_pilar = {}
+
     for resposta in diagnostico.respostas:
+
         item = tipos.get(resposta["id"])
+
         if item is None:
             continue
-        respostas_por_pilar.setdefault(resposta["pilar"], []).append({
+
+        respostas_por_pilar.setdefault(
+            resposta["pilar"],
+            []
+        ).append({
             "pergunta": item["pergunta"],
-            "resposta": rotulo_resposta(item["tipo"], resposta["pontos"]),
+            "resposta": rotulo_resposta(
+                item["tipo"],
+                resposta["pontos"]
+            ),
             "pontos": resposta["pontos"],
         })
 
     for pilar in contexto["pilares"]:
-        pilar["respostas"] = respostas_por_pilar.get(pilar["nome"], [])
+        pilar["respostas"] = respostas_por_pilar.get(
+            pilar["nome"],
+            []
+        )
 
-    return render(request, "guardiao/resultado_detalhado.html", contexto)
+    return render(
+        request,
+        "guardiao/resultado_detalhado.html",
+        contexto
+    )
 
 
-# =========================
+# =========================================================
 # PLANO DE AÇÃO
-# =========================
+# =========================================================
 
 def _montar_missao(registro):
-    conteudo = missoes.get(registro.missao_id, {})
+    conteudo = missoes.get(
+        registro.missao_id,
+        {}
+    )
+
     return {
         "registro": registro,
         "pilar": _pilar_info(registro.pilar),
@@ -281,27 +396,48 @@ def _montar_missao(registro):
 
 @login_required
 def plano(request, pk):
-    diagnostico = _diagnostico_do_usuario(request, pk)
+    diagnostico = _diagnostico_do_usuario(
+        request,
+        pk
+    )
+
     itens = [
         _montar_missao(registro)
         for registro in diagnostico.missoes.all()
         if registro.missao_id in missoes
     ]
-    concluidas = sum(1 for item in itens if item["registro"].concluida)
+
+    concluidas = sum(
+        1
+        for item in itens
+        if item["registro"].concluida
+    )
+
     contexto = {
         "diagnostico": diagnostico,
         "missoes": itens,
         "concluidas": concluidas,
     }
-    return render(request, "guardiao/plano.html", contexto)
+
+    return render(
+        request,
+        "guardiao/plano.html",
+        contexto
+    )
 
 
 @login_required
 def missao_detalhe(request, pk, missao_id):
-    diagnostico = _diagnostico_do_usuario(request, pk)
-    registro = get_object_or_404(
-        diagnostico.missoes, missao_id=missao_id
+    diagnostico = _diagnostico_do_usuario(
+        request,
+        pk
     )
+
+    registro = get_object_or_404(
+        diagnostico.missoes,
+        missao_id=missao_id
+    )
+
     if missao_id not in missoes:
         raise Http404("Missão não encontrada.")
 
@@ -309,32 +445,53 @@ def missao_detalhe(request, pk, missao_id):
         "diagnostico": diagnostico,
         "missao": _montar_missao(registro),
     }
-    return render(request, "guardiao/missao.html", contexto)
+
+    return render(
+        request,
+        "guardiao/missao.html",
+        contexto
+    )
 
 
 @login_required
 @require_POST
 def missao_alternar(request, pk, missao_id):
     """Marca/desmarca uma missão como destacada ou concluída."""
-    diagnostico = _diagnostico_do_usuario(request, pk)
-    registro = get_object_or_404(diagnostico.missoes, missao_id=missao_id)
+
+    diagnostico = _diagnostico_do_usuario(
+        request,
+        pk
+    )
+
+    registro = get_object_or_404(
+        diagnostico.missoes,
+        missao_id=missao_id
+    )
 
     campo = request.POST.get("campo")
+
     if campo not in ("destacada", "concluida"):
         raise Http404("Ação inválida.")
 
-    setattr(registro, campo, not getattr(registro, campo))
+    setattr(
+        registro,
+        campo,
+        not getattr(registro, campo)
+    )
+
     registro.save(update_fields=[campo])
 
-    return redirect(_destino_seguro(request, reverse("guardiao:plano", args=[pk])))
+    return redirect(
+        _destino_seguro(
+            request,
+            reverse("guardiao:plano", args=[pk])
+        )
+    )
 
 
-#permite que o usuario conectado crie ou edite seu proprio passaporte
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.utils.text import slugify
-from .models import Passaporte
-
+# =========================================================
+# PASSAPORTE DE SABORES
+# =========================================================
 
 @login_required
 def editar_passaporte(request):
@@ -343,24 +500,48 @@ def editar_passaporte(request):
     ).first()
 
     if request.method == "POST":
-        nome = request.POST.get("nome_restaurante", "").strip()
-        historia = request.POST.get("historia", "").strip()
-        impacto = request.POST.get("impacto_comunitario", "").strip()
-        fidelidade = request.POST.get("programa_fidelidade", "").strip()
+
+        nome = request.POST.get(
+            "nome_restaurante",
+            ""
+        ).strip()
+
+        historia = request.POST.get(
+            "historia",
+            ""
+        ).strip()
+
+        impacto = request.POST.get(
+            "impacto_comunitario",
+            ""
+        ).strip()
+
+        fidelidade = request.POST.get(
+            "programa_fidelidade",
+            ""
+        ).strip()
 
         if not nome or not historia:
-            return render(request, "guardiao/passaporte_editar.html", {
-                "passaporte": passaporte,
-                "erro": "Preencha o nome e a história do restaurante."
-            })
+
+            messages.error(
+                request,
+                "Preencha o nome e a história do restaurante."
+            )
+
+            return redirect("guardiao:editar_passaporte")
 
         if passaporte is None:
+
             slug_base = slugify(nome) or "restaurante"
+
             slug = slug_base
+
             contador = 2
 
             while Passaporte.objects.filter(slug=slug).exists():
+
                 slug = f"{slug_base}-{contador}"
+
                 contador += 1
 
             passaporte = Passaporte(
@@ -372,42 +553,71 @@ def editar_passaporte(request):
         passaporte.historia = historia
         passaporte.impacto_comunitario = impacto
         passaporte.programa_fidelidade = fidelidade
-        passaporte.ativo = request.POST.get("ativo") == "ativo"
+
+        passaporte.ativo = (
+            request.POST.get("ativo", "ativo") == "ativo"
+        )
+
         passaporte.save()
+
+        messages.success(
+            request,
+            "Passaporte salvo com sucesso!"
+        )
 
         return redirect("guardiao:editar_passaporte")
 
-    return render(request, "guardiao/passaporte_editar.html", {
-        "passaporte": passaporte
-    })
-
-
-from .models import Ingrediente
+    return render(
+        request,
+        "guardiao/passaporte_editar.html",
+        {
+            "passaporte": passaporte
+        }
+    )
 
 
 @login_required
+@require_POST
 def adicionar_ingrediente(request):
     passaporte = Passaporte.objects.filter(
         proprietario=request.user
     ).first()
 
     if passaporte is None:
+
+        messages.error(
+            request,
+            "Cadastre primeiro o Passaporte de Sabores."
+        )
+
         return redirect("guardiao:editar_passaporte")
 
-    if request.method == "POST":
-        nome = request.POST.get("nome", "").strip()
-        origem = request.POST.get("origem", "").strip()
-        fornecedor = request.POST.get("fornecedor", "").strip()
-        descricao = request.POST.get("descricao", "").strip()
+    nome = request.POST.get("nome", "").strip()
+    origem = request.POST.get("origem", "").strip()
+    fornecedor = request.POST.get("fornecedor", "").strip()
+    descricao = request.POST.get("descricao", "").strip()
 
-        if nome and origem and fornecedor:
-            Ingrediente.objects.create(
-                passaporte=passaporte,
-                nome=nome,
-                origem=origem,
-                fornecedor=fornecedor,
-                descricao=descricao
-            )
+    if not nome or not origem or not fornecedor:
+
+        messages.error(
+            request,
+            "Preencha o nome, a origem e o fornecedor do ingrediente."
+        )
+
+        return redirect("guardiao:editar_passaporte")
+
+    Ingrediente.objects.create(
+        passaporte=passaporte,
+        nome=nome,
+        origem=origem,
+        fornecedor=fornecedor,
+        descricao=descricao
+    )
+
+    messages.success(
+        request,
+        "Ingrediente cadastrado com sucesso!"
+    )
 
     return redirect("guardiao:editar_passaporte")
 
@@ -422,8 +632,13 @@ def excluir_ingrediente(request, ingrediente_id):
     )
 
     ingrediente.delete()
-    return redirect("guardiao:editar_passaporte")
 
+    messages.success(
+        request,
+        "Ingrediente excluído com sucesso!"
+    )
+
+    return redirect("guardiao:editar_passaporte")
 
 
 @login_required
@@ -440,12 +655,26 @@ def editar_ingrediente(request, ingrediente_id):
     fornecedor = request.POST.get("fornecedor", "").strip()
     descricao = request.POST.get("descricao", "").strip()
 
-    if nome and origem and fornecedor:
-        ingrediente.nome = nome
-        ingrediente.origem = origem
-        ingrediente.fornecedor = fornecedor
-        ingrediente.descricao = descricao
-        ingrediente.save()
+    if not nome or not origem or not fornecedor:
+
+        messages.error(
+            request,
+            "Preencha o nome, a origem e o fornecedor do ingrediente."
+        )
+
+        return redirect("guardiao:editar_passaporte")
+
+    ingrediente.nome = nome
+    ingrediente.origem = origem
+    ingrediente.fornecedor = fornecedor
+    ingrediente.descricao = descricao
+
+    ingrediente.save()
+
+    messages.success(
+        request,
+        "Ingrediente atualizado com sucesso!"
+    )
 
     return redirect("guardiao:editar_passaporte")
 
@@ -453,11 +682,26 @@ def editar_ingrediente(request, ingrediente_id):
 def passaporte_publico(request, slug):
     passaporte = get_object_or_404(
         Passaporte,
-        slug=slug,
-        ativo=True
+        slug=slug
     )
 
+    if not passaporte.ativo:
+
+        return render(
+            request,
+            "guardiao/passaporte_indisponivel.html",
+            status=404
+        )
+
     ingredientes = passaporte.ingredientes.all()
+
+    fornecedores = (
+        passaporte.ingredientes
+        .exclude(fornecedor="")
+        .values_list("fornecedor", flat=True)
+        .distinct()
+        .order_by("fornecedor")
+    )
 
     return render(
         request,
@@ -465,31 +709,34 @@ def passaporte_publico(request, slug):
         {
             "passaporte": passaporte,
             "ingredientes": ingredientes,
+            "fornecedores": fornecedores,
         }
     )
-
-
-import io
-import qrcode
-
-from django.http import HttpResponse
 
 
 @login_required
 def qr_code_passaporte(request):
     passaporte = get_object_or_404(
         Passaporte,
-        proprietario=request.user
+        proprietario=request.user,
+        ativo=True
     )
 
     url_publica = request.build_absolute_uri(
-        reverse("guardiao:passaporte_publico", args=[passaporte.slug])
+        reverse(
+            "guardiao:passaporte_publico",
+            args=[passaporte.slug]
+        )
     )
 
     imagem = qrcode.make(url_publica)
 
     buffer = io.BytesIO()
-    imagem.save(buffer, format="PNG")
+
+    imagem.save(
+        buffer,
+        format="PNG"
+    )
 
     return HttpResponse(
         buffer.getvalue(),
