@@ -103,7 +103,7 @@ class HistoriaTest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
         self.passo_lento(4) 
 
-         print("Testando: Módulo de Gastos...")
+        print("Testando: Módulo de Gastos...")
         self.browser.get(self.live_server_url + "/gastos/painel/")
         self.passo_lento(4) 
 
