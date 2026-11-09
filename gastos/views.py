@@ -76,7 +76,7 @@ def adicionar(request):
             elif valor <= 0:
                 erros.append("O valor deve ser maior que zero.")
             elif valor >= Decimal("100000000"):
-                # o campo aceita no máximo 10 dígitos (8 inteiros + 2 decimais)
+                # o campo só aceita até 8 dígitos antes da vírgula
                 erros.append("O valor é grande demais.")
         except InvalidOperation:
             erros.append("Informe um valor numérico válido.")
@@ -154,7 +154,7 @@ def somar(tipo, inicio, fim):
 
 
 def metas_diarias():
-    '''Devolve {tipo: meta por dia} com uma única consulta.'''
+    '''Metas por dia, no formato {tipo: valor}.'''
     return dict(MetaConsumo.objects.values_list('tipo', 'valor_diario'))
 
 
@@ -173,8 +173,8 @@ def painel(request):
         pct = round(total / meta * 100) if tem_meta else 0
         estourou = tem_meta and pct > 100
 
-        # Economia = o que ficou abaixo da meta, vezes o preço.
-        # Só conta o tipo que tem meta e em que alguém registrou algo.
+        # economia = o que ficou abaixo da meta vezes o preço
+        # só conta se tem meta e se alguém registrou algo
         if tem_meta and total > 0:
             economia += max(meta - total, 0) * PRECO_POR_UNIDADE[tipo]
 
@@ -207,7 +207,7 @@ def painel(request):
     hoje = timezone.localdate()
     ultimos_dias = [hoje - timedelta(days=i) for i in range(6, -1, -1)]
 
-    # Uma consulta só, agrupada por dia (antes eram 7 consultas).
+    # soma por dia numa consulta só
     por_dia = {
         linha['data']: linha['total']
         for linha in (
@@ -222,11 +222,11 @@ def painel(request):
     valores = [round(por_dia.get(d, 0), 1) for d in ultimos_dias]
 
     meta_grafico = metas.get(tipo_grafico, 0)
-    # Sem meta cadastrada: None vira "null" no JSON e o Chart.js não desenha a linha.
+    # sem meta: None vira null no JSON e a linha não aparece no gráfico
     linha_meta = [meta_grafico if meta_grafico > 0 else None] * 7
 
     # ---- Resultado do período ----
-    # Compara o desperdício com o período anterior, do mesmo tamanho.
+    # compara o desperdício com o período anterior de mesmo tamanho
     fim_ant = inicio - timedelta(days=1)
     inicio_ant = fim_ant - timedelta(days=dias - 1)
     desp_atual = somar('desperdicio', inicio, fim)
@@ -235,7 +235,7 @@ def painel(request):
     if desp_ant:
         variacao = round((desp_ant - desp_atual) / desp_ant * 100)
     else:
-        variacao = None   # sem período anterior para comparar
+        variacao = None   # não tem período anterior pra comparar
 
     doados = round(somar('doacao', inicio, fim), 1)
 
@@ -251,7 +251,7 @@ def painel(request):
         'linha_meta': linha_meta,
         'unidade_grafico': UNIDADES[tipo_grafico],
         'dica': DICAS[tipo_grafico],
-        # variação > 0: reduziu; < 0: aumentou; None: sem base de comparação
+        # positivo: diminuiu, negativo: aumentou, None: sem comparação
         'variacao_desperdicio': variacao,
         'variacao_abs': abs(variacao) if variacao is not None else None,
         'economia': round(economia, 2),

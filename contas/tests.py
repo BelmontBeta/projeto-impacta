@@ -6,11 +6,10 @@ import os
 import time
 import unittest
 
-# Teste visual: abre o Chrome e espera vários segundos entre os passos.
-# Só roda quando você pedir:  set RODAR_SELENIUM=1  (Windows)  /  RODAR_SELENIUM=1 python manage.py test
+# teste do Chrome, só roda com RODAR_SELENIUM=1
 @unittest.skipUnless(
     os.environ.get("RODAR_SELENIUM"),
-    "Teste visual com Chrome: defina RODAR_SELENIUM=1 para executar.",
+    "defina RODAR_SELENIUM=1 para rodar o teste do Chrome",
 )
 class HistoriaTest(StaticLiveServerTestCase):
     def setUp(self):

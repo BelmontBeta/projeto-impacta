@@ -1426,7 +1426,6 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     cursor: pointer;
 }
 
-/* Evita que o canvas do Chart.js estique/não encolha dentro do grid */
 .p-caixa {
     min-width: 0;
 }
@@ -1437,7 +1436,6 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     margin-bottom: 8px;
 }
 
-/* Mensagem de erro (messages.error) na tela de registro */
 .p-mensagem.error {
     background: #fde8e6;
     color: #b42318;

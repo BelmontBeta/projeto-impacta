@@ -27,14 +27,14 @@ from .models import Diagnostico, Ingrediente, MissaoPlano, Passaporte
 # Chave da sessão onde ficam as respostas até o fim do questionário.
 SESSAO_RESPOSTAS = "guardiao_respostas"
 
-# Limites iguais aos dos campos do banco (o PostgreSQL recusa texto maior).
+# tamanhos máximos dos campos do banco
 LIMITE_NOME_RESTAURANTE = 150
-LIMITE_SLUG = 40  # o SlugField aceita 50; sobra espaço para o sufixo "-2", "-3"...
+LIMITE_SLUG = 40  # o campo aceita 50, o resto fica pro sufixo -2, -3...
 LIMITE_INGREDIENTE_NOME = 120
 LIMITE_INGREDIENTE_ORIGEM = 150
 LIMITE_INGREDIENTE_FORNECEDOR = 150
 
-# Slugs que colidiriam com rotas fixas em passaporte/<slug>/.
+# slugs que batem com rotas de passaporte/
 SLUGS_RESERVADOS = {"editar", "qrcode", "ingredientes"}
 
 # Circunferência do anel do resultado.

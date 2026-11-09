@@ -41,7 +41,7 @@
         </div>
         <small>
           {% if c.sem_meta %}
-            Meta não definida (cadastre em Metas de consumo no admin)
+            Meta não definida (cadastre no admin)
           {% else %}
             {{ c.pct }}% da meta de {{ c.meta|floatformat:"-1g" }} {{ c.unidade }}
           {% endif %}

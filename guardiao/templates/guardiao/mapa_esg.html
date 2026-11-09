@@ -3,7 +3,7 @@
 {% block title %}Fornecedores e Doações · Guardião ESG{% endblock %}
 
 {% block extra_head %}
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 
     <style>
@@ -46,37 +46,42 @@
             --verde: #46944B;
             --preto: #000000;
             --branco: #FFFFFF;
-            font-family: var(--fonte-texto); font-size: 15px; color: var(--preto); background: var(--branco);
-            line-height: 1.5; min-height: calc(100vh - 64px);
-            --fonte-titulo: "Poppins", sans-serif;
-            --fonte-texto: "Open Sans", sans-serif;
+            --cinza-texto: #374151;
+            --cinza-suave: #6b7280;
+            --fonte-titulo: "Poppins", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+            --fonte-texto: "Open Sans", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+            font-family: var(--fonte-texto); font-size: 16px; color: var(--preto); background: var(--branco);
+            line-height: 1.6; min-height: calc(100vh - 64px);
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
+        .mapa-esg button, .mapa-esg input, .mapa-esg select { font-family: var(--fonte-texto); }
         .mapa-esg *, .mapa-esg *::before, .mapa-esg *::after { box-sizing: border-box; }
 
         /* conteúdo */
         .mapa-esg .mapa-conteudo { max-width: 1240px; margin: 0 auto; padding: 36px 40px 40px; }
-        .mapa-esg h1 { font-family: var(--fonte-titulo); font-weight: 500; font-size: 34px; line-height: 1.2; margin: 0 0 14px; }
-        .mapa-esg .apoio { color: #333; margin: 0 0 20px; }
+        .mapa-esg h1 { font-family: var(--fonte-titulo); font-weight: 600; font-size: 36px; line-height: 1.2; letter-spacing: -0.015em; margin: 0 0 12px; }
+        .mapa-esg .apoio { font-size: 17px; line-height: 1.6; color: var(--cinza-texto); max-width: 64ch; margin: 0 0 24px; }
 
         .mapa-esg .busca { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .mapa-esg input[type="text"], .mapa-esg select {
-            height: 34px;
-            font-family: var(--fonte-texto); font-size: 13px; padding: 0 14px;
+            height: 40px;
+            font-family: var(--fonte-texto); font-size: 14px; font-weight: 400; padding: 0 18px;
             border: 1.5px solid var(--preto); border-radius: 999px; background: var(--branco);
             color: var(--preto);
         }
-        .mapa-esg #campo-busca { width: 250px; }
-        .mapa-esg #campo-insumo { width: 290px; }
-        .mapa-esg input[type="text"]::placeholder { color: #666; }
+        .mapa-esg #campo-busca { width: 280px; }
+        .mapa-esg #campo-insumo { width: 330px; }
+        .mapa-esg input[type="text"]::placeholder { color: var(--cinza-suave); opacity: 1; }
         .mapa-esg input:focus, .mapa-esg select:focus, .mapa-esg button:focus-visible { outline: 3px solid rgba(73,126,204,.45); border-color: var(--azul); }
         .mapa-esg select {
-            appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 32px; width: 92px;
+            appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 34px; width: 104px; font-weight: 600;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
             background-repeat: no-repeat; background-position: right 13px center;
         }
         .mapa-esg .busca button {
-            height: 34px; font-family: var(--fonte-titulo); font-weight: 600; font-size: 13px;
-            padding: 0 24px; border-radius: 999px; cursor: pointer;
+            height: 40px; font-family: var(--fonte-titulo); font-weight: 600; font-size: 14px; letter-spacing: 0.01em;
+            padding: 0 26px; border-radius: 999px; cursor: pointer;
             border: 1.5px solid var(--preto);
         }
         .mapa-esg #botao-buscar { background: var(--verde); border-color: var(--verde); color: var(--preto); }
@@ -94,10 +99,10 @@
         }
         .mapa-esg #painel-filtros.aberto { grid-template-rows: 1fr; }
         .mapa-esg #painel-filtros > div { overflow: hidden; }
-        .mapa-esg .filtros { display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; padding: 14px 0 2px; }
+        .mapa-esg .filtros { display: flex; flex-wrap: wrap; gap: 10px; font-size: 14px; font-weight: 500; line-height: 1.3; padding: 16px 0 2px; }
         .mapa-esg .filtros label {
             display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
-            padding: 5px 12px 5px 8px; border: 1.5px solid var(--preto); border-radius: 999px;
+            padding: 7px 14px 7px 10px; border: 1.5px solid var(--preto); border-radius: 999px;
             background: var(--branco);
         }
         .mapa-esg .filtros label:has(input:checked) { background: #EEF3FB; border-color: var(--azul); }
@@ -113,17 +118,24 @@
         .mapa-esg .ponto { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
         .mapa-esg .ponto.parceiro { border: 2px solid var(--preto); width: 13px; height: 13px; }
 
-        .mapa-esg #contador { font-size: 14px; font-weight: 600; margin: 16px 0 6px; }
-        .mapa-esg #aviso-limite { font-size: 13px; margin-bottom: 8px; }
+        .mapa-esg #contador { font-size: 15px; font-weight: 600; line-height: 1.5; margin: 18px 0 6px; }
+        .mapa-esg #aviso-limite { font-size: 14px; line-height: 1.5; color: var(--cinza-texto); margin-bottom: 8px; }
         .mapa-esg #aviso-limite:empty { display: none; }
         .mapa-esg #mapa { height: 560px; width: 100%; border: 1.5px solid var(--preto); border-radius: 18px; overflow: hidden; }
 
-        .mapa-esg .leaflet-popup-content { font-family: var(--fonte-texto); font-size: 13px; }
-        .mapa-esg .leaflet-popup-content strong { font-family: var(--fonte-titulo); font-weight: 600; }
+        .mapa-esg .leaflet-container,
+        .mapa-esg .leaflet-container a.leaflet-popup-close-button { font-family: var(--fonte-texto); }
+        .mapa-esg .leaflet-popup-content { font-family: var(--fonte-texto); font-size: 14px; line-height: 1.55; margin: 14px 18px; color: #111827; }
+        .mapa-esg .leaflet-popup-content strong { font-family: var(--fonte-titulo); font-weight: 600; font-size: 15px; line-height: 1.35; }
+        .mapa-esg .leaflet-popup-content em { font-style: normal; font-weight: 600; font-size: 12.5px; letter-spacing: 0.02em; color: var(--cinza-suave); }
+        .mapa-esg .leaflet-popup-content b { font-weight: 700; }
+        .mapa-esg .leaflet-popup-content hr { border: 0; border-top: 1px solid #e5e7eb; margin: 8px 0; }
         .mapa-esg .leaflet-popup-content a { color: var(--azul); font-weight: 600; }
         @media (max-width: 800px) {
             .mapa-esg .mapa-conteudo { padding: 24px 16px 32px; }
-            .mapa-esg h1 { font-size: 24px; }
+            .mapa-esg h1 { font-size: 26px; }
+            .mapa-esg .apoio { font-size: 16px; }
+            .mapa-esg input[type="text"], .mapa-esg select { font-size: 16px; }
             .mapa-esg #campo-busca, .mapa-esg #campo-insumo { width: 100%; }
             .mapa-esg #mapa { height: 60vh; }
         }
