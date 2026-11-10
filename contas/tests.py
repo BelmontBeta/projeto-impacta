@@ -18,7 +18,6 @@ User = get_user_model()
 class SistemaCompletoE2ETest(StaticLiveServerTestCase):
     def setUp(self):
         opts = webdriver.ChromeOptions()
-        # Só ativa o headless se você definir HEADLESS=1 no terminal
         if os.environ.get("HEADLESS"):
             opts.add_argument("--headless=new")
         
@@ -109,7 +108,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         senha_teste = "SenhaSegura123!"
         nome_teste = "Gestor ESG"
 
-        # Criar usuário com username E email preenchidos
         User.objects.create_user(
             username=email_teste,
             email=email_teste,
@@ -117,7 +115,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             first_name=nome_teste
         )
 
-        # Login via formulário de Acesso
         self.browser.get(self.live_server_url + "/acesso/")
         self.passo_lento(1)
 
@@ -134,7 +131,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.assertIn("guardiao", self.browser.current_url)
         print("Login realizado com sucesso via formulário!")
 
-        # Atualizar Perfil em Minha Conta
         print("Atualizando dados em Minha Conta...")
         self.browser.get(self.live_server_url + "/minha-conta/")
         self.passo_lento(1)
@@ -159,31 +155,25 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
         self.passo_lento(2)
 
-        # Iniciar Diagnóstico
         btn_iniciar = self.browser.find_element(By.CSS_SELECTOR, "form[action*='iniciar'] button")
         btn_iniciar.click()
         self.passo_lento(2)
 
-        # Preencher dinamicamente todas as perguntas do questionário
         print("Respondendo perguntas do Diagnóstico ESG...")
         perguntas_respondidas = 0
         
         for i in range(1, 20):
-            # Se for redirecionado para a tela de resultado, encerra o questionário
             if "resultado" in self.browser.current_url and "pergunta" not in self.browser.current_url:
                 break
 
             try:
-                # Aguarda os elementos da pergunta serem carregados no DOM
                 opcoes = self.wait.until(
                     EC.presence_of_all_elements_located((By.CSS_SELECTOR, "input[type='radio']"))
                 )
                 if opcoes:
-                    # Seleciona o primeiro rádio via JavaScript
                     self.browser.execute_script("arguments[0].click();", opcoes[0])
                     self.passo_lento(1)
 
-                # Clica no botão de submeter a resposta
                 btn_avancar = self.browser.find_element(By.CSS_SELECTOR, "form.quiz-conteudo button[type='submit'], form button[type='submit']")
                 self.browser.execute_script("arguments[0].click();", btn_avancar)
                 
@@ -196,7 +186,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         print(f"Diagnóstico finalizado ({perguntas_respondidas} perguntas respondidas).")
         self.passo_lento(2)
 
-        # Acessar Tela de Resultado Detalhado
         try:
             print("Navegando para o Resultado Detalhado por Pilar...")
             btn_detalhado = self.browser.find_element(By.XPATH, "//a[contains(text(), 'Ver resultados detalhados')]")
@@ -278,7 +267,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.passo_lento(2)
         self.assertIn("Passaporte de Sabores", self.browser.page_source)
 
-        # Salvar Informações do Restaurante
         try:
             nome_rest = self.browser.find_element(By.ID, "nome_restaurante")
             nome_rest.clear()
@@ -295,7 +283,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         except Exception as e:
             print(f"Aviso ao salvar passaporte: {e}")
 
-        # Cadastrar Novo Ingrediente
         try:
             print("Cadastrando ingrediente no Passaporte...")
             input_ing_nome = self.browser.find_element(By.ID, "ingrediente_nome")
@@ -314,7 +301,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         except Exception as e:
             print(f"Aviso ao cadastrar ingrediente: {e}")
 
-        # Sair da Conta (Logout)
         print("\nTestando encerramento da sessão (Logout)...")
         self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
         self.passo_lento(1)
