@@ -455,6 +455,12 @@ main {
     font-size: 0.82rem;
     line-height: 1.25;
     text-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.section-desafios-home .lista-destaques li:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgb(11 61 110 / 12%);
 }
 
 /* Cards gerais */
@@ -805,6 +811,12 @@ main {
     border-radius: 16px;
     background: var(--cor-verde-cartao);
     box-shadow: 0 2px 3px rgb(0 0 0 / 18%);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pagina-desafios .cartao-desafio:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgb(11 61 110 / 12%);
 }
 
 .pagina-desafios .cartao-desafio h2 {
