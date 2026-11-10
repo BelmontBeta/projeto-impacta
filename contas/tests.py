@@ -111,8 +111,15 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         e segue para a proxima etapa. No final, o teste FALHA se houve alguma
         falha, evitando o falso positivo de "tudo OK".
         """
+        etapas_sem_login = {"paginas_publicas", "contato", "logout"}
         try:
             funcao()
+            if nome not in etapas_sem_login:
+                self.assertNotIn(
+                    "/acesso/",
+                    self.browser.current_url,
+                    "Redirecionado para a tela de login: sessao nao autenticada",
+                )
         except Exception as e:
             primeira_linha = (str(e).strip().splitlines() or [""])[0]
             print(
@@ -230,7 +237,50 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.passo_lento(2)
         print("  Formulario de contato enviado.")
 
+    def _sessao_valida(self):
+        """True se uma pagina protegida abre sem redirecionar para /acesso/."""
+        self.browser.get(self.url("/guardiao/boas-vindas/"))
+        return "/acesso/" not in self.browser.current_url
+
+    def _login_pela_interface(self, email, senha):
+        """Plano B: faz login preenchendo o formulario real de /acesso/."""
+        self.browser.get(self.url("/acesso/"))
+        self.passo_lento(1)
+
+        for form in self.browser.find_elements(By.TAG_NAME, "form"):
+            senhas = form.find_elements(By.CSS_SELECTOR, "input[type='password']")
+            # Formulario de login = 1 campo de senha (cadastro costuma ter 2)
+            if len(senhas) != 1:
+                continue
+            usuarios = form.find_elements(
+                By.CSS_SELECTOR,
+                "input[type='email'], input[name='email'], "
+                "input[name='username'], input[type='text']",
+            )
+            if not usuarios:
+                continue
+
+            self.preencher(usuarios[0], email)
+            self.preencher(senhas[0], senha)
+            btn = form.find_element(
+                By.CSS_SELECTOR, "button[type='submit'], input[type='submit']"
+            )
+            self.clicar(btn)
+            self.passo_lento(2)
+            return
+
+        # Nao achou: mostra o HTML dos formularios para ajustar os seletores
+        html = " ".join(
+            f.get_attribute("outerHTML")
+            for f in self.browser.find_elements(By.TAG_NAME, "form")
+        )
+        print(f"  Formularios encontrados em /acesso/:\n{html[:4000]}")
+        self.screenshot("login_form_nao_encontrado")
+        self.fail("Nao encontrei o formulario de login em /acesso/")
+
     def etapa_login(self):
+        from django.conf import settings
+
         email = "gestor.restaurante@impacta.com"
         senha = "SenhaSegura123!"
 
@@ -238,22 +288,38 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             username=email, email=email, password=senha, first_name="Gestor ESG"
         )
 
-        # Injeta o cookie de sessao do Django no Selenium
+        # Tentativa 1: injeta o cookie de sessao do Django no Selenium
         self.assertTrue(
             self.client.login(username=email, password=senha),
             "Login via test client falhou",
         )
         self.browser.get(self.url("/"))  # precisa estar no dominio para add_cookie
-        cookie = self.client.cookies["sessionid"]
+        self.browser.delete_all_cookies()  # remove sessao anonima antiga
+        nome_cookie = settings.SESSION_COOKIE_NAME
+        cookie = self.client.cookies[nome_cookie]
         self.browser.add_cookie(
-            {"name": "sessionid", "value": cookie.value, "path": "/"}
+            {"name": nome_cookie, "value": cookie.value, "path": "/"}
         )
-        self.browser.get(self.url("/minha-conta/"))
-        self.assertNotIn(
-            "/login", self.browser.current_url.lower(),
-            "Sessao nao foi mantida (redirecionou para login)",
+
+        if self._sessao_valida():
+            print("  Sessao autenticada via cookie!")
+            return
+
+        print(
+            "  Cookie nao autenticou. Cookies no navegador: "
+            f"{[c['name'] for c in self.browser.get_cookies()]}"
         )
-        print("  Sessao de usuario autenticada e mantida!")
+        print("  Tentando login pela tela /acesso/ ...")
+
+        # Tentativa 2: login real pelo formulario
+        self.browser.delete_all_cookies()
+        self._login_pela_interface(email, senha)
+
+        self.assertTrue(
+            self._sessao_valida(),
+            "Nao foi possivel autenticar (nem por cookie, nem pelo formulario)",
+        )
+        print("  Sessao autenticada via formulario de login!")
 
     def etapa_perfil(self):
         print("Atualizando dados em Minha Conta...")
