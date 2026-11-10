@@ -1150,9 +1150,16 @@ main {
     margin: 28px auto 0;
     padding: 24px 26px 26px;
     border-radius: 14px;
-    background: var(--branco);
+    background: #d9d9d9;
     box-shadow: 0 6px 20px rgb(0 0 0 / 10%);
 }
+
+.contato-form .campo-com-icone input,
+.contato-form .campo-com-icone textarea{
+    background: #c6c2c1;
+    border-color: transparent;
+}
+
 
 .contato-card-titulo {
     margin: 0 0 18px;
