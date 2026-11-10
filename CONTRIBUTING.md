@@ -1,159 +1,155 @@
 <!-- omit in toc -->
-# Contributing to projeto-impacta
+# Como contribuir com o projeto-impacta
 
-First off, thanks for taking the time to contribute! ❤️
+Antes de tudo, obrigado por dedicar seu tempo para contribuir! ❤️
 
-All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 🎉
+Todos os tipos de contribuição são bem-vindos e valorizados. Consulte o [sumário](#sumário) para conhecer as diferentes formas de ajudar e entender como o projeto recebe contribuições. Leia também as seções relevantes antes de enviar sua contribuição.
 
-> And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
-> - Star the project
-> - Tweet about it
-> - Refer this project in your project's readme
-> - Mention the project at local meetups and tell your friends/colleagues
+> Se você gosta do projeto, mas não tem tempo para contribuir, tudo bem! Há outras formas simples de apoiar e demonstrar seu apreço, e também ficaremos muito felizes com isso:
+> - Dê uma estrela ao projeto.
+> - Compartilhe o projeto nas redes sociais.
+> - Mencione este projeto no README do seu projeto.
+> - Apresente o projeto em encontros locais e conte a amigos e colegas.
 
 <!-- omit in toc -->
-## Table of Contents
+## Sumário
 
-- [Code of Conduct](#code-of-conduct)
-- [I Have a Question](#i-have-a-question)
-  - [I Want To Contribute](#i-want-to-contribute)
-  - [Reporting Bugs](#reporting-bugs)
-  - [Suggesting Enhancements](#suggesting-enhancements)
-  - [Your First Code Contribution](#your-first-code-contribution)
-  - [Improving The Documentation](#improving-the-documentation)
-- [Styleguides](#styleguides)
-  - [Commit Messages](#commit-messages)
-- [Join The Project Team](#join-the-project-team)
+- [Código de Conduta](#código-de-conduta)
+- [Tenho uma dúvida](#tenho-uma-dúvida)
+  - [Quero contribuir](#quero-contribuir)
+  - [Relato de bugs](#relato-de-bugs)
+  - [Sugestões de melhorias](#sugestões-de-melhorias)
+  - [Sua primeira contribuição de código](#sua-primeira-contribuição-de-código)
+  - [Como melhorar a documentação](#como-melhorar-a-documentação)
+- [Guias de estilo](#guias-de-estilo)
+  - [Mensagens de commit](#mensagens-de-commit)
+- [Faça parte da equipe do projeto](#faça-parte-da-equipe-do-projeto)
 
+## Código de Conduta
 
-## Code of Conduct
+Este projeto e todas as pessoas que participam dele são regidos pelo
+[Código de Conduta do projeto-impacta](https://github.com/BelmontBeta/projeto-impacta/blob/main/CODE_OF_CONDUCT.md).
+Ao participar, espera-se que você siga esse código. Relate comportamentos inaceitáveis para <>.
 
-This project and everyone participating in it is governed by the
-[projeto-impacta Code of Conduct](https://github.com/BelmontBeta/projeto-impacta/blob/main/CODE_OF_CONDUCT.md).
-By participating, you are expected to uphold this code. Please report unacceptable behavior
-to <>.
+## Tenho uma dúvida
 
+> Se você quer fazer uma pergunta, presumimos que já consultou a [documentação disponível](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md).
 
-## I Have a Question
+Antes de perguntar, recomendamos buscar [issues existentes](https://github.com/BelmontBeta/projeto-impacta/issues) que possam ajudar. Se encontrar uma issue adequada e ainda precisar de esclarecimentos, comente nela em vez de abrir uma nova.
 
-> If you want to ask a question, we assume that you have read the available [Documentation](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md).
+Se ainda precisar fazer uma pergunta ou pedir esclarecimentos, recomendamos:
 
-Before you ask a question, it is best to search for existing [Issues](https://github.com/BelmontBeta/projeto-impacta/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
+- Abra uma [issue](https://github.com/BelmontBeta/projeto-impacta/issues/new).
+- Forneça o máximo de contexto possível sobre o problema ou a dúvida.
+- Informe as versões do projeto e da plataforma (Node.js, npm etc.), conforme for relevante.
 
-If you then still feel the need to ask a question and need clarification, we recommend the following:
-
-- Open an [Issue](https://github.com/BelmontBeta/projeto-impacta/issues/new).
-- Provide as much context as you can about what you're running into.
-- Provide project and platform versions (nodejs, npm, etc), depending on what seems relevant.
-
-We will then take care of the issue as soon as possible.
+A equipe cuidará da solicitação assim que possível.
 
 <!--
-You might want to create a separate issue tag for questions and include it in this description. People should then tag their issues accordingly.
+Você pode criar um rótulo específico para dúvidas e incluí-lo nesta descrição, para que as pessoas o usem nas issues.
 
-Depending on how large the project is, you may want to outsource the questioning, e.g. to Stack Overflow or Gitter. You may add additional contact and information possibilities:
+Dependendo do tamanho do projeto, você também pode direcionar as perguntas para outros canais, como Stack Overflow ou Gitter. Outras possibilidades de contato e informação incluem:
 - IRC
 - Slack
 - Gitter
-- Stack Overflow tag
+- Tag no Stack Overflow
 - Blog
 - FAQ
 - Roadmap
-- E-Mail List
-- Forum
+- Lista de e-mails
+- Fórum
 -->
 
-## I Want To Contribute
+## Quero contribuir
 
-> ### Legal Notice <!-- omit in toc -->
-> When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project licence.
+> ### Aviso legal <!-- omit in toc -->
+> Ao contribuir com este projeto, você concorda que é autor(a) de 100% do conteúdo enviado, que possui os direitos necessários sobre ele e que o conteúdo pode ser disponibilizado sob a mesma licença do projeto.
 
-### Reporting Bugs
-
-<!-- omit in toc -->
-#### Before Submitting a Bug Report
-
-A good bug report shouldn't leave others needing to chase you up for more information. Therefore, we ask you to investigate carefully, collect information and describe the issue in detail in your report. Please complete the following steps in advance to help us fix any potential bug as fast as possible.
-
-- Make sure that you are using the latest version.
-- Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md). If you are looking for support, you might want to check [this section](#i-have-a-question)).
-- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://github.com/BelmontBeta/projeto-impacta/issues?q=label%3Abug).
-- Also make sure to search the internet (including Stack Overflow) to see if users outside of the GitHub community have discussed the issue.
-- Collect information about the bug:
-  - Stack trace (Traceback)
-  - OS, Platform and Version (Windows, Linux, macOS, x86, ARM)
-  - Version of the interpreter, compiler, SDK, runtime environment, package manager, depending on what seems relevant.
-  - Possibly your input and the output
-  - Can you reliably reproduce the issue? And can you also reproduce it with older versions?
+### Relato de bugs
 
 <!-- omit in toc -->
-#### How Do I Submit a Good Bug Report?
+#### Antes de enviar um relato de bug
 
-> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to <gfcm@cesar.school>.
-<!-- You may add a PGP key to allow the messages to be sent encrypted as well. -->
+Um bom relato de bug deve conter informações suficientes para que outras pessoas possam entender e investigar o problema sem precisar buscar detalhes adicionais. Por isso, pedimos que você pesquise com cuidado, reúna as informações relevantes e descreva o problema em detalhes no relato.
 
-We use GitHub issues to track bugs and errors. If you run into an issue with the project:
-
-- Open an [Issue](https://github.com/BelmontBeta/projeto-impacta/issues/new). (Since we can't be sure at this point whether it is a bug or not, we ask you not to talk about a bug yet and not to label the issue.)
-- Explain the behavior you would expect and the actual behavior.
-- Please provide as much context as possible and describe the *reproduction steps* that someone else can follow to recreate the issue on their own. This usually includes your code. For good bug reports you should isolate the problem and create a reduced test case.
-- Provide the information you collected in the previous section.
-
-Once it's filed:
-
-- The project team will label the issue accordingly.
-- A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
-- If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be [implemented by someone](#your-first-code-contribution).
-
-<!-- You might want to create an issue template for bugs and errors that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
-
-
-### Suggesting Enhancements
-
-This section guides you through submitting an enhancement suggestion for projeto-impacta, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
+- Verifique se está usando a versão mais recente.
+- Confirme que o problema é realmente um bug, e não um erro de configuração ou incompatibilidade de componentes/versões do ambiente. Consulte a [documentação](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md).
+- Verifique se outras pessoas já relataram ou resolveram o mesmo problema na [lista de issues](https://github.com/BelmontBeta/projeto-impacta/issues).
+- Pesquise também na internet, inclusive no Stack Overflow, para saber se pessoas fora da comunidade do GitHub já discutiram o problema.
+- Reúna informações sobre o bug:
+  - Rastreamento da pilha (stack trace/traceback).
+  - Sistema operacional, plataforma e versão (Windows, Linux, macOS, x86, ARM).
+  - Versões do interpretador, compilador, SDK, ambiente de execução ou gerenciador de pacotes, conforme relevante.
+  - Entradas fornecidas e resultados obtidos, se aplicável.
+  - Se é possível reproduzir o problema de forma confiável e se ele também ocorre em versões anteriores.
 
 <!-- omit in toc -->
-#### Before Submitting an Enhancement
+#### Como enviar um bom relato de bug?
 
-- Make sure that you are using the latest version.
-- Read the [documentation](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md) carefully and find out if the functionality is already covered, maybe by an individual configuration.
-- Perform a [search](https://github.com/BelmontBeta/projeto-impacta/issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
-- Find out whether your idea fits with the scope and aims of the project. It's up to you to make a strong case to convince the project's developers of the merits of this feature. Keep in mind that we want features that will be useful to the majority of our users and not just a small subset. If you're just targeting a minority of users, consider writing an add-on/plugin library.
+> Nunca relate publicamente, na lista de issues ou em qualquer outro lugar, problemas de segurança, vulnerabilidades ou bugs que incluam informações sensíveis. Em vez disso, envie relatos sensíveis por e-mail para <>.
+<!-- Você também pode adicionar uma chave PGP para permitir o envio de mensagens criptografadas. -->
+
+Usamos as issues do GitHub para acompanhar bugs e erros. Se você encontrar um problema no projeto:
+
+- Abra uma [issue](https://github.com/BelmontBeta/projeto-impacta/issues/new). Como ainda não é possível saber se o caso é realmente um bug, descreva o problema sem atribuir um rótulo; a equipe fará a triagem.
+- Explique qual comportamento esperava e qual comportamento ocorreu de fato.
+- Forneça o máximo de contexto possível e descreva as *etapas para reproduzir* o problema, de modo que outra pessoa consiga reproduzi-lo. Um bom relato de bug deve incluir um exemplo de código que possa ser copiado e executado, quando aplicável.
+- Inclua as informações reunidas na seção anterior.
+
+Depois que a issue for aberta:
+
+- A equipe do projeto adicionará os rótulos adequados.
+- Uma pessoa da equipe tentará reproduzir o problema com as etapas fornecidas. Se não houver etapas ou não for possível identificar como reproduzi-lo, a equipe solicitará mais informações e marcará a issue como `needs-info`.
+- Se a equipe conseguir reproduzir o problema, a issue será marcada como `needs-fix` e poderá receber outros rótulos (como `critical`). Em seguida, ficará disponível para ser [implementada por alguém](#sua-primeira-contribuição-de-código).
+
+<!-- Você pode criar um modelo de issue para bugs e erros como guia e para definir quais informações devem ser incluídas. Se fizer isso, mencione-o aqui. -->
+
+### Sugestões de melhorias
+
+Esta seção orienta como enviar sugestões de melhorias para o projeto-impacta, **incluindo funcionalidades totalmente novas e pequenas melhorias em recursos existentes**. Seguir estas orientações ajuda a equipe a entender sua sugestão e decidir como encaminhá-la.
 
 <!-- omit in toc -->
-#### How Do I Submit a Good Enhancement Suggestion?
+#### Antes de enviar uma sugestão de melhoria
 
-Enhancement suggestions are tracked as [GitHub issues](https://github.com/BelmontBeta/projeto-impacta/issues).
+- Verifique se está usando a versão mais recente.
+- Leia com atenção a [documentação](https://github.com/BelmontBeta/projeto-impacta/blob/main/README.md) e confira se a funcionalidade já está disponível, talvez por meio de alguma configuração.
+- Faça uma [busca nas issues](https://github.com/BelmontBeta/projeto-impacta/issues) para verificar se a melhoria já foi sugerida. Se já tiver sido, comente na issue existente em vez de abrir outra.
+- Avalie se a ideia está de acordo com o escopo e os objetivos do projeto. Cabe a você apresentar argumentos que convençam as pessoas responsáveis pelo desenvolvimento do valor da funcionalidade. Lembre-se de que queremos atender a maioria das pessoas usuárias, não apenas um grupo pequeno.
 
-- Use a **clear and descriptive title** for the issue to identify the suggestion.
-- Provide a **step-by-step description of the suggested enhancement** in as many details as possible.
-- **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
-- You may want to **include screenshots or screen recordings** which help you demonstrate the steps or point out the part which the suggestion is related to. You can use [LICEcap](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and the built-in [screen recorder in GNOME](https://help.gnome.org/users/gnome-help/stable/screen-shot-record.html.en) or [SimpleScreenRecorder](https://github.com/MaartenBaert/ssr) on Linux. <!-- this should only be included if the project has a GUI -->
-- **Explain why this enhancement would be useful** to most projeto-impacta users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
+<!-- omit in toc -->
+#### Como enviar uma boa sugestão de melhoria?
 
-<!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
+As sugestões de melhorias são acompanhadas por meio de [issues do GitHub](https://github.com/BelmontBeta/projeto-impacta/issues).
 
-### Your First Code Contribution
+- Use um **título claro e descritivo** para identificar a sugestão.
+- Descreva a melhoria proposta passo a passo e com o máximo de detalhes possível.
+- **Descreva o comportamento atual e explique qual comportamento você esperava e por quê.** Você também pode mencionar alternativas que não funcionaram.
+- Se possível, **inclua capturas de tela ou gravações** que demonstrem as etapas ou indiquem a parte relacionada à sugestão. Você pode usar o [LICEcap](https://www.cockos.com/licecap/).
+- **Explique por que essa melhoria seria útil para a maioria das pessoas que usam o projeto-impacta.** Você também pode mencionar outros projetos que resolveram o problema de uma forma que sirva de inspiração.
+
+<!-- Você pode criar um modelo de issue para sugestões de melhorias como guia. Se fizer isso, mencione-o aqui. -->
+
+### Sua primeira contribuição de código
 <!-- TODO
-include Setup of env, IDE and typical getting started instructions?
-
+Inclua instruções de configuração do ambiente, IDE e orientações para começar.
 -->
 
-### Improving The Documentation
+### Como melhorar a documentação
 <!-- TODO
-Updating, improving and correcting the documentation
-
+Adicione orientações para atualizar, melhorar e corrigir a documentação.
 -->
 
-## Styleguides
-### Commit Messages
+## Guias de estilo
+
+### Mensagens de commit
 <!-- TODO
-
+Defina aqui as convenções para mensagens de commit.
 -->
 
-## Join The Project Team
+## Faça parte da equipe do projeto
 <!-- TODO -->
 
 <!-- omit in toc -->
-## Attribution
-This guide is based on the [contributing.md](https://contributing.md/generator)!
+## Agradecimentos
+
+Este guia é baseado no [contributing.md](https://contributing.md/generator)!
