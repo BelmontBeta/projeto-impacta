@@ -1053,6 +1053,16 @@ main {
     position: absolute;
     inset: 0 0 0 50%;
     width: 50%;
+    background: #d9d9d9;
+}
+
+.auth-formularios .form-grupo input {
+    background: #c6c2c1;   
+    border-color: transparent;
+}
+
+.auth-formularios .form-grupo input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #c6c2c1 inset;
 }
 
 .auth-cadastro .auth-formularios {
