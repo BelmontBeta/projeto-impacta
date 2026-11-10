@@ -1,87 +1,88 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Desafios - ESG no Ramo Alimentício
-{% endblock %}
+{% block title %}Desafios - ESG no Ramo Alimentício{% endblock %}
 
 {% block content %}
 
-<section class="section">
-    <div class="container">
-        <h1 class="section-title">
-            Desafios do ramo alimentício
-        </h1>
+<main class="pagina-desafios">
 
-        <p>
-            O setor alimentício enfrenta desafios relacionados aos três
-            pilares do ESG. Conhecer esses problemas é uma etapa importante
-            para pensar em melhorias futuras.
-        </p>
+    <section class="desafios-secao desafios-principais">
+        <div class="container">
+            <h1 class="desafios-titulo">
+                Desafios do ramo alimentício
+            </h1>
 
-        <div class="cards cards-solucoes">
-            <article class="card card-desafio">
-                <h3>Desperdício de alimentos</h3>
-                <p>
-                    Os alimentos podem ser perdidos durante a produção,
-                    transporte, armazenamento, preparação ou consumo.
-                </p>
-            </article>
+            <p class="desafios-introducao">
+                O setor alimentício enfrenta desafios relacionados aos três pilares do ESG.
+                Conhecer esses problemas é uma etapa importante para pensar em melhorias futuras.
+            </p>
 
-            <article class="card card-desafio">
-                <h3>Resíduos e embalagens</h3>
-                <p>
-                    O uso de embalagens e o descarte inadequado podem aumentar
-                    a produção de resíduos.
-                </p>
-            </article>
+            <div class="grade-desafios">
+                <article class="cartao-desafio">
+                    <h2>Desperdício de alimentos</h2>
+                    <p>
+                        Os alimentos podem ser perdidos durante a produção, transporte,
+                        armazenamento, preparação ou consumo.
+                    </p>
+                </article>
 
-            <article class="card card-desafio">
-                <h3>Água e energia</h3>
-                <p>
-                    A produção, conservação e preparação de alimentos exigem
-                    recursos naturais e energia.
-                </p>
-            </article>
+                <article class="cartao-desafio">
+                    <h2>Resíduos e embalagens</h2>
+                    <p>
+                        O uso de embalagens e o descarte inadequado podem aumentar
+                        a produção de resíduos.
+                    </p>
+                </article>
 
-            <article class="card card-desafio">
-                <h3>Condições de trabalho</h3>
-                <p>
-                    O pilar social envolve segurança, inclusão, valorização e
-                    condições adequadas de trabalho.
-                </p>
-            </article>
+                <article class="cartao-desafio">
+                    <h2>Água e energia</h2>
+                    <p>
+                        A produção, conservação e preparação de alimentos exigem
+                        recursos naturais e energia.
+                    </p>
+                </article>
 
-            <article class="card card-desafio">
-                <h3>Fornecedores</h3>
-                <p>
-                    A escolha dos fornecedores influencia os impactos sociais
-                    e ambientais da cadeia produtiva.
-                </p>
-            </article>
+                <article class="cartao-desafio">
+                    <h2>Condições de trabalho</h2>
+                    <p>
+                        O pilar social envolve segurança, inclusão, valorização e
+                        condições adequadas de trabalho.
+                    </p>
+                </article>
 
-            <article class="card card-desafio">
-                <h3>Transparência</h3>
-                <p>
-                    A governança exige responsabilidade, ética e clareza nas
-                    informações e decisões da organização.
-                </p>
-            </article>
+                <article class="cartao-desafio">
+                    <h2>Fornecedores</h2>
+                    <p>
+                        A escolha dos fornecedores influencia os impactos sociais e
+                        ambientais da cadeia produtiva.
+                    </p>
+                </article>
+
+                <article class="cartao-desafio">
+                    <h2>Transparência</h2>
+                    <p>
+                        A governança exige responsabilidade, ética e clareza nas
+                        informações e decisões da organização.
+                    </p>
+                </article>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section class="section section-alternativa">
-    <div class="container">
-        <h2 class="section-title">
-            Relação entre os desafios e o ESG
-        </h2>
+    <section class="desafios-secao desafios-relacao">
+        <div class="container">
+            <h2 class="desafios-titulo">
+                Relação entre os desafios e o ESG
+            </h2>
 
-        <p>
-            Os desafios ambientais, sociais e de governança estão relacionados.
-            Uma organização do setor alimentício precisa analisar seus resíduos,
-            funcionários, fornecedores e processos de decisão.
-        </p>
-    </div>
-</section>
+            <p class="desafios-texto-relacao">
+                Os desafios ambientais, sociais e de governança estão relacionados.
+                Uma organização do setor alimentício precisa analisar seus resíduos,
+                funcionários, fornecedores e processos de decisão.
+            </p>
+        </div>
+    </section>
+
+</main>
 
 {% endblock %}

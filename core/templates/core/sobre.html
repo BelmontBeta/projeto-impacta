@@ -5,206 +5,178 @@
 
 {% block content %}
 
-<style>
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
-  }
+<main class="pagina-sobre">
 
-  .main-content-wrapper {
-    margin-left: 0;
-  }
+    <section id="sobre" class="sobre-introducao">
+        <div class="container">
+            <h1 class="titulo-sobre">Sobre o projeto</h1>
 
-  @media (max-width: 768px) {
-    .main-content-wrapper {
-      margin-left: 0;
-    }
-  }
-</style>
+            <p>
+                O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
+                com o propósito de pesquisar e apresentar a relação entre os
+                princípios de sustentabilidade, responsabilidade social e
+                governança com o setor de alimentos.
+            </p>
 
-<main class="main-content-wrapper">
+            <p>
+                Nesta primeira etapa, o foco está na compreensão do tema,
+                identificação dos principais desafios e organização das
+                informações para o público.
+            </p>
+        </div>
+    </section>
 
-  <section id="sobre" class="section">
-    <div class="container">
-      <h1 class="section-title">Sobre o projeto</h1>
+    <section id="objetivos" class="secao-objetivo">
+        <div class="container">
+            <article class="cartao-objetivo">
+                <h2>Objetivo geral</h2>
 
-      <p>
-        O projeto ESG no Ramo Alimentício foi desenvolvido por estudantes
-        com o propósito de pesquisar e apresentar a relação entre os
-        princípios de sustentabilidade, responsabilidade social e
-        governança com o setor de alimentos.
-      </p>
+                <p>
+                    Investigar como os princípios ESG podem ser relacionados às
+                    atividades do ramo alimentício, considerando seus impactos
+                    ambientais, sociais e organizacionais.
+                </p>
+            </article>
+        </div>
+    </section>
 
-      <p>
-        Nesta primeira etapa, o foco está na compreensão do tema,
-        identificação dos principais desafios e organização das
-        informações para o público.
-      </p>
-    </div>
-  </section>
+    <section id="quem-somos" class="secao-equipe">
+        <div class="container">
+            <h2 class="titulo-sobre">Quem somos</h2>
 
-  <section id="objetivos" class="section section-alternativa">
-    <div class="container">
-      <h2 class="section-title">Objetivo geral</h2>
+            <p class="texto-equipe">
+                Somos uma equipe de estudantes que está desenvolvendo um projeto
+                acadêmico sobre a aplicação dos princípios ESG no ramo alimentício.
+            </p>
 
-      <p>
-        Investigar como os princípios ESG podem ser relacionados às
-        atividades do ramo alimentício, considerando seus impactos
-        ambientais, sociais e organizacionais.
-      </p>
-    </div>
-  </section>
+            <p class="texto-equipe">
+                Cada integrante participa de uma etapa da pesquisa, planejamento,
+                desenvolvimento ou apresentação do projeto.
+            </p>
 
-  <section id="quem-somos" class="section section-alternativa">
-    <div class="container">
-      <h2 class="section-title">Quem somos</h2>
+            <div class="grade-equipe">
 
-      <p>
-        Somos uma equipe de estudantes que está desenvolvendo um projeto
-        acadêmico sobre a aplicação dos princípios ESG no ramo alimentício.
-      </p>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/belmont.jpg' %}"
+                        alt="Foto de Caio Henrique de Sena Belmont"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Caio Henrique de Sena Belmont</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-      <p>
-        Cada integrante participa de uma etapa da pesquisa, planejamento,
-        desenvolvimento ou apresentação do projeto.
-      </p>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/caio.jpg' %}"
+                        alt="Foto de Caio Freitas de Andrade Medeiros"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Caio Freitas de Andrade Medeiros</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-      <div class="cards equipe">
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/mariana.jpg' %}"
+                        alt="Foto de Mariana Moreira de Andrade Lima"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Mariana Moreira de Andrade Lima</h3>
+                    <p>Design · Identidade visual e apresentação do projeto.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/belmont.jpg' %}"
-            alt="Foto de Caio Henrique de Sena Belmont"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Caio Henrique de Sena Belmont</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
+                        alt="Foto de José Henrique Carneiro Lapa"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>José Henrique Carneiro Lapa</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/caio.jpg' %}"
-            alt="Foto de Caio Freitas de Andrade Medeiros"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Caio Freitas de Andrade Medeiros</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/furtado.jpg' %}"
+                        alt="Foto de Gabriel Furtado Corrêa Miller"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Gabriel Furtado Corrêa Miller</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/mariana.jpg' %}"
-            alt="Foto de Mariana Moreira de Andrade Lima"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Mariana Moreira de Andrade Lima</h3>
-          <p>Design · Identidade visual e apresentação do projeto.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/taina.jpg' %}"
+                        alt="Foto de Tainá Wanderley Carneiro Leão"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Tainá Wanderley Carneiro Leão</h3>
+                    <p>Design · Identidade visual e apresentação do projeto.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/jose-henrique.jpg' %}"
-            alt="Foto de José Henrique Carneiro Lapa"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>José Henrique Carneiro Lapa</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/geovanna.jpg' %}"
+                        alt="Foto de Geovanna Eduarda da Silva França"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Geovanna Eduarda da Silva França</h3>
+                    <p>Design · Identidade visual e apresentação do projeto.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/furtado.jpg' %}"
-            alt="Foto de Gabriel Furtado Corrêa Miller"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Gabriel Furtado Corrêa Miller</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/guedes.jpg' %}"
+                        alt="Foto de João Pedro Guedes Alcoforado Carneiro Leão"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>João Pedro Guedes Alcoforado Carneiro Leão</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/taina.jpg' %}"
-            alt="Foto de Tainá Wanderley Carneiro Leão"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Tainá Wanderley Carneiro Leão</h3>
-          <p>Design · Identidade visual e apresentação do projeto.</p>
-        </article>
+                <article class="cartao-membro">
+                    <img
+                        src="{% static 'imagens/equipe/cassemiro.jpg' %}"
+                        alt="Foto de Gabriel Cassemiro Romualdo Filgueira Pino"
+                        class="foto-membro"
+                        width="120"
+                        height="120"
+                        loading="lazy"
+                    >
+                    <h3>Gabriel Cassemiro Romualdo Filgueira Pino</h3>
+                    <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
+                </article>
 
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/geovanna.jpg' %}"
-            alt="Foto de Geovanna Eduarda da Silva França"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Geovanna Eduarda da Silva França</h3>
-          <p>Design · Identidade visual e apresentação do projeto.</p>
-        </article>
-
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/guedes.jpg' %}"
-            alt="Foto de João Pedro Guedes Alcoforado Carneiro Leão"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>João Pedro Guedes Alcoforado Carneiro Leão</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
-
-        <article class="card membro">
-          <img
-            src="{% static 'imagens/equipe/cassemiro.jpg' %}"
-            alt="Foto de Gabriel Cassemiro Romualdo Filgueira Pino"
-            class="foto-membro"
-            width="120"
-            height="120"
-            loading="lazy"
-          >
-          <h3>Gabriel Cassemiro Romualdo Filgueira Pino</h3>
-          <p>Ciências da Computação · Desenvolvimento da aplicação web.</p>
-        </article>
-
-      </div>
-    </div>
-  </section>
-{% comment %}
-  <section id="nossa-proposta" class="section">
-    <div class="container">
-      <h2 class="section-title">Nossa proposta</h2>
-
-      <p>
-        O site foi criado para apresentar o tema de forma didática,
-        aproximando os conceitos de ESG da realidade do setor alimentício.
-      </p>
-    </div>
-  </section>
-{% endcomment %}
+            </div>
+        </div>
+    </section>
 
 </main>
 
-{% endblock %} 
+{% endblock %}

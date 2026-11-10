@@ -9,6 +9,8 @@
 <section class="hero">
     <div class="container hero-layout">
         <div class="hero-conteudo">
+            <span class="hero-etiqueta">Guardião ESG</span>
+
             <h1>ESG aplicado ao ramo alimentício</h1>
 
             <p>
@@ -23,154 +25,83 @@
         </div>
 
         <div class="hero-categorias" aria-label="Pilares ESG">
-            <div class="categoria-esg categoria-ambiental">
-                Ambiental
+            <div class="categoria-esg">
+                <span>Ambiental</span>
             </div>
 
             <div class="categoria-esg">
-                Social
+                <span>Social</span>
             </div>
 
             <div class="categoria-esg">
-                Governança
+                <span>Governança</span>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section">
+<section class="section section-esg">
     <div class="container">
-        <h2 class="section-title">O que é ESG?</h2>
+        <h2 class="section-title">O QUE É ESG?</h2>
 
-        <p>
-            ESG é uma sigla em inglês para Environmental, Social and
-            Governance. O conceito está relacionado às práticas ambientais,
-            sociais e de governança de uma organização.
+        <p class="section-intro">
+            Conheça os três pilares que orientam uma gestão responsável
         </p>
 
-        {% comment %}
-        <div class="cards">
-            <article class="card card-desafio">
-                <h3>Ambiental</h3>
-
+        <div class="cards-esg">
+            <article class="card-esg card-esg-ambiental">
+                <span class="card-esg-icone" aria-hidden="true">
+                    <i class="fa-solid fa-leaf"></i>
+                </span>
                 <p>
-                    Relaciona-se aos impactos sobre o meio ambiente, como
-                    consumo de água, energia, matérias-primas e produção
-                    de resíduos.
+                    Refere-se ao cuidado com o meio ambiente e os recursos
+                    naturais.
                 </p>
             </article>
 
-            <article class="card card-desafio">
-                <h3>Social</h3>
-
+            <article class="card-esg card-esg-social">
+                <span class="card-esg-icone" aria-hidden="true">
+                    <i class="fa-solid fa-users"></i>
+                </span>
                 <p>
-                    Considera as relações com trabalhadores, consumidores,
-                    fornecedores, comunidades e demais envolvidos.
+                    Refere-se ao respeito às pessoas e ao bem-estar da
+                    sociedade.
                 </p>
             </article>
 
-            <article class="card card-desafio">
-                <h3>Governança</h3>
-
+            <article class="card-esg card-esg-governanca">
+                <span class="card-esg-icone" aria-hidden="true">
+                    <i class="fa-solid fa-building-columns"></i>
+                </span>
                 <p>
-                    Está relacionada à ética, transparência,
-                    responsabilidade e tomada de decisões.
+                    Refere-se à ética, transparência e responsabilidade na
+                    gestão.
                 </p>
             </article>
         </div>
-        {% endcomment %}
     </div>
 </section>
 
-<section class="section section-alternativa">
+<section class="section section-alternativa section-desafios-home">
     <div class="container">
         <h2 class="section-title">
             Por que estudar ESG no setor alimentício?
         </h2>
 
-        <p>
+        <p class="section-intro">
             O setor alimentício está presente em diversas etapas da sociedade,
             desde a produção dos ingredientes até o consumo e o descarte.
         </p>
 
         <ul class="lista-destaques">
-            <li>Desperdício de alimentos;</li>
-            <li>Consumo de água e energia;</li>
-            <li>Uso de embalagens;</li>
-            <li>Condições de trabalho;</li>
-            <li>Relação com fornecedores;</li>
-            <li>Segurança e qualidade dos alimentos.</li>
+            <li>Desperdício de alimentos</li>
+            <li>Condições de trabalho</li>
+            <li>Consumo de água e energia</li>
+            <li>Relação com fornecedores</li>
+            <li>Uso de embalagens</li>
+            <li>Segurança e qualidade dos alimentos</li>
         </ul>
     </div>
 </section>
-
-{% comment %}
-<section class="section">
-    <div class="container">
-        <h2 class="section-title">Objetivos do projeto</h2>
-
-        <div class="cards">
-            <article class="card card-desafio">
-                <h3>Pesquisar</h3>
-                <p>
-                    Compreender os conceitos de ESG e sua relação com o
-                    ramo alimentício.
-                </p>
-            </article>
-
-            <article class="card card-desafio">
-                <h3>Analisar</h3>
-                <p>
-                    Identificar os principais desafios ambientais, sociais
-                    e organizacionais do setor.
-                </p>
-            </article>
-
-            <article class="card card-desafio">
-                <h3>Conscientizar</h3>
-                <p>
-                    Apresentar informações de forma clara e acessível.
-                </p>
-            </article>
-
-            <article class="card card-desafio">
-                <h3>Desenvolver</h3>
-                <p>
-                    Criar uma base para futuras soluções relacionadas ao tema.
-                </p>
-            </article>
-        </div>
-    </div>
-</section>
-
-
-<section class="section section-alternativa">
-    <div class="container">
-        <h2 class="section-title">Etapas do projeto</h2>
-
-        <div class="etapas">
-            <div class="etapa">
-                <strong>1. Conhecer</strong>
-                <p>Estudar o conceito de ESG.</p>
-            </div>
-
-            <div class="etapa">
-                <strong>2. Observar</strong>
-                <p>Compreender os impactos do setor.</p>
-            </div>
-
-            <div class="etapa">
-                <strong>3. Analisar</strong>
-                <p>Identificar problemas e oportunidades.</p>
-            </div>
-
-            <div class="etapa">
-                <strong>4. Desenvolver</strong>
-                <p>Pensar em propostas futuras.</p>
-            </div>
-        </div>
-    </div>
-</section>
-{% endcomment %}
 
 {% endblock %}
