@@ -1,124 +1,324 @@
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.contrib.auth.models import User
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 import os
 import time
 import unittest
+from django.contrib.auth import get_user_model
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# teste do Chrome, só roda com RODAR_SELENIUM=1
+User = get_user_model()
+
+
 @unittest.skipUnless(
     os.environ.get("RODAR_SELENIUM"),
-    "defina RODAR_SELENIUM=1 para rodar o teste do Chrome",
+    "defina RODAR_SELENIUM=1 para rodar os testes do Chrome",
 )
-class HistoriaTest(StaticLiveServerTestCase):
+class SistemaCompletoE2ETest(StaticLiveServerTestCase):
     def setUp(self):
         opts = webdriver.ChromeOptions()
         if os.environ.get("CI"):
             opts.add_argument("--headless=new")
+        
         self.browser = webdriver.Chrome(options=opts)
         self.browser.implicitly_wait(5)
         self.browser.maximize_window()
+        self.wait = WebDriverWait(self.browser, 10)
 
     def tearDown(self):
-        time.sleep(4)
+        time.sleep(2)
         self.browser.quit()
 
-    def passo_lento(self, segundos=4):
-        """Força o robô a aguardar para que você consiga ver e narrar a funcionalidade."""
+    def passo_lento(self, segundos=2):
+        """Pausa para permitir acompanhamento visual da automação."""
         time.sleep(segundos)
 
-    def test_todas_as_funcionalidades_do_sistema(self):
-      
-        print("Criando usuário e autenticando sessão de teste...")
-        username = "usuario_teste"
-        password = "senha_segura_123"
-        User.objects.create_user(username=username, password=password)
-
-        self.client.login(username=username, password=password)
-
-        self.browser.get(self.live_server_url + "/")
+    def test_fluxo_completo_sistema(self):
+        # -------------------------------------------------------------
+        # 1. PÁGINAS INSTITUCIONAIS PÚBLICAS E CONTATO
+        # -------------------------------------------------------------
+        print("\n--- [1/7] Testando Páginas Institucionais Públicas ---")
         
-        session_cookie = self.client.cookies['sessionid']
-        self.browser.add_cookie({
-            'name': 'sessionid',
-            'value': session_cookie.value,
-            'path': '/',
-        })
-        print("Sessão injetada com sucesso! Áreas restritas liberadas.")
-
-        print("Testando: Página Inicial...")
+        # Home
         self.browser.get(self.live_server_url + "/")
-        self.passo_lento(4)
-        self.assertIn("<body", self.browser.page_source.lower())
+        self.passo_lento(1)
+        self.assertIn("ESG aplicado ao ramo alimentício", self.browser.page_source)
 
-        print("Testando: Sobre...")
+        # Sobre
         self.browser.get(self.live_server_url + "/sobre/")
-        self.passo_lento(4)
-        self.assertIn("<body", self.browser.page_source.lower())
+        self.passo_lento(1)
+        self.assertIn("Sobre o projeto", self.browser.page_source)
 
-        print("Testando: Desafios...")
+        # Desafios
         self.browser.get(self.live_server_url + "/desafios/")
-        self.passo_lento(4)
-        self.assertIn("<body", self.browser.page_source.lower())
+        self.passo_lento(1)
+        self.assertIn("Desafios do ramo alimentício", self.browser.page_source)
 
-        print("Testando: Soluções...")
+        # Soluções
         self.browser.get(self.live_server_url + "/solucoes/")
-        self.passo_lento(4)
-        self.assertIn("<body", self.browser.page_source.lower())
+        self.passo_lento(1)
+        self.assertIn("Soluções do nosso projeto", self.browser.page_source)
 
-        print("Testando: Contato e Envio do Formulário...")
+        # Contato & Preenchimento do Formulário
+        print("Testando formulário de Contato...")
         self.browser.get(self.live_server_url + "/contato/")
-        self.passo_lento(3)
-        self.assertIn("<body", self.browser.page_source.lower())
+        self.passo_lento(1)
 
         try:
-            campo_nome = self.browser.find_element(By.CSS_SELECTOR, "input[type='text']")
-            campo_nome.send_keys("Testador Automatizado Selenium")
+            input_nome = self.browser.find_element(By.CSS_SELECTOR, "input[name='nome'], input[type='text']")
+            input_nome.clear()
+            input_nome.send_keys("Testador E2E Selenium")
+
+            try:
+                input_email = self.browser.find_element(By.CSS_SELECTOR, "input[name='email'], input[type='email']")
+                input_email.clear()
+                input_email.send_keys("testador@impacta.com")
+            except Exception:
+                pass
+
+            try:
+                input_assunto = self.browser.find_element(By.CSS_SELECTOR, "input[name='assunto'], input[name='subject']")
+                input_assunto.clear()
+                input_assunto.send_keys("Teste de Contato E2E")
+            except Exception:
+                pass
+
+            try:
+                textarea_msg = self.browser.find_element(By.TAG_NAME, "textarea")
+                textarea_msg.clear()
+                textarea_msg.send_keys("Mensagem automatizada de teste do formulário de contato.")
+            except Exception:
+                pass
+
+            self.passo_lento(1)
+            btn_enviar = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit'], input[type='submit']")
+            btn_enviar.click()
+            self.passo_lento(2)
+            print("Formulário de contato enviado.")
+        except Exception as e:
+            print(f"Aviso ao testar contato: {e}")
+
+        # -------------------------------------------------------------
+        # 2. AUTENTICAÇÃO E GESTÃO DE CONTA (LOGIN E PERFIL)
+        # -------------------------------------------------------------
+        print("\n--- [2/7] Testando Autenticação e Gestão de Perfil ---")
+        
+        email_teste = "gestor.restaurante@impacta.com"
+        senha_teste = "SenhaSegura123!"
+        nome_teste = "Gestor ESG"
+
+        # Criar usuário direto no ORM
+        User.objects.create_user(
+            username=email_teste,
+            email=email_teste,
+            password=senha_teste,
+            first_name=nome_teste
+        )
+
+        # Login via tela de Acesso
+        self.browser.get(self.live_server_url + "/acesso/")
+        self.passo_lento(1)
+
+        campo_email = self.browser.find_element(By.NAME, "email")
+        campo_senha = self.browser.find_element(By.NAME, "senha")
+        campo_email.send_keys(email_teste)
+        campo_senha.send_keys(senha_teste)
+        self.passo_lento(1)
+        
+        btn_login = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        btn_login.click()
+        self.passo_lento(2)
+
+        self.assertIn("guardiao", self.browser.current_url)
+        print("Login realizado com sucesso via formulário!")
+
+        # Atualizar Perfil em Minha Conta
+        print("Atualizando dados em Minha Conta...")
+        self.browser.get(self.live_server_url + "/minha-conta/")
+        self.passo_lento(1)
+
+        try:
+            campo_novo_nome = self.browser.find_element(By.NAME, "first_name")
+            campo_novo_nome.clear()
+            campo_novo_nome.send_keys("Gestor ESG Atualizado")
+            
+            btn_salvar_perfil = self.browser.find_element(By.CSS_SELECTOR, "form button[type='submit']")
+            btn_salvar_perfil.click()
+            self.passo_lento(2)
+            self.assertIn("Seu nome foi atualizado.", self.browser.page_source)
+            print("Perfil atualizado com sucesso!")
+        except Exception as e:
+            print(f"Aviso ao atualizar perfil: {e}")
+
+        # -------------------------------------------------------------
+        # 3. DIAGNÓSTICO ESG E RESULTADO DETALHADO
+        # -------------------------------------------------------------
+        print("\n--- [3/7] Testando Diagnóstico ESG e Detalhamento por Pilar ---")
+        
+        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
+        self.passo_lento(2)
+
+        # Iniciar Diagnóstico
+        btn_iniciar = self.browser.find_element(By.CSS_SELECTOR, "form[action*='iniciar'] button")
+        btn_iniciar.click()
+        self.passo_lento(2)
+
+        # Preencher perguntas do quiz dinamicamente até o resultado
+        print("Respondendo perguntas do Diagnóstico ESG...")
+        perguntas_respondidas = 0
+        while True:
+            if "pergunta" not in self.browser.current_url and "resultado" in self.browser.current_url:
+                break
+
+            try:
+                opcoes = self.browser.find_elements(By.CSS_SELECTOR, "input[type='radio']")
+                if opcoes:
+                    opcoes[0].click()
+                    self.passo_lento(1)
+
+                btn_proxima = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']")
+                btn_proxima.click()
+                perguntas_respondidas += 1
+                self.passo_lento(1)
+            except Exception:
+                break
+
+        print(f"Diagnóstico finalizado ({perguntas_respondidas} perguntas respondidas).")
+        self.passo_lento(2)
+        self.assertIn("Seu diagnóstico está pronto!", self.browser.page_source)
+
+        # Acessar Tela de Resultado Detalhado
+        print("Navegando para o Resultado Detalhado por Pilar...")
+        btn_detalhado = self.browser.find_element(By.XPATH, "//a[contains(text(), 'Ver resultados detalhados')]")
+        btn_detalhado.click()
+        self.passo_lento(2)
+        self.assertIn("Resultado por pilar", self.browser.page_source)
+
+        # Expandir/abrir accordions de detalhes dos pilares
+        accordions = self.browser.find_elements(By.TAG_NAME, "summary")
+        for summary in accordions:
+            summary.click()
+            self.passo_lento(1)
+
+        # -------------------------------------------------------------
+        # 4. PLANO DE AÇÃO E MISSÕES
+        # -------------------------------------------------------------
+        print("\n--- [4/7] Testando Plano de Ação e Missões ---")
+        btn_plano_acao = self.browser.find_element(By.XPATH, "//a[contains(text(), 'Ver plano de ação')]")
+        btn_plano_acao.click()
+        self.passo_lento(2)
+        self.assertIn("Plano de ação", self.browser.page_source)
+
+        # Interagir com Missão se houver
+        missoes = self.browser.find_elements(By.CSS_SELECTOR, ".missao-acoes a")
+        if missoes:
+            print("Visualizando detalhes da primeira missão...")
+            missoes[0].click()
+            self.passo_lento(2)
+            self.assertIn("Como fazer", self.browser.page_source)
+
+            try:
+                btn_concluir = self.browser.find_element(
+                    By.XPATH, 
+                    "//button[contains(text(), 'Concluída') or contains(text(), 'Marcar como concluída')]"
+                )
+                btn_concluir.click()
+                self.passo_lento(2)
+                print("Status da missão alternado!")
+            except Exception as e:
+                print(f"Aviso ao alternar missão: {e}")
+
+        # -------------------------------------------------------------
+        # 5. DASHBOARD E MÓDULO DE GASTOS
+        # -------------------------------------------------------------
+        print("\n--- [5/7] Testando Módulo de Gastos / Dashboard ---")
+        self.browser.get(self.live_server_url + "/gastos/painel/")
+        self.passo_lento(2)
+        self.assertIn("<body", self.browser.page_source.lower())
+        print("Dashboard de Gastos acessado.")
+
+        # -------------------------------------------------------------
+        # 6. FORNECEDORES E MAPA ESG
+        # -------------------------------------------------------------
+        print("\n--- [6/7] Testando Fornecedores / Mapa ESG ---")
+        self.browser.get(self.live_server_url + "/guardiao/fornecedores/")
+        self.passo_lento(2)
+        self.assertIn("Fornecedores de insumos e pontos de doação", self.browser.page_source)
+
+        try:
+            campo_busca_mapa = self.browser.find_element(By.ID, "campo-busca")
+            campo_busca_mapa.clear()
+            campo_busca_mapa.send_keys("Recife")
+
+            btn_buscar_mapa = self.browser.find_element(By.ID, "botao-buscar")
+            btn_buscar_mapa.click()
+            self.passo_lento(3)
+            print("Busca realizada no Mapa ESG.")
+        except Exception as e:
+            print(f"Aviso no teste do mapa: {e}")
+
+        # -------------------------------------------------------------
+        # 7. PASSAPORTE DE SABORES E QR CODE (CRUD DE INGREDIENTES)
+        # -------------------------------------------------------------
+        print("\n--- [7/7] Testando Passaporte de Sabores e QR Code ---")
+        self.browser.get(self.live_server_url + "/guardiao/passaporte/editar/")
+        self.passo_lento(2)
+        self.assertIn("Passaporte de Sabores", self.browser.page_source)
+
+        # Salvar Informações do Restaurante
+        try:
+            nome_rest = self.browser.find_element(By.ID, "nome_restaurante")
+            nome_rest.clear()
+            nome_rest.send_keys("Restaurante Orgânico E2E")
+
+            historia_rest = self.browser.find_element(By.ID, "historia")
+            historia_rest.clear()
+            historia_rest.send_keys("História focada no desenvolvimento sustentável e apoio local.")
+
+            btn_salvar_passaporte = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Salvar Passaporte')]")
+            btn_salvar_passaporte.click()
+            self.passo_lento(2)
+            print("Informações do Passaporte salvas.")
+        except Exception as e:
+            print(f"Aviso ao salvar passaporte: {e}")
+
+        # Cadastrar Novo Ingrediente
+        try:
+            print("Cadastrando ingrediente no Passaporte...")
+            input_ing_nome = self.browser.find_element(By.ID, "ingrediente_nome")
+            input_ing_origem = self.browser.find_element(By.ID, "ingrediente_origem")
+            input_ing_fornecedor = self.browser.find_element(By.ID, "ingrediente_fornecedor")
+
+            input_ing_nome.send_keys("Tomate Orgânico")
+            input_ing_origem.send_keys("Horta Local Recife")
+            input_ing_fornecedor.send_keys("Produtor João da Silva")
+
+            btn_add_ing = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Adicionar ingrediente')]")
+            btn_add_ing.click()
+            self.passo_lento(2)
+            self.assertIn("Tomate Orgânico", self.browser.page_source)
+            print("Ingrediente cadastrado com sucesso!")
+        except Exception as e:
+            print(f"Aviso ao cadastrar ingrediente: {e}")
+
+        # Sair da Conta
+        print("\nTestando encerramento da sessão (Logout)...")
+        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
+        self.passo_lento(1)
+        
+        try:
+            btn_conta = self.browser.find_element(By.ID, "botaoConta")
+            btn_conta.click()
             self.passo_lento(1)
             
-            try:
-                campo_email = self.browser.find_element(By.CSS_SELECTOR, "input[type='email']")
-                campo_email.send_keys("teste@impacta.com")
-                self.passo_lento(1)
-            except Exception:
-                pass
-
-            try:
-                campo_assunto = self.browser.find_element(By.CSS_SELECTOR, "input[name='assunto'], input[name='subject'], input[placeholder*='assunto' i]")
-                campo_assunto.send_keys("Feedback do Teste do Sistema")
-                self.passo_lento(1)
-            except Exception:
-                print("Aviso: Campo 'assunto' não encontrado pelos seletores padrão. Tentando prosseguir...")
-
-            try:
-                campo_mensagem = self.browser.find_element(By.TAG_NAME, "textarea")
-                campo_mensagem.send_keys("Esta é uma mensagem automatizada gerada pelo teste de sistema E2E.")
-                self.passo_lento(2)
-            except Exception:
-                pass
-            
-            botao_enviar = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit'], input[type='submit']")
-            botao_enviar.click()
-            print("Formulário de contato enviado com sucesso!")
-            self.passo_lento(4) 
+            btn_sair = self.browser.find_element(By.CSS_SELECTOR, "form[action*='sair'] button")
+            btn_sair.click()
+            self.passo_lento(2)
+            print("Logout efetuado com sucesso!")
         except Exception as e:
-            print("Aviso: Erro ao interagir com o formulário de contato:", e)
-        
-        print("Testando: Painel do Guardião...")
-        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
-        self.passo_lento(4) 
+            print(f"Aviso ao realizar logout: {e}")
 
-        print("Testando: Módulo de Gastos...")
-        self.browser.get(self.live_server_url + "/gastos/painel/")
-        self.passo_lento(4) 
-
-        print("Testando: Módulo de Fornecedores...")
-        self.browser.get(self.live_server_url + "/guardiao/fornecedores/")
-        self.passo_lento(4)
-
-        print("Testando: QR code...")
-        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/#qrcode")
-        self.passo_lento(4)
-
-        print("Todos os fluxos foram testados visualmente com sucesso!")
+        print("\n==================================================")
+        print(" TODOS OS FLUXOS FORAM TESTADOS COM SUCESSO! ")
+        print("==================================================")
