@@ -487,19 +487,35 @@ main {
 .cards-solucoes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: 1fr;
-    max-width: 720px;
+    gap: 44px 60px;
+    max-width: 664px;
     margin-inline: auto;
 }
 
 .cards-solucoes .card {
-    min-height: 180px;
+    min-height: 280px;
+    padding: 30px 22px 22px;
     border: 0;
-    background: var(--azul);
-    color: var(--branco);
+    border-bottom: 3px solid var(--azul);
+    border-radius: 18px;
+    background: linear-gradient(45deg, #9fb5de 0%, #a6cd9c 100%);
+    box-shadow: 0 3px 6px rgb(0 0 0/ 18%);
+    color: #222;
 }
 
 .cards-solucoes .card h3 {
-    color: var(--branco);
+    margin-bottom: 16px;
+    color: #111;
+    font-family: var(--fonte-texto);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.cards-solucoes .card p{
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    text-align: left;
 }
 
 .card-desafio {
