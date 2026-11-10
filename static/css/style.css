@@ -250,6 +250,15 @@ main {
     font-family: var(--fonte-texto);
 }
 
+.categoria-esg {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.categoria-esg:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgb(11 61 110 / 12%);
+}
+
 /* Botões */
 
 .botao,
