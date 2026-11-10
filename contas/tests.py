@@ -500,4 +500,251 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             if m_res:
                 return respondidas, int(m_res.group(1))
  
-            
+            numero = self._numero_pergunta()
+            if numero is None:
+                raise AssertionError(f"Saiu do questionario inesperadamente: {url}")
+ 
+            radios = WebDriverWait(self.browser, 10).until(
+                EC.presence_of_all_elements_located(
+                    (By.CSS_SELECTOR, "input[name='resposta']")
+                )
+            )
+            self.assertEqual(len(radios), 4, f"Pergunta {numero}: esperava 4 opcoes")
+            form = radios[0].find_element(By.XPATH, "./ancestor::form")
+            botao = form.find_element(By.CSS_SELECTOR, "button[type='submit']")
+ 
+            # --- Extra 1: enviar sem escolher nada (pergunta 1)
+            if extras and numero == 1 and not testou_vazio:
+                testou_vazio = True
+                self.clicar_e_esperar_troca(botao)
+                self.assert_texto("Escolha uma das opções para continuar.")
+                continue
+ 
+            # --- Extra 2: tentar pular para a pergunta 10 (pergunta 2)
+            if extras and numero == 2 and not testou_pulo:
+                testou_pulo = True
+                self.ir(f"/guardiao/diagnostico/pergunta/{TOTAL_PERGUNTAS}/", pausa=1.0)
+                self.assertEqual(
+                    self._numero_pergunta(), 2,
+                    "Deveria ser redirecionado para a primeira pergunta pendente",
+                )
+                continue
+ 
+            # --- Extra 3: botao Voltar (pergunta 3)
+            if extras and numero == 3 and not testou_voltar:
+                testou_voltar = True
+                voltar = self.esperar("a.g-voltar")
+                self.clicar(voltar, pausa=1.0)
+                self.esperar_url("/pergunta/2/")
+                self.assertTrue(
+                    self.existe("input[name='resposta']:checked"),
+                    "A resposta da pergunta 2 deveria continuar marcada",
+                )
+                # reenvia (sem contar como nova resposta) e volta para a 3
+                novo = self.esperar("form.quiz-conteudo button[type='submit']")
+                self.clicar_e_esperar_troca(novo)
+                self.esperar_url("/pergunta/3/")
+                continue
+ 
+            # --- Resposta normal
+            escolha = politica(numero)
+            self.clicar(radios[escolha], pausa=0.6)
+            self.assertTrue(radios[escolha].is_selected())
+            self.clicar_e_esperar_troca(botao, pausa=0.8)
+            respondidas += 1
+            print(f"      pergunta {numero}/{TOTAL_PERGUNTAS} respondida (opcao {escolha})")
+ 
+        raise AssertionError("Questionario nao terminou no limite de rodadas")
+ 
+    def etapa_diagnostico_1(self):
+        self.ir("/guardiao/boas-vindas/")
+        self.clicar_e_esperar_troca(
+            self.esperar("form[action*='iniciar'] button[type='submit']")
+        )
+        self.esperar_url("/pergunta/1/")
+ 
+        # Respostas baixas (0 ou 1) para gerar varias missoes no plano de acao
+        respondidas, pk = self.responder_diagnostico(
+            politica=lambda n: n % 2, extras=True
+        )
+        self.assertEqual(respondidas, TOTAL_PERGUNTAS, "Nem todas as perguntas foram respondidas")
+        self.diag_pk = pk
+ 
+        from guardiao.models import Diagnostico, MissaoPlano
+ 
+        self.assertEqual(Diagnostico.objects.filter(usuario__email=EMAIL).count(), 1)
+        self.assertGreaterEqual(MissaoPlano.objects.filter(diagnostico_id=pk).count(), 1)
+        self.assert_texto("Seu diagnóstico está pronto!")
+ 
+    def etapa_resultado_detalhado(self):
+        pk = self.exigir_pk()
+        self.ir(f"/guardiao/diagnostico/{pk}/")
+        self.assert_texto("Seu diagnóstico está pronto!")
+        self.assertTrue(self.existe("a[href*='/detalhes/']"))
+ 
+        # atalho "Ver ultimo resultado" da tela inicial
+        self.ir("/guardiao/diagnostico/ultimo/", pausa=0.5)
+        self.assertIn(f"/guardiao/diagnostico/{pk}/", self.browser.current_url)
+ 
+        # Resultado detalhado por pilar
+        self.clicar(self.esperar_xpath("//a[contains(., 'Ver resultados detalhados')]"), pausa=1.5)
+        self.esperar_url("/detalhes/")
+        self.assert_texto("Resultado por pilar")
+        pilares = self.todos("details.det-pilar")
+        self.assertEqual(len(pilares), 3, "Esperava 3 pilares (Ambiental, Social, Governança)")
+        for nome in ("Ambiental", "Social", "Governança"):
+            self.assert_html(nome)
+        for resumo in self.todos("details.det-pilar summary"):
+            self.clicar(resumo, pausa=0.7)   # alterna
+            self.clicar(resumo, pausa=0.7)   # alterna de volta
+ 
+        # Voltar
+        self.clicar(self.esperar("a.g-voltar"), pausa=1.0)
+        self.assertTrue(re.search(rf"/guardiao/diagnostico/{pk}/$", self.browser.current_url))
+ 
+    def exigir_pk(self):
+        if not self.diag_pk:
+            raise AssertionError(
+                "Nao ha diagnostico concluido (a etapa do diagnostico falhou antes)"
+            )
+        return self.diag_pk
+ 
+    # ==================================================================
+    # 7. PLANO DE ACAO E MISSOES
+    # ==================================================================
+    def _botao_missao(self, indice, classe):
+        acoes = self.todos(".missao-acoes")[indice]
+        return acoes.find_element(By.CSS_SELECTOR, f"button.{classe}")
+ 
+    def etapa_plano_acao(self):
+        pk = self.exigir_pk()
+        self.ir(f"/guardiao/diagnostico/{pk}/plano/")
+        self.assert_texto("Plano de ação")
+        total = len(self.todos(".missao-acoes"))
+        self.assertGreaterEqual(total, 1, "O plano de acao deveria ter missoes")
+        print(f"      {total} missao(oes) no plano")
+ 
+        # Destacar a primeira missao
+        antes = self._botao_missao(0, "destaque")
+        self.assertEqual(antes.get_attribute("aria-pressed"), "false")
+        self.clicar_e_esperar_troca(antes)
+        self.assertEqual(self._botao_missao(0, "destaque").get_attribute("aria-pressed"), "true")
+ 
+        # Concluir a primeira missao
+        antes = self._botao_missao(0, "concluir")
+        self.assertEqual(antes.get_attribute("aria-pressed"), "false")
+        self.clicar_e_esperar_troca(antes)
+        self.assertEqual(self._botao_missao(0, "concluir").get_attribute("aria-pressed"), "true")
+ 
+        # Se houver mais de uma missao, conclui a ultima tambem
+        if total > 1:
+            ultimo = total - 1
+            self.clicar_e_esperar_troca(self._botao_missao(ultimo, "concluir"))
+            self.assertEqual(
+                self._botao_missao(ultimo, "concluir").get_attribute("aria-pressed"), "true"
+            )
+ 
+        # Atalho "Voltar" ao resultado e navegacao pelo botao do resultado
+        self.clicar(self.esperar("a.g-voltar"), pausa=1.0)
+        self.clicar(self.esperar_xpath("//a[contains(., 'Ver plano de ação')]"), pausa=1.0)
+        self.esperar_url("/plano/")
+ 
+    def etapa_missoes(self):
+        pk = self.exigir_pk()
+        self.ir(f"/guardiao/diagnostico/{pk}/plano/")
+        links = [
+            a.get_attribute("href")
+            for a in self.todos(".missao-acoes a.g-botao")
+        ]
+        self.assertTrue(links, "Nenhum link 'Ver missao' encontrado")
+ 
+        for i, href in enumerate(links, start=1):
+            self.browser.get(href)
+            self.passo_lento(0.8)
+            for secao in ("Como fazer", "Benefício", "Tempo e custo"):
+                self.assert_texto(secao, f"Missao {i}: faltou a secao {secao!r}")
+ 
+        # Na primeira missao: alterna concluida e destaque pela pagina de detalhe
+        self.browser.get(links[0])
+        self.passo_lento(0.5)
+        url_missao = self.browser.current_url
+ 
+        botoes = self.todos(".det-missao-acoes form button")
+        self.assertEqual(len(botoes), 2)
+        texto_antes = botoes[0].text
+        self.clicar_e_esperar_troca(botoes[0])
+        self.assertEqual(self.browser.current_url, url_missao, "Deveria continuar na missao")
+        self.assertNotEqual(
+            self.todos(".det-missao-acoes form button")[0].text, texto_antes,
+            "O botao 'concluida' deveria mudar de estado",
+        )
+ 
+        texto_antes = self.todos(".det-missao-acoes form button")[1].text
+        self.clicar_e_esperar_troca(self.todos(".det-missao-acoes form button")[1])
+        self.assertNotEqual(
+            self.todos(".det-missao-acoes form button")[1].text, texto_antes,
+            "O botao 'destacar' deveria mudar de estado",
+        )
+ 
+        # Voltar ao plano
+        self.clicar(self.esperar_xpath("//a[contains(., 'Voltar ao plano de ação')]"), pausa=1.0)
+        self.esperar_url_igual(f"/guardiao/diagnostico/{pk}/plano/")
+        self.assert_texto("Plano de ação")
+ 
+        # Missao inexistente -> 404
+        self.ir(f"/guardiao/diagnostico/{pk}/plano/missao-que-nao-existe/", pausa=0.5)
+        self.assertTrue(
+            "404" in self.browser.title or "Not Found" in self.corpo() or "não encontrada" in self.corpo().lower()
+            or "404" in self.corpo(),
+            "Missao inexistente deveria dar 404",
+        )
+ 
+    # ==================================================================
+    # 8. GASTOS
+    # ==================================================================
+    def etapa_gastos_dashboard(self):
+        from gastos.models import Gasto
+ 
+        self.ir("/gastos/")
+        self.assert_texto("Dashboard de gastos")
+        self.assert_texto("Total geral")
+ 
+        # Novo gasto: envio vazio -> erros
+        self.clicar(self.esperar_xpath("//a[contains(., 'Novo gasto')]"), pausa=1.0)
+        self.esperar_url("/gastos/novo/")
+        self.assert_texto("Novo gasto")
+        self.enviar(self.esperar_xpath("//button[contains(., 'Salvar gasto')]"), pausa=1.5)
+        self.assert_texto("Escolha uma categoria válida.")
+        self.assert_texto("Informe um valor numérico válido.")
+        self.assert_texto("Informe uma data válida.")
+ 
+        # Novo gasto valido
+        self.selecionar(self.esperar("select[name='categoria']"), valor="insumos")
+        self.digitar(self.esperar("input[name='descricao']"), "Compra de hortifruti E2E")
+        self.digitar(self.esperar("input[name='valor']"), "150,50")
+        self.definir_valor(
+            self.esperar("input[name='data']"), datetime.date.today().isoformat()
+        )
+        self.enviar(self.esperar_xpath("//button[contains(., 'Salvar gasto')]"), pausa=1.5)
+        self.esperar_url_igual("/gastos/")
+        self.assert_texto("Compra de hortifruti E2E")
+        self.assertTrue(Gasto.objects.filter(descricao="Compra de hortifruti E2E").exists())
+ 
+        # Voltar do formulario
+        self.ir("/gastos/novo/", pausa=0.5)
+        self.clicar(self.esperar_xpath("//a[contains(., 'Voltar ao dashboard')]"), pausa=1.0)
+        self.esperar_url_igual("/gastos/")
+ 
+        # Excluir (o confirm() e aceito automaticamente)
+        botao = self.esperar_xpath("//td[contains(., 'Compra de hortifruti E2E')]/following-sibling::td//button")
+        self.clicar_e_esperar_troca(botao, pausa=1.5)
+        self.assertFalse(
+            Gasto.objects.filter(descricao="Compra de hortifruti E2E").exists(),
+            "Gasto nao foi excluido",
+        )
+ 
+    def etapa_painel_cozinha(self):
+        self.ir("/gastos/painel/")
+        self.assert_texto("Painel da cozinha")
+ 
+        
