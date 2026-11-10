@@ -1,14 +1,19 @@
 import os
+import re
 import time
 import unittest
+
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 User = get_user_model()
+
+PASTA_DEBUG = "debug_e2e"
 
 
 @unittest.skipUnless(
@@ -16,314 +21,438 @@ User = get_user_model()
     "defina RODAR_SELENIUM=1 para rodar os testes do Chrome",
 )
 class SistemaCompletoE2ETest(StaticLiveServerTestCase):
+    # ------------------------------------------------------------------
+    # SETUP / TEARDOWN
+    # ------------------------------------------------------------------
     def setUp(self):
         opts = webdriver.ChromeOptions()
         if os.environ.get("HEADLESS"):
             opts.add_argument("--headless=new")
-        
+
         self.browser = webdriver.Chrome(options=opts)
-        self.browser.implicitly_wait(5)
+        # Sem implicitly_wait: usamos apenas esperas explicitas (WebDriverWait),
+        # senao as duas se misturam e geram esperas imprevisiveis.
+        self.browser.implicitly_wait(0)
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)
 
-    def tearDown(self):
-        time.sleep(2)
-        self.browser.quit()
+        self.falhas = []
+        os.makedirs(PASTA_DEBUG, exist_ok=True)
 
-    def passo_lento(self, segundos=2):
-        """Pausa para permitir acompanhamento visual da automação."""
+    def tearDown(self):
+        try:
+            time.sleep(1)
+        finally:
+            self.browser.quit()
+
+    # ------------------------------------------------------------------
+    # HELPERS
+    # ------------------------------------------------------------------
+    def passo_lento(self, segundos=1):
+        """Pausa para permitir acompanhamento visual da automacao."""
         time.sleep(segundos)
 
-    def test_fluxo_completo_sistema(self):
-        # -------------------------------------------------------------
-        # 1. PÁGINAS INSTITUCIONAIS PÚBLICAS E CONTATO
-        # -------------------------------------------------------------
-        print("\n--- [1/7] Testando Páginas Institucionais Públicas ---")
-        
-        # Home
-        self.browser.get(self.live_server_url + "/")
-        self.passo_lento(1)
-        self.assertIn("ESG aplicado ao ramo alimentício", self.browser.page_source)
+    def url(self, caminho):
+        return self.live_server_url + caminho
 
-        # Sobre
-        self.browser.get(self.live_server_url + "/sobre/")
-        self.passo_lento(1)
-        self.assertIn("Sobre o projeto", self.browser.page_source)
+    def esperar(self, css, timeout=10, visivel=True):
+        """Espera um elemento por seletor CSS e o retorna."""
+        cond = (
+            EC.visibility_of_element_located
+            if visivel
+            else EC.presence_of_element_located
+        )
+        return WebDriverWait(self.browser, timeout).until(cond((By.CSS_SELECTOR, css)))
 
-        # Desafios
-        self.browser.get(self.live_server_url + "/desafios/")
-        self.passo_lento(1)
-        self.assertIn("Desafios do ramo alimentício", self.browser.page_source)
-
-        # Soluções
-        self.browser.get(self.live_server_url + "/solucoes/")
-        self.passo_lento(1)
-        self.assertIn("Soluções do nosso projeto", self.browser.page_source)
-
-        # Contato & Preenchimento do Formulário
-        print("Testando formulário de Contato...")
-        self.browser.get(self.live_server_url + "/contato/")
-        self.passo_lento(1)
-
-        try:
-            input_nome = self.browser.find_element(By.CSS_SELECTOR, "input[name='nome'], input[type='text']")
-            input_nome.clear()
-            input_nome.send_keys("Testador E2E Selenium")
-
-            try:
-                input_email = self.browser.find_element(By.CSS_SELECTOR, "input[name='email'], input[type='email']")
-                input_email.clear()
-                input_email.send_keys("testador@impacta.com")
-            except Exception:
-                pass
-
-            try:
-                input_assunto = self.browser.find_element(By.CSS_SELECTOR, "input[name='assunto'], input[name='subject']")
-                input_assunto.clear()
-                input_assunto.send_keys("Teste de Contato E2E")
-            except Exception:
-                pass
-
-            try:
-                textarea_msg = self.browser.find_element(By.TAG_NAME, "textarea")
-                textarea_msg.clear()
-                textarea_msg.send_keys("Mensagem automatizada de teste do formulário de contato.")
-            except Exception:
-                pass
-
-            self.passo_lento(1)
-            btn_enviar = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit'], input[type='submit']")
-            self.browser.execute_script("arguments[0].click();", btn_enviar)
-            self.passo_lento(2)
-            print("Formulário de contato enviado com sucesso.")
-        except Exception as e:
-            print(f"Aviso ao testar contato: {e}")
-
-        # -------------------------------------------------------------
-        # 2. AUTENTICAÇÃO E GESTÃO DE CONTA (LOGIN E PERFIL)
-        # -------------------------------------------------------------
-        print("\n--- [2/7] Testando Autenticação e Gestão de Perfil ---")
-        
-        email_teste = "gestor.restaurante@impacta.com"
-        senha_teste = "SenhaSegura123!"
-        nome_teste = "Gestor ESG"
-
-        # 1. Cria o usuário no banco de dados
-        user = User.objects.create_user(
-            username=email_teste,
-            email=email_teste,
-            password=senha_teste,
-            first_name=nome_teste
+    def esperar_xpath(self, xpath, timeout=10):
+        return WebDriverWait(self.browser, timeout).until(
+            EC.presence_of_element_located((By.XPATH, xpath))
         )
 
-        # 2. Injeta o cookie de sessão do Django diretamente no Selenium
-        self.client.login(username=email_teste, password=senha_teste)
-        self.browser.get(self.live_server_url + "/")
-        session_cookie = self.client.cookies['sessionid']
-        self.browser.add_cookie({
-            'name': 'sessionid',
-            'value': session_cookie.value,
-            'path': '/',
-        })
-        print("Sessão de usuário autenticada e mantida com sucesso!")
+    def existe(self, css):
+        return len(self.browser.find_elements(By.CSS_SELECTOR, css)) > 0
 
-        # 3. Testa a atualização do perfil em Minha Conta
-        print("Atualizando dados em Minha Conta...")
-        self.browser.get(self.live_server_url + "/minha-conta/")
-        self.passo_lento(2)
+    def clicar(self, elemento):
+        """Rola ate o elemento e clica via JS (evita 'not interactable')."""
+        self.browser.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", elemento
+        )
+        self.browser.execute_script("arguments[0].click();", elemento)
 
+    def preencher(self, elemento, valor):
+        """Preenche um campo; se o Selenium nao conseguir digitar, usa JS."""
+        self.browser.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", elemento
+        )
         try:
-            campo_novo_nome = self.browser.find_element(By.CSS_SELECTOR, "input[name='first_name'], input[name='nome']")
-            campo_novo_nome.clear()
-            campo_novo_nome.send_keys("Gestor ESG Atualizado")
-            
-            btn_salvar_perfil = self.browser.find_element(By.CSS_SELECTOR, "form button[type='submit']")
-            self.browser.execute_script("arguments[0].click();", btn_salvar_perfil)
-            self.passo_lento(2)
-            print("Perfil atualizado com sucesso!")
-        except Exception as e:
-            print(f"Aviso ao atualizar perfil: {e}")
+            elemento.clear()
+            elemento.send_keys(valor)
+        except Exception:
+            self.browser.execute_script(
+                """
+                arguments[0].value = arguments[1];
+                arguments[0].dispatchEvent(new Event('input', {bubbles: true}));
+                arguments[0].dispatchEvent(new Event('change', {bubbles: true}));
+                """,
+                elemento,
+                valor,
+            )
 
-        # -------------------------------------------------------------
-        # 3. DIAGNÓSTICO ESG COMPLETO (RESPONDE TODAS AS PERGUNTAS)
-        # -------------------------------------------------------------
-        print("\n--- [3/7] Testando Diagnóstico ESG completo ---")
-        
-        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
-        self.passo_lento(2)
-
-        # Inicia o diagnóstico se estiver na tela inicial
+    def screenshot(self, nome):
         try:
-            btn_iniciar = self.browser.find_element(By.CSS_SELECTOR, "form[action*='iniciar'] button, a[href*='iniciar'], button.btn-iniciar")
-            self.browser.execute_script("arguments[0].click();", btn_iniciar)
-            self.passo_lento(2)
+            slug = re.sub(r"[^a-zA-Z0-9_-]+", "_", nome)[:60]
+            self.browser.save_screenshot(os.path.join(PASTA_DEBUG, f"{slug}.png"))
         except Exception:
             pass
 
-        print("Respondendo a TODAS as perguntas do Diagnóstico ESG...")
-        perguntas_respondidas = 0
-        
-        # Percorre dinamicamente todas as perguntas do questionário
-        for rodada in range(1, 25):
-            url_atual = self.browser.current_url.lower()
+    def tentar(self, nome, funcao):
+        """
+        Executa uma etapa. Se falhar, registra a falha (com screenshot e URL)
+        e segue para a proxima etapa. No final, o teste FALHA se houve alguma
+        falha, evitando o falso positivo de "tudo OK".
+        """
+        try:
+            funcao()
+        except Exception as e:
+            primeira_linha = (str(e).strip().splitlines() or [""])[0]
+            print(
+                f"  [FALHA] {nome}: {e.__class__.__name__} {primeira_linha}\n"
+                f"          URL: {self.browser.current_url}"
+            )
+            self.screenshot(f"falha_{nome}")
+            self.falhas.append(nome)
 
-            # Se for redirecionado para a tela de resultado final, encerra o loop
-            if "resultado" in url_atual and "pergunta" not in url_atual:
-                print("Tela de resultado final atingida!")
-                break
+    # ------------------------------------------------------------------
+    # DIAGNOSTICO ESG
+    # ------------------------------------------------------------------
+    def responder_diagnostico(self, max_rodadas=40):
+        """Responde todas as perguntas ate chegar na tela de resultado."""
+        respondidas = 0
+
+        for _ in range(max_rodadas):
+            if "resultado" in self.browser.current_url.lower():
+                print("  Tela de resultado final atingida!")
+                return respondidas
 
             try:
-                # Aguarda as opções do rádio button da pergunta atual
-                opcoes = self.wait.until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "input[type='radio']"))
-                )
-                if opcoes:
-                    # Clica na primeira alternativa da pergunta
-                    self.browser.execute_script("arguments[0].click();", opcoes[0])
-                    self.passo_lento(1)
-
-                # Clica no botão para avançar para a próxima pergunta
-                btn_avancar = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']")
-                self.browser.execute_script("arguments[0].click();", btn_avancar)
-                
-                perguntas_respondidas += 1
-                print(f"  -> Pergunta {perguntas_respondidas} respondida!")
-                self.passo_lento(2)
-            except Exception as err:
-                print(f"Concluindo questionário após {perguntas_respondidas} perguntas. (Status: {err})")
-                break
-
-        print(f"Diagnóstico ESG concluído! Total de {perguntas_respondidas} perguntas respondidas.")
-        self.passo_lento(2)
-
-        # Tela de Resultado Detalhado por Pilar
-        try:
-            print("Navegando para o Resultado Detalhado por Pilar...")
-            btn_detalhado = self.browser.find_element(By.XPATH, "//a[contains(text(), 'detalhad') or contains(@href, 'detalhad')]")
-            self.browser.execute_script("arguments[0].click();", btn_detalhado)
-            self.passo_lento(2)
-
-            accordions = self.browser.find_elements(By.TAG_NAME, "summary")
-            for summary in accordions:
-                self.browser.execute_script("arguments[0].click();", summary)
-                self.passo_lento(1)
-        except Exception as e:
-            print(f"Aviso no resultado detalhado: {e}")
-
-        # -------------------------------------------------------------
-        # 4. PLANO DE AÇÃO E MISSÕES
-        # -------------------------------------------------------------
-        print("\n--- [4/7] Testando Plano de Ação e Missões ---")
-        try:
-            btn_plano_acao = self.browser.find_element(By.XPATH, "//a[contains(text(), 'plano') or contains(@href, 'plano')]")
-            self.browser.execute_script("arguments[0].click();", btn_plano_acao)
-            self.passo_lento(2)
-
-            missoes = self.browser.find_elements(By.CSS_SELECTOR, ".missao-acoes a, a.btn-missao")
-            if missoes:
-                print("Visualizando detalhes da primeira missão...")
-                self.browser.execute_script("arguments[0].click();", missoes[0])
-                self.passo_lento(2)
-
-                try:
-                    btn_concluir = self.browser.find_element(
-                        By.XPATH, 
-                        "//button[contains(text(), 'Concluíd') or contains(text(), 'Marcar')]"
+                radios = WebDriverWait(self.browser, 5).until(
+                    EC.presence_of_all_elements_located(
+                        (By.CSS_SELECTOR, "input[type='radio']")
                     )
-                    self.browser.execute_script("arguments[0].click();", btn_concluir)
-                    self.passo_lento(2)
-                    print("Status da missão alternado!")
-                except Exception as e:
-                    print(f"Aviso ao alternar missão: {e}")
-        except Exception as e:
-            print(f"Aviso no plano de ação: {e}")
+                )
+            except TimeoutException:
+                print(
+                    f"  Sem radios. URL: {self.browser.current_url} | "
+                    f"Titulo: {self.browser.title}"
+                )
+                self.screenshot(f"diagnostico_sem_radios_{respondidas}")
 
-        # -------------------------------------------------------------
-        # 5. DASHBOARD E MÓDULO DE GASTOS
-        # -------------------------------------------------------------
-        print("\n--- [5/7] Testando Módulo de Gastos / Dashboard ---")
-        self.browser.get(self.live_server_url + "/gastos/painel/")
+                # Tenta avancar telas intermediarias (feedback, transicao de pilar...)
+                try:
+                    prox = self.browser.find_element(
+                        By.XPATH,
+                        "//a[contains(.,'Continuar') or contains(.,'Pr\u00f3xima') or contains(.,'Avan\u00e7ar')]"
+                        " | //button[contains(.,'Continuar') or contains(.,'Pr\u00f3xima') or contains(.,'Avan\u00e7ar')]",
+                    )
+                    self.clicar(prox)
+                    self.passo_lento(1)
+                    continue
+                except Exception:
+                    return respondidas
+
+            radio = radios[0]
+
+            # Usa o botao do FORMULARIO da pergunta (e nao o 1o submit da pagina,
+            # que pode ser do header).
+            try:
+                escopo = radio.find_element(By.XPATH, "./ancestor::form")
+            except Exception:
+                escopo = self.browser
+
+            self.clicar(radio)
+            self.passo_lento(0.5)
+            btn = escopo.find_element(
+                By.CSS_SELECTOR, "button[type='submit'], input[type='submit']"
+            )
+            self.clicar(btn)
+
+            # Espera a pagina trocar antes da proxima rodada
+            try:
+                WebDriverWait(self.browser, 10).until(EC.staleness_of(radio))
+            except TimeoutException:
+                print(
+                    "  A pagina nao mudou apos enviar a resposta "
+                    f"(URL: {self.browser.current_url})."
+                )
+                self.screenshot(f"diagnostico_nao_avancou_{respondidas}")
+                return respondidas
+
+            respondidas += 1
+            print(f"  -> Pergunta {respondidas} respondida!")
+            self.passo_lento(0.5)
+
+        return respondidas
+
+    # ------------------------------------------------------------------
+    # ETAPAS
+    # ------------------------------------------------------------------
+    def etapa_paginas_publicas(self):
+        paginas = [
+            ("/", "ESG aplicado ao ramo aliment\u00edcio"),
+            ("/sobre/", "Sobre o projeto"),
+            ("/desafios/", "Desafios do ramo aliment\u00edcio"),
+            ("/solucoes/", "Solu\u00e7\u00f5es do nosso projeto"),
+        ]
+        for caminho, texto in paginas:
+            self.browser.get(self.url(caminho))
+            self.passo_lento(0.5)
+            self.assertIn(texto, self.browser.page_source, f"Texto ausente em {caminho}")
+
+    def etapa_contato(self):
+        print("Testando formulario de Contato...")
+        self.browser.get(self.url("/contato/"))
+
+        nome = self.esperar("input[name='nome'], input[type='text']")
+        self.preencher(nome, "Testador E2E Selenium")
+
+        campos_opcionais = [
+            ("input[name='email'], input[type='email']", "testador@impacta.com"),
+            ("input[name='assunto'], input[name='subject']", "Teste de Contato E2E"),
+            ("textarea", "Mensagem automatizada de teste do formulario de contato."),
+        ]
+        for css, valor in campos_opcionais:
+            elementos = self.browser.find_elements(By.CSS_SELECTOR, css)
+            if elementos:
+                self.preencher(elementos[0], valor)
+
+        btn = self.esperar("button[type='submit'], input[type='submit']")
+        self.clicar(btn)
         self.passo_lento(2)
-        print("Dashboard de Gastos acessado com sucesso!")
+        print("  Formulario de contato enviado.")
 
-        # -------------------------------------------------------------
-        # 6. FORNECEDORES E MAPA ESG
-        # -------------------------------------------------------------
-        print("\n--- [6/7] Testando Fornecedores / Mapa ESG ---")
-        self.browser.get(self.live_server_url + "/guardiao/fornecedores/")
+    def etapa_login(self):
+        email = "gestor.restaurante@impacta.com"
+        senha = "SenhaSegura123!"
+
+        User.objects.create_user(
+            username=email, email=email, password=senha, first_name="Gestor ESG"
+        )
+
+        # Injeta o cookie de sessao do Django no Selenium
+        self.assertTrue(
+            self.client.login(username=email, password=senha),
+            "Login via test client falhou",
+        )
+        self.browser.get(self.url("/"))  # precisa estar no dominio para add_cookie
+        cookie = self.client.cookies["sessionid"]
+        self.browser.add_cookie(
+            {"name": "sessionid", "value": cookie.value, "path": "/"}
+        )
+        self.browser.get(self.url("/minha-conta/"))
+        self.assertNotIn(
+            "/login", self.browser.current_url.lower(),
+            "Sessao nao foi mantida (redirecionou para login)",
+        )
+        print("  Sessao de usuario autenticada e mantida!")
+
+    def etapa_perfil(self):
+        print("Atualizando dados em Minha Conta...")
+        self.browser.get(self.url("/minha-conta/"))
+
+        campo = self.esperar(
+            "input[name='first_name'], input[name='nome']", visivel=False
+        )
+        self.preencher(campo, "Gestor ESG Atualizado")
+
+        btn = self.esperar("form button[type='submit']", visivel=False)
+        self.clicar(btn)
         self.passo_lento(2)
+        print("  Perfil atualizado!")
 
-        try:
-            campo_busca_mapa = self.browser.find_element(By.CSS_SELECTOR, "#campo-busca, input[name='busca'], input[type='search']")
-            campo_busca_mapa.clear()
-            campo_busca_mapa.send_keys("Recife")
-
-            btn_buscar_mapa = self.browser.find_element(By.CSS_SELECTOR, "#botao-buscar, button[type='submit']")
-            self.browser.execute_script("arguments[0].click();", btn_buscar_mapa)
-            self.passo_lento(3)
-            print("Busca realizada com sucesso no Mapa ESG.")
-        except Exception as e:
-            print(f"Aviso no teste do mapa: {e}")
-
-        # -------------------------------------------------------------
-        # 7. PASSAPORTE DE SABORES E QR CODE (CRUD DE INGREDIENTES)
-        # -------------------------------------------------------------
-        print("\n--- [7/7] Testando Passaporte de Sabores e QR Code ---")
-        self.browser.get(self.live_server_url + "/guardiao/passaporte/editar/")
-        self.passo_lento(2)
-
-        # 1. Edita informações do Passaporte
-        try:
-            nome_rest = self.browser.find_element(By.CSS_SELECTOR, "#nome_restaurante, input[name='nome_restaurante']")
-            nome_rest.clear()
-            nome_rest.send_keys("Restaurante Orgânico E2E")
-
-            historia_rest = self.browser.find_element(By.CSS_SELECTOR, "#historia, textarea[name='historia']")
-            historia_rest.clear()
-            historia_rest.send_keys("História focada no desenvolvimento sustentável e apoio local.")
-
-            btn_salvar_passaporte = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Salvar Passaporte') or contains(text(), 'Salvar')]")
-            self.browser.execute_script("arguments[0].click();", btn_salvar_passaporte)
-            self.passo_lento(2)
-            print("Informações do Passaporte salvas!")
-        except Exception as e:
-            print(f"Aviso ao salvar passaporte: {e}")
-
-        # 2. Cadastra um ingrediente
-        try:
-            print("Cadastrating ingrediente no Passaporte...")
-            input_ing_nome = self.browser.find_element(By.CSS_SELECTOR, "#ingrediente_nome, input[name='nome']")
-            input_ing_origem = self.browser.find_element(By.CSS_SELECTOR, "#ingrediente_origem, input[name='origem']")
-            input_ing_fornecedor = self.browser.find_element(By.CSS_SELECTOR, "#ingrediente_fornecedor, input[name='fornecedor']")
-
-            input_ing_nome.send_keys("Tomate Orgânico")
-            input_ing_origem.send_keys("Horta Local Recife")
-            input_ing_fornecedor.send_keys("Produtor João da Silva")
-
-            btn_add_ing = self.browser.find_element(By.XPATH, "//button[contains(text(), 'Adicionar') or contains(text(), 'Cadastrar')]")
-            self.browser.execute_script("arguments[0].click();", btn_add_ing)
-            self.passo_lento(2)
-            print("Ingrediente cadastrado com sucesso!")
-        except Exception as e:
-            print(f"Aviso ao cadastrar ingrediente: {e}")
-
-        # 3. Encerramento da Sessão (Logout)
-        print("\nTestando encerramento da sessão (Logout)...")
-        self.browser.get(self.live_server_url + "/guardiao/boas-vindas/")
+    def etapa_diagnostico(self):
+        self.browser.get(self.url("/guardiao/boas-vindas/"))
         self.passo_lento(1)
-        
-        try:
-            btn_conta = self.browser.find_element(By.CSS_SELECTOR, "#botaoConta, .menu-usuario, a[href*='conta']")
-            self.browser.execute_script("arguments[0].click();", btn_conta)
+
+        # Inicia o diagnostico se estiver na tela inicial
+        iniciar = self.browser.find_elements(
+            By.CSS_SELECTOR,
+            "form[action*='iniciar'] button, a[href*='iniciar'], button.btn-iniciar",
+        )
+        if iniciar:
+            self.clicar(iniciar[0])
             self.passo_lento(1)
-            
-            btn_sair = self.browser.find_element(By.CSS_SELECTOR, "form[action*='sair'] button, a[href*='sair']")
-            self.browser.execute_script("arguments[0].click();", btn_sair)
-            self.passo_lento(2)
-            print("Logout efetuado com sucesso!")
-        except Exception as e:
-            print(f"Aviso ao realizar logout: {e}")
+
+        print("Respondendo a TODAS as perguntas do Diagnostico ESG...")
+        respondidas = self.responder_diagnostico()
+        print(f"  Total de {respondidas} perguntas respondidas.")
+
+        self.assertGreater(
+            respondidas, 1, "Diagnostico parou na primeira pergunta"
+        )
+        self.assertIn(
+            "resultado", self.browser.current_url.lower(),
+            "Diagnostico nao chegou na tela de resultado",
+        )
+
+    def etapa_resultado_detalhado(self):
+        print("Navegando para o Resultado Detalhado por Pilar...")
+        link = self.esperar_xpath(
+            "//a[contains(@href,'detalhad') or "
+            "contains(translate(., 'DETALHAD', 'detalhad'), 'detalhad')]"
+        )
+        self.clicar(link)
+        self.passo_lento(2)
+
+        for summary in self.browser.find_elements(By.TAG_NAME, "summary"):
+            self.clicar(summary)
+            self.passo_lento(0.5)
+
+    def etapa_plano_acao(self):
+        link = self.esperar_xpath(
+            "//a[contains(@href,'plano') or "
+            "contains(translate(., 'PLANO', 'plano'), 'plano')]"
+        )
+        self.clicar(link)
+        self.passo_lento(2)
+
+        missoes = self.browser.find_elements(
+            By.CSS_SELECTOR, ".missao-acoes a, a.btn-missao"
+        )
+        if not missoes:
+            print("  Nenhuma missao listada no plano de acao.")
+            return
+
+        print("  Visualizando detalhes da primeira missao...")
+        self.clicar(missoes[0])
+        self.passo_lento(1)
+
+        btn_concluir = self.esperar_xpath(
+            "//button[contains(., 'Conclu\u00edd') or contains(., 'Marcar')]"
+        )
+        self.clicar(btn_concluir)
+        self.passo_lento(2)
+        print("  Status da missao alternado!")
+
+    def etapa_gastos(self):
+        self.browser.get(self.url("/gastos/painel/"))
+        self.passo_lento(1)
+        self.assertNotIn("/login", self.browser.current_url.lower())
+        self.assertFalse(
+            self.existe("body.error-page") or "Server Error" in self.browser.title,
+            "Dashboard de gastos retornou erro",
+        )
+        print("  Dashboard de Gastos acessado!")
+
+    def etapa_fornecedores(self):
+        self.browser.get(self.url("/guardiao/fornecedores/"))
+
+        campo = self.esperar("#campo-busca, input[name='busca'], input[type='search']")
+        self.preencher(campo, "Recife")
+
+        btn = self.esperar("#botao-buscar, button[type='submit']")
+        self.clicar(btn)
+        self.passo_lento(2)
+        print("  Busca realizada no Mapa ESG.")
+
+    def etapa_passaporte_info(self):
+        self.browser.get(self.url("/guardiao/passaporte/editar/"))
+
+        nome = self.esperar("#nome_restaurante, input[name='nome_restaurante']")
+        self.preencher(nome, "Restaurante Organico E2E")
+
+        historia = self.esperar("#historia, textarea[name='historia']")
+        self.preencher(
+            historia, "Historia focada no desenvolvimento sustentavel e apoio local."
+        )
+
+        btn = self.esperar_xpath(
+            "//button[contains(., 'Salvar Passaporte') or contains(., 'Salvar')]"
+        )
+        self.clicar(btn)
+        self.passo_lento(2)
+        print("  Informacoes do Passaporte salvas!")
+
+    def etapa_passaporte_ingrediente(self):
+        print("Cadastrando ingrediente no Passaporte...")
+        # Garante que estamos na pagina certa mesmo se a etapa anterior falhou
+        if "passaporte/editar" not in self.browser.current_url:
+            self.browser.get(self.url("/guardiao/passaporte/editar/"))
+
+        nome = self.esperar("#ingrediente_nome, input[name='nome']")
+        origem = self.esperar("#ingrediente_origem, input[name='origem']")
+        fornecedor = self.esperar("#ingrediente_fornecedor, input[name='fornecedor']")
+
+        self.preencher(nome, "Tomate Organico")
+        self.preencher(origem, "Horta Local Recife")
+        self.preencher(fornecedor, "Produtor Joao da Silva")
+
+        btn = self.esperar_xpath(
+            "//button[contains(., 'Adicionar') or contains(., 'Cadastrar')]"
+        )
+        self.clicar(btn)
+        self.passo_lento(2)
+        print("  Ingrediente cadastrado!")
+
+    def etapa_logout(self):
+        print("Testando encerramento da sessao (Logout)...")
+        self.browser.get(self.url("/guardiao/boas-vindas/"))
+
+        # O link/botao de sair pode estar dentro de um menu da conta
+        menu = self.browser.find_elements(
+            By.CSS_SELECTOR, "#botaoConta, .menu-usuario, a[href*='conta']"
+        )
+        if menu:
+            self.clicar(menu[0])
+            self.passo_lento(1)
+
+        btn_sair = self.esperar(
+            "form[action*='sair'] button, a[href*='sair'], "
+            "form[action*='logout'] button, a[href*='logout']",
+            visivel=False,
+        )
+        self.clicar(btn_sair)
+        self.passo_lento(2)
+        print("  Logout efetuado!")
+
+    # ------------------------------------------------------------------
+    # TESTE PRINCIPAL
+    # ------------------------------------------------------------------
+    def test_fluxo_completo_sistema(self):
+        print("\n--- [1/7] Paginas Institucionais Publicas e Contato ---")
+        self.tentar("paginas_publicas", self.etapa_paginas_publicas)
+        self.tentar("contato", self.etapa_contato)
+
+        print("\n--- [2/7] Autenticacao e Gestao de Perfil ---")
+        # Sem login, as demais etapas nao fazem sentido: falha imediatamente
+        self.etapa_login()
+        self.tentar("perfil", self.etapa_perfil)
+
+        print("\n--- [3/7] Diagnostico ESG completo ---")
+        self.tentar("diagnostico", self.etapa_diagnostico)
+        self.tentar("resultado_detalhado", self.etapa_resultado_detalhado)
+
+        print("\n--- [4/7] Plano de Acao e Missoes ---")
+        self.tentar("plano_acao", self.etapa_plano_acao)
+
+        print("\n--- [5/7] Modulo de Gastos / Dashboard ---")
+        self.tentar("gastos", self.etapa_gastos)
+
+        print("\n--- [6/7] Fornecedores / Mapa ESG ---")
+        self.tentar("fornecedores", self.etapa_fornecedores)
+
+        print("\n--- [7/7] Passaporte de Sabores e QR Code ---")
+        self.tentar("passaporte_info", self.etapa_passaporte_info)
+        self.tentar("passaporte_ingrediente", self.etapa_passaporte_ingrediente)
+        self.tentar("logout", self.etapa_logout)
 
         print("\n==================================================")
-        print(" TODOS OS FLUXOS FORAM TESTADOS COM SUCESSO! ")
+        if self.falhas:
+            print(f" ETAPAS COM FALHA: {', '.join(self.falhas)}")
+            print(f" Screenshots em: ./{PASTA_DEBUG}/")
+        else:
+            print(" TODOS OS FLUXOS FORAM TESTADOS COM SUCESSO! ")
         print("==================================================")
+
+        self.assertEqual(
+            self.falhas, [], f"Etapas com falha: {', '.join(self.falhas)}"
+        )
