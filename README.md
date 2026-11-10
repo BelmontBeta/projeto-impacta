@@ -622,6 +622,8 @@ Implementar testes automatizados de sistema com Selenium para validar as histór
 - [x] Gravar um screencast da execução dos testes, com áudio;
 - [ ] Adicionar o link do screencast abaixo.
 
+[Vídeo Teste Selenium]()
+
 ---
 
 ## Screencast da execução dos testes
