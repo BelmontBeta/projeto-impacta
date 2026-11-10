@@ -151,7 +151,7 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         except Exception as e:
             print(f"Aviso ao atualizar perfil: {e}")
 
-        # -------------------------------------------------------------
+       # -------------------------------------------------------------
         # 3. DIAGNÓSTICO ESG E RESULTADO DETALHADO
         # -------------------------------------------------------------
         print("\n--- [3/7] Testando Diagnóstico ESG e Detalhamento por Pilar ---")
@@ -167,21 +167,31 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         # Preencher perguntas do quiz dinamicamente até o resultado
         print("Respondendo perguntas do Diagnóstico ESG...")
         perguntas_respondidas = 0
-        while True:
-            if "pergunta" not in self.browser.current_url and "resultado" in self.browser.current_url:
+        
+        # O diagnóstico possui até 16 perguntas
+        for _ in range(20):
+            # Se chegou na tela de resultado, encerra o questionário
+            if "resultado" in self.browser.current_url:
                 break
 
             try:
-                opcoes = self.browser.find_elements(By.CSS_SELECTOR, "input[type='radio']")
+                # Reencontra os botões de opção a cada nova página/pergunta carregada
+                opcoes = self.wait.until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "input[type='radio']"))
+                )
                 if opcoes:
-                    opcoes[0].click()
+                    # Clica via JavaScript se necessário para evitar intercepção por CSS
+                    self.browser.execute_script("arguments[0].click();", opcoes[0])
                     self.passo_lento(1)
 
-                btn_proxima = self.browser.find_element(By.CSS_SELECTOR, "button[type='submit']")
-                btn_proxima.click()
+                # Busca o botão de avançar na pergunta atual
+                btn_proxima = self.browser.find_element(By.CSS_SELECTOR, "form.quiz-conteudo button[type='submit'], form button[type='submit']")
+                self.browser.execute_script("arguments[0].click();", btn_proxima)
+                
                 perguntas_respondidas += 1
-                self.passo_lento(1)
-            except Exception:
+                self.passo_lento(2)
+            except Exception as err:
+                print(f"Erro/Aviso na pergunta {perguntas_respondidas + 1}: {err}")
                 break
 
         print(f"Diagnóstico finalizado ({perguntas_respondidas} perguntas respondidas).")
