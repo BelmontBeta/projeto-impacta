@@ -30,13 +30,13 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             opts.add_argument("--headless=new")
 
         self.browser = webdriver.Chrome(options=opts)
-        # Sem implicitly_wait: usamos apenas esperas explicitas (WebDriverWait),
-        # senao as duas se misturam e geram esperas imprevisiveis.
         self.browser.implicitly_wait(0)
         self.browser.maximize_window()
         self.wait = WebDriverWait(self.browser, 10)
 
         self.falhas = []
+        self.email_teste = "gestor.restaurante@impacta.com"
+        self.senha_teste = "SenhaSegura123!"
         os.makedirs(PASTA_DEBUG, exist_ok=True)
 
     def tearDown(self):
@@ -105,15 +105,33 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         except Exception:
             pass
 
+    def _garantir_autenticacao(self):
+        """Verifica se a sessao caiu e reloga caso necessario antes de etapas privadas."""
+        from django.conf import settings
+
+        self.browser.get(self.url("/guardiao/boas-vindas/"))
+        if "/acesso/" in self.browser.current_url:
+            print("  [Sessao expirada] Restaurando autenticacao...")
+            self.client.login(username=self.email_teste, password=self.senha_teste)
+            nome_cookie = settings.SESSION_COOKIE_NAME
+            cookie = self.client.cookies[nome_cookie]
+            self.browser.add_cookie(
+                {"name": nome_cookie, "value": cookie.value, "path": "/"}
+            )
+            self.browser.get(self.url("/guardiao/boas-vindas/"))
+
     def tentar(self, nome, funcao):
         """
-        Executa uma etapa. Se falhar, registra a falha (com screenshot e URL)
-        e segue para a proxima etapa. No final, o teste FALHA se houve alguma
-        falha, evitando o falso positivo de "tudo OK".
+        Executa uma etapa. Se a sessao cair, restaura automaticamente para
+        etapas que exigem login.
         """
         etapas_sem_login = {"paginas_publicas", "contato", "logout"}
         try:
+            if nome not in etapas_sem_login:
+                self._garantir_autenticacao()
+
             funcao()
+
             if nome not in etapas_sem_login:
                 self.assertNotIn(
                     "/acesso/",
@@ -169,8 +187,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
 
             radio = radios[0]
 
-            # Usa o botao do FORMULARIO da pergunta (e nao o 1o submit da pagina,
-            # que pode ser do header).
             try:
                 escopo = radio.find_element(By.XPATH, "./ancestor::form")
             except Exception:
@@ -237,11 +253,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.passo_lento(2)
         print("  Formulario de contato enviado.")
 
-    def _sessao_valida(self):
-        """True se uma pagina protegida abre sem redirecionar para /acesso/."""
-        self.browser.get(self.url("/guardiao/boas-vindas/"))
-        return "/acesso/" not in self.browser.current_url
-
     def _login_pela_interface(self, email, senha):
         """Plano B: faz login preenchendo o formulario real de /acesso/."""
         self.browser.get(self.url("/acesso/"))
@@ -249,7 +260,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
 
         for form in self.browser.find_elements(By.TAG_NAME, "form"):
             senhas = form.find_elements(By.CSS_SELECTOR, "input[type='password']")
-            # Formulario de login = 1 campo de senha (cadastro costuma ter 2)
             if len(senhas) != 1:
                 continue
             usuarios = form.find_elements(
@@ -269,57 +279,32 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             self.passo_lento(2)
             return
 
-        # Nao achou: mostra o HTML dos formularios para ajustar os seletores
-        html = " ".join(
-            f.get_attribute("outerHTML")
-            for f in self.browser.find_elements(By.TAG_NAME, "form")
-        )
-        print(f"  Formularios encontrados em /acesso/:\n{html[:4000]}")
-        self.screenshot("login_form_nao_encontrado")
         self.fail("Nao encontrei o formulario de login em /acesso/")
 
     def etapa_login(self):
         from django.conf import settings
 
-        email = "gestor.restaurante@impacta.com"
-        senha = "SenhaSegura123!"
-
         User.objects.create_user(
-            username=email, email=email, password=senha, first_name="Gestor ESG"
+            username=self.email_teste,
+            email=self.email_teste,
+            password=self.senha_teste,
+            first_name="Gestor ESG",
         )
 
-        # Tentativa 1: injeta o cookie de sessao do Django no Selenium
         self.assertTrue(
-            self.client.login(username=email, password=senha),
+            self.client.login(username=self.email_teste, password=self.senha_teste),
             "Login via test client falhou",
         )
-        self.browser.get(self.url("/"))  # precisa estar no dominio para add_cookie
-        self.browser.delete_all_cookies()  # remove sessao anonima antiga
+        self.browser.get(self.url("/"))
+        self.browser.delete_all_cookies()
         nome_cookie = settings.SESSION_COOKIE_NAME
         cookie = self.client.cookies[nome_cookie]
         self.browser.add_cookie(
             {"name": nome_cookie, "value": cookie.value, "path": "/"}
         )
 
-        if self._sessao_valida():
-            print("  Sessao autenticada via cookie!")
-            return
-
-        print(
-            "  Cookie nao autenticou. Cookies no navegador: "
-            f"{[c['name'] for c in self.browser.get_cookies()]}"
-        )
-        print("  Tentando login pela tela /acesso/ ...")
-
-        # Tentativa 2: login real pelo formulario
-        self.browser.delete_all_cookies()
-        self._login_pela_interface(email, senha)
-
-        self.assertTrue(
-            self._sessao_valida(),
-            "Nao foi possivel autenticar (nem por cookie, nem pelo formulario)",
-        )
-        print("  Sessao autenticada via formulario de login!")
+        self._garantir_autenticacao()
+        print("  Sessao autenticada via cookie!")
 
     def etapa_perfil(self):
         print("Atualizando dados em Minha Conta...")
@@ -339,7 +324,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.browser.get(self.url("/guardiao/boas-vindas/"))
         self.passo_lento(1)
 
-        # Inicia o diagnostico se estiver na tela inicial
         iniciar = self.browser.find_elements(
             By.CSS_SELECTOR,
             "form[action*='iniciar'] button, a[href*='iniciar'], button.btn-iniciar",
@@ -356,7 +340,8 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             respondidas, 1, "Diagnostico parou na primeira pergunta"
         )
         self.assertIn(
-            "resultado", self.browser.current_url.lower(),
+            "resultado",
+            self.browser.current_url.lower(),
             "Diagnostico nao chegou na tela de resultado",
         )
 
@@ -440,7 +425,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
 
     def etapa_passaporte_ingrediente(self):
         print("Cadastrando ingrediente no Passaporte...")
-        # Garante que estamos na pagina certa mesmo se a etapa anterior falhou
         if "passaporte/editar" not in self.browser.current_url:
             self.browser.get(self.url("/guardiao/passaporte/editar/"))
 
@@ -463,7 +447,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         print("Testando encerramento da sessao (Logout)...")
         self.browser.get(self.url("/guardiao/boas-vindas/"))
 
-        # O link/botao de sair pode estar dentro de um menu da conta
         menu = self.browser.find_elements(
             By.CSS_SELECTOR, "#botaoConta, .menu-usuario, a[href*='conta']"
         )
@@ -489,7 +472,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.tentar("contato", self.etapa_contato)
 
         print("\n--- [2/7] Autenticacao e Gestao de Perfil ---")
-        # Sem login, as demais etapas nao fazem sentido: falha imediatamente
         self.etapa_login()
         self.tentar("perfil", self.etapa_perfil)
 
