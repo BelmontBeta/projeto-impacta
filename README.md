@@ -683,5 +683,3 @@ A documentação do projeto deve ser clara e objetiva, permitindo que qualquer p
 Para dúvidas ou sugestões sobre o projeto, entre em contato com um dos membros da equipe.
 
 ---
-
-**Última atualização:** 10/11/2026
