@@ -18,7 +18,8 @@ User = get_user_model()
 class SistemaCompletoE2ETest(StaticLiveServerTestCase):
     def setUp(self):
         opts = webdriver.ChromeOptions()
-        if os.environ.get("CI"):
+        # Só ativa o headless se você definir HEADLESS=1 no terminal
+        if os.environ.get("HEADLESS"):
             opts.add_argument("--headless=new")
         
         self.browser = webdriver.Chrome(options=opts)
