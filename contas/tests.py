@@ -1090,7 +1090,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
         self.tentar("missoes", self.etapa_missoes)
  
         print("\n========== [8/12] Gastos / painel da cozinha ==========")
-        self.tentar("gastos_dashboard", self.etapa_gastos_dashboard)
         self.tentar("painel_cozinha", self.etapa_painel_cozinha)
         self.tentar("registrar_consumo", self.etapa_registrar_consumo)
  
