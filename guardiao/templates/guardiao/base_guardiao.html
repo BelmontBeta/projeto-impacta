@@ -12,6 +12,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'guardiao/css/guardiao.css' %}">
+        <style>
+        .g-conta-menu { display: none; position: absolute; right: 0; top: 52px; width: 300px; background: #fff; border: 1px solid #e5e7eb; border-radius: 18px; box-shadow: 0 18px 40px -12px rgba(15,40,80,.22), 0 4px 12px rgba(15,40,80,.06); padding: 12px; z-index: 100; }
+        .g-conta-menu.aberto { display: block; }
+        .g-conta-dados { display: flex; align-items: center; gap: 12px; padding: 6px 8px 14px; border-bottom: 1px solid #e5e7eb; margin-bottom: 8px; }
+        .g-conta-avatar { position: relative; flex: 0 0 48px; width: 48px; height: 48px; border-radius: 50%; background: #eaf2f8; color: #174a7e; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; }
+        .g-conta-avatar::after { content: ""; position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; border: 2px solid #fff; }
+        .g-conta-info { min-width: 0; }
+        .g-conta-info strong, .g-conta-info span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .g-conta-info strong { color: #1f2937; font-size: 15px; margin-bottom: 2px; }
+        .g-conta-info span { color: #64748b; font-size: 12.5px; }
+        .g-conta-editar, .g-sair { display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box; padding: 12px 14px; border: none; border-radius: 12px; background: transparent; font-family: inherit; font-size: 14px; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer; transition: background .15s; }
+        .g-conta-editar svg, .g-sair svg { flex: 0 0 20px; width: 20px; height: 20px; }
+        .g-menu-sep { width: 1px; height: 20px; background: currentColor; opacity: .25; }
+        .g-menu-label { flex: 1; }
+        .g-conta-editar .g-menu-seta { flex: 0 0 16px; width: 16px; height: 16px; transition: transform .15s; }
+        .g-conta-editar, .g-conta-editar:link, .g-conta-editar:visited { color: #1769aa; background: #edf4fb; }
+        .g-conta-editar:hover { background: #dfeaf6; }
+        .g-conta-editar:hover .g-menu-seta { transform: translateX(3px); }
+        .g-conta-menu form { margin-top: 4px; }
+        .g-sair { color: #dc2626; }
+        .g-sair:hover { background: #fef2f2; }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -93,21 +115,30 @@
             <div class="g-conta-menu" id="menuConta">
 
                 <div class="g-conta-dados">
-                    <strong>
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </strong>
-
-                    <span>{{ request.user.email }}</span>
+                    <div class="g-conta-avatar">
+                        {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                    </div>
+                    <div class="g-conta-info">
+                        <strong>
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </strong>
+                        <span>{{ request.user.email }}</span>
+                    </div>
                 </div>
 
                 <a class="g-conta-editar" href="{% url 'minha_conta' %}">
-                    Editar minha conta
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="7" r="3.5"/><path d="M3.5 20v-1a6 6 0 0 1 6-6"/><circle cx="17.5" cy="17.5" r="2"/><path d="M17.5 13.8v1.2M17.5 20v1.2M13.8 17.5H15M20 17.5h1.2M14.9 14.9l.9.9M19.2 19.2l.9.9M20.1 14.9l-.9.9M15.8 19.2l-.9.9"/></svg>
+                    <span class="g-menu-sep"></span>
+                    <span class="g-menu-label">Editar minha conta</span>
+                    <svg class="g-menu-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
                 </a>
 
                 <form method="post" action="{% url 'sair' %}">
                     {% csrf_token %}
                     <button type="submit" class="g-sair">
-                        Sair da conta
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M11 12h9M16 8l4 4-4 4"/></svg>
+                        <span class="g-menu-sep"></span>
+                        <span class="g-menu-label">Sair da conta</span>
                     </button>
                 </form>
 
