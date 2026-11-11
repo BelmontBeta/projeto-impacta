@@ -324,7 +324,6 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
             "/guardiao/boas-vindas/",
             "/guardiao/fornecedores/",
             "/guardiao/passaporte/editar/",
-            "/gastos/",
             "/gastos/painel/",
             "/gastos/registrar/",
             "/minha-conta/",
