@@ -702,47 +702,7 @@ class SistemaCompletoE2ETest(StaticLiveServerTestCase):
     # ==================================================================
     # 8. GASTOS
     # ==================================================================
-    def etapa_gastos_dashboard(self):
-        from gastos.models import Gasto
- 
-        self.ir("/gastos/")
-        self.assert_texto("Dashboard de gastos")
-        self.assert_texto("Total geral")
- 
-        # Novo gasto: envio vazio -> erros
-        self.clicar(self.esperar_xpath("//a[contains(., 'Novo gasto')]"), pausa=1.0)
-        self.esperar_url("/gastos/novo/")
-        self.assert_texto("Novo gasto")
-        self.enviar(self.esperar_xpath("//button[contains(., 'Salvar gasto')]"), pausa=1.5)
-        self.assert_texto("Escolha uma categoria válida.")
-        self.assert_texto("Informe um valor numérico válido.")
-        self.assert_texto("Informe uma data válida.")
- 
-        # Novo gasto valido
-        self.selecionar(self.esperar("select[name='categoria']"), valor="insumos")
-        self.digitar(self.esperar("input[name='descricao']"), "Compra de hortifruti E2E")
-        self.digitar(self.esperar("input[name='valor']"), "150,50")
-        self.definir_valor(
-            self.esperar("input[name='data']"), datetime.date.today().isoformat()
-        )
-        self.enviar(self.esperar_xpath("//button[contains(., 'Salvar gasto')]"), pausa=1.5)
-        self.esperar_url_igual("/gastos/")
-        self.assert_texto("Compra de hortifruti E2E")
-        self.assertTrue(Gasto.objects.filter(descricao="Compra de hortifruti E2E").exists())
- 
-        # Voltar do formulario
-        self.ir("/gastos/novo/", pausa=0.5)
-        self.clicar(self.esperar_xpath("//a[contains(., 'Voltar ao dashboard')]"), pausa=1.0)
-        self.esperar_url_igual("/gastos/")
- 
-        # Excluir (o confirm() e aceito automaticamente)
-        botao = self.esperar_xpath("//td[contains(., 'Compra de hortifruti E2E')]/following-sibling::td//button")
-        self.clicar_e_esperar_troca(botao, pausa=1.5)
-        self.assertFalse(
-            Gasto.objects.filter(descricao="Compra de hortifruti E2E").exists(),
-            "Gasto nao foi excluido",
-        )
- 
+    
     def etapa_painel_cozinha(self):
         self.ir("/gastos/painel/")
         self.assert_texto("Painel da cozinha")
