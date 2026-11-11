@@ -1,3 +1,7 @@
+#COMANDO PARA TESTE NO CMD:
+#set RODAR_SELENIUM=1 && set VELOCIDADE=0.2 && python manage.py test contas.tests.SistemaCompletoE2ETest
+#OBS: lembre-se de baixar o requirements.txt antes
+
 import datetime
 import os
 import re
