@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Senha{% endblock %}
+{% block content %}
+
+<section class="section">
+  <div class="container">
+    {% if etapa == "solicitar" %}
+      <h1>Esqueci minha senha</h1>
+      {% if erro %}<p>{{ erro }}</p>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="Seu e-mail" required>
+        <button type="submit">Enviar link</button>
+      </form>
+
+    {% elif etapa == "enviado" %}
+      <h1>Verifique seu e-mail</h1>
+      <p>Se o e-mail estiver cadastrado, enviaremos um link para redefinir a senha.</p>
+
+    {% elif etapa == "redefinir" %}
+      <h1>Redefinir senha</h1>
+      {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+
+      {% if link_valido %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="password" name="nova_senha" placeholder="Nova senha" required>
+          <input type="password" name="confirmar_senha" placeholder="Confirme a senha" required>
+          <button type="submit">Salvar senha</button>
+        </form>
+      {% else %}
+        <a href="{% url 'esqueci_senha' %}">Solicitar outro link</a>
+      {% endif %}
+
+    {% elif etapa == "concluido" %}
+      <h1>Senha redefinida</h1>
+      <a href="{% url 'acesso' %}">Entrar</a>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

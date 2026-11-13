@@ -70,9 +70,33 @@
 
                 <div class="form-grupo">
                     <label for="login-senha">Senha</label>
-                    <input type="password" id="login-senha" name="senha"
-                           autocomplete="current-password" required>
+
+                    <div class="senha-campo">
+                        <input
+                            type="password"
+                            id="login-senha"
+                            name="senha"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="senha-olho"
+                            aria-label="Mostrar senha"
+                            aria-pressed="false"
+                            data-mostrar-senha="login-senha"
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
+
+                <a class="auth-esqueci-senha" href="{% url 'esqueci_senha' %}">
+                    Esqueci minha senha
+                </a>
 
                 <button type="submit" class="botao-formulario botao-auth">
                     Entrar
@@ -172,6 +196,24 @@
                     primeiroCampo.focus({ preventScroll: true });
                 }
             });
+        });
+    });
+
+    document.querySelectorAll("[data-mostrar-senha]").forEach(botao => {
+        botao.addEventListener("click", () => {
+            const campo = document.getElementById(
+                botao.dataset.mostrarSenha
+            );
+
+            if (!campo) return;
+
+            const mostrar = campo.type === "password";
+            campo.type = mostrar ? "text" : "password";
+            botao.setAttribute("aria-pressed", String(mostrar));
+            botao.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar senha" : "Mostrar senha"
+            );
         });
     });
 </script>

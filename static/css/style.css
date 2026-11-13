@@ -1248,6 +1248,66 @@ main {
     text-transform: uppercase;
 }
 
+/* Campo de senha com botão para mostrar/esconder */
+.senha-campo {
+    position: relative;
+}
+
+.senha-campo input {
+    padding-right: 46px;
+}
+
+.senha-olho {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    transform: translateY(-50%);
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--azul-escuro);
+    cursor: pointer;
+}
+
+.senha-olho:hover {
+    background: rgb(11 61 110 / 10%);
+}
+
+.senha-olho:focus-visible {
+    outline: 2px solid var(--azul);
+    outline-offset: 2px;
+}
+
+.senha-olho svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+/* Link abaixo do campo de senha */
+.auth-esqueci-senha {
+    align-self: flex-start;
+    margin-top: -8px;
+    margin-bottom: 16px;
+    color: var(--azul-escuro);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-esqueci-senha:hover {
+    text-decoration: underline;
+}
+
 .botao-icone {
     width: 24px;
     height: 24px;
