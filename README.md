@@ -195,6 +195,17 @@ A aplicação ficará disponível em:
 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
+## 🔄 CI/CD
+
+[![CI](https://github.com/BelmontBeta/projeto-impacta/actions/workflows/ci.yml/badge.svg)](https://github.com/BelmontBeta/projeto-impacta/actions/workflows/ci.yml)
+
+A cada push ou pull request na `main`, o GitHub Actions instala as dependências,
+executa o build (`collectstatic` e `migrate`) e roda os testes automatizados
+(`python manage.py test`). O deploy no Render só ocorre após a aprovação do CI.
+
+Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+
+🎥 [Screencast do CI/CD: build, execução dos testes e deployment]    (https://youtu.be/SEU_VIDEO)
 
 ## 🚀 Deploy
 
