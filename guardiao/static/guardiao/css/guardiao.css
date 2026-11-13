@@ -1267,13 +1267,28 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
 }
 /* =====================================================
    PAINEL DA COZINHA E REGISTRO DE CONSUMO (app gastos)
+   Identidade Impacta: azul #497ECC · verde #46944B · preto #000000 · branco #FFFFFF
+   Títulos: Poppins · Textos: Open Sans
    Classes com prefixo p- para não misturar com o resto.
    ===================================================== */
 
 .p-pagina {
+    --p-azul: #497ECC;
+    --p-verde: #46944B;
+    --p-preto: #000000;
+    --p-branco: #FFFFFF;
+    --p-azul-leve: rgba(73, 126, 204, 0.10);
+    --p-verde-leve: rgba(70, 148, 75, 0.12);
+    --p-borda: rgba(0, 0, 0, 0.12);
+    --p-suave: rgba(0, 0, 0, 0.62);
+    --p-fonte-titulo: "Poppins", Arial, Helvetica, sans-serif;
+    --p-fonte-texto: "Open Sans", Arial, Helvetica, sans-serif;
+
     max-width: 1100px;
     margin: 0 auto;
     padding: 32px 24px 64px;
+    font-family: var(--p-fonte-texto);
+    color: var(--p-preto);
 }
 
 .p-topo {
@@ -1285,10 +1300,20 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     margin-bottom: 24px;
 }
 
+/* Logo: largura mínima 88px e área de proteção ao redor (manual da marca) */
+.p-logo {
+    display: block;
+    width: 120px;
+    min-width: 88px;
+    height: auto;
+    margin: 0 0 16px;
+}
+
 .p-titulo {
-    font-family: var(--g-fonte-titulo);
+    font-family: var(--p-fonte-titulo);
     font-size: 2rem;
-    color: var(--g-navy);
+    font-weight: 600;
+    color: var(--p-preto);
     margin: 0 0 8px;
 }
 
@@ -1298,34 +1323,35 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     flex-wrap: wrap;
     gap: 12px;
     margin: 0;
-    color: #b42318;
-    font-weight: 600;
+    padding-left: 10px;
+    border-left: 4px solid var(--p-preto);
+    color: var(--p-preto);
+    font-weight: 700;
 }
 
-/* Botões em abas: Hoje / Semana / Mês e Água / Energia / Desperdício */
+/* Botões em abas */
 .p-abas {
     display: inline-flex;
     margin-bottom: 12px;
-    border: 1px solid var(--g-borda);
+    border: 1px solid var(--p-borda);
     border-radius: 8px;
     overflow: hidden;
-    background: var(--g-azul-claro);
+    background: var(--p-azul-leve);
 }
 
-.p-topo .p-abas {
-    margin-bottom: 0;
-}
+.p-topo .p-abas { margin-bottom: 0; }
 
 .p-abas a {
     padding: 8px 16px;
-    color: var(--g-texto);
+    color: var(--p-preto);
     font-weight: 500;
     text-decoration: none;
 }
 
 .p-abas a.ativa {
-    background: var(--g-azul);
-    color: var(--g-branco);
+    background: var(--p-azul);
+    color: var(--p-branco);
+    font-weight: 600;
 }
 
 /* Aviso de painel vazio */
@@ -1336,10 +1362,10 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     gap: 12px;
     margin-bottom: 24px;
     padding: 16px 20px;
-    border: 1px solid var(--g-borda);
+    border: 1px solid var(--p-borda);
     border-radius: 12px;
-    background: var(--g-azul-claro);
-    color: var(--g-navy);
+    background: var(--p-azul-leve);
+    color: var(--p-preto);
 }
 
 /* Cartões e caixas */
@@ -1352,77 +1378,68 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
 
 .p-cartao,
 .p-caixa {
-    background: var(--g-branco);
-    border: 1px solid var(--g-borda);
+    background: var(--p-branco);
+    border: 1px solid var(--p-borda);
     border-radius: 12px;
     padding: 20px;
+    min-width: 0;
 }
 
 .p-cartao h2,
 .p-caixa h2 {
     margin: 0 0 8px;
+    font-family: var(--p-fonte-titulo);
     font-size: 1rem;
-    color: var(--g-navy);
+    font-weight: 600;
+    color: var(--p-preto);
 }
 
 .p-valor,
 .p-numero {
     margin: 0;
+    font-family: var(--p-fonte-titulo);
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--g-navy);
+    color: var(--p-azul);
 }
 
-.p-numero {
-    margin-top: 14px;
-}
+.p-numero { margin-top: 14px; }
 
 .p-cartao small,
-.p-resultado small {
-    color: var(--g-suave);
-}
+.p-resultado small { color: var(--p-suave); }
 
-/* Situação da meta: dentro (verde) ou acima (vermelho) */
+/* Situação da meta: dentro (verde) ou acima (preto) */
 .p-status {
     margin: 8px 0 0;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--g-suave);
+    color: var(--p-suave);
 }
 
-.p-status.dentro {
-    color: var(--g-verde);
-}
-
-.p-status.acima {
-    color: #b42318;
-}
+.p-status.dentro { color: var(--p-verde); }
+.p-status.dentro::before { content: "✓ "; }
+.p-status.acima { color: var(--p-preto); font-weight: 700; }
+.p-status.acima::before { content: "▲ "; }
 
 /* Barra de progresso da meta */
 .p-barra {
     height: 8px;
     margin: 10px 0 6px;
     border-radius: 4px;
-    background: var(--g-trilho);
+    background: var(--p-azul-leve);
     overflow: hidden;
 }
 
-.p-barra div {
-    height: 100%;
-    background: var(--g-azul);
-}
-
-.p-barra div.estourou {
-    background: #b42318;
-}
+.p-barra div { height: 100%; background: var(--p-azul); }
+.p-barra div.estourou { background: var(--p-preto); }
 
 /* Dica abaixo do gráfico */
 .p-dica {
     margin: 12px 0 0;
     padding: 10px 14px;
     border-radius: 8px;
-    background: var(--g-azul-claro);
-    color: var(--g-navy);
+    background: var(--p-azul-leve);
+    color: var(--p-preto);
     font-size: 0.9rem;
 }
 
@@ -1458,14 +1475,13 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
 .p-form select {
     width: 100%;
     padding: 9px 10px;
-    border: 1px solid var(--g-borda);
+    border: 1px solid var(--p-borda);
     border-radius: 8px;
-    background: var(--g-branco);
+    background: var(--p-branco);
+    font-family: inherit;
 }
 
-.p-form button {
-    margin-top: 16px;
-}
+.p-form button { margin-top: 16px; }
 
 .p-item {
     display: flex;
@@ -1473,17 +1489,25 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     align-items: center;
     gap: 12px;
     padding: 10px 0;
-    border-bottom: 1px solid var(--g-borda);
+    border-bottom: 1px solid var(--p-borda);
 }
 
 .p-mensagem {
     padding: 10px 14px;
     border-radius: 8px;
-    background: var(--g-verde-bg);
-    color: var(--g-verde);
+    background: var(--p-verde-leve);
+    color: var(--p-preto);
+    border-left: 4px solid var(--p-verde);
     font-weight: 600;
 }
 
+.p-mensagem.error {
+    background: rgba(0, 0, 0, 0.06);
+    border-left-color: var(--p-preto);
+    color: var(--p-preto);
+}
+
+/* mantido igual ao original: é usado também fora de gastos */
 .errorlist {
     margin: 4px 0 0;
     padding: 0;
@@ -1498,31 +1522,36 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     padding: 10px 18px;
     border: 0;
     border-radius: 8px;
-    background: var(--g-azul);
-    color: var(--g-branco);
+    background: var(--p-azul);
+    color: var(--p-branco);
+    font-family: var(--p-fonte-titulo);
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
 }
 
-.p-botao:hover {
-    background: var(--g-azul-escuro);
-}
+.p-botao:hover { filter: brightness(0.9); }
 
 .p-botao-leve {
     display: inline-block;
     padding: 4px 10px;
     border: 0;
     border-radius: 6px;
-    background: var(--g-azul-claro);
-    color: var(--g-azul-escuro);
+    background: var(--p-azul-leve);
+    color: var(--p-preto);
     font-size: 0.85rem;
+    font-weight: 600;
     text-decoration: none;
     cursor: pointer;
 }
 
-.p-caixa {
-    min-width: 0;
+.p-botao-leve:hover { filter: brightness(0.95); }
+
+.p-botao:focus-visible,
+.p-botao-leve:focus-visible,
+.p-abas a:focus-visible {
+    outline: 3px solid var(--p-preto);
+    outline-offset: 2px;
 }
 
 .p-grafico {
@@ -1531,9 +1560,81 @@ a.quiz-item:hover .quiz-item-texto { color: var(--g-azul); }
     margin-bottom: 8px;
 }
 
-.p-mensagem.error {
-    background: #fde8e6;
-    color: #b42318;
+/* Metas e dicas de conclusão */
+.p-metas { margin-bottom: 24px; }
+
+.p-meta {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid var(--p-borda);
+    border-left: 4px solid var(--p-verde);
+    border-radius: 12px;
+    background: var(--p-branco);
+}
+
+.p-meta-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.p-meta h3 {
+    margin: 0;
+    font-family: var(--p-fonte-titulo);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--p-preto);
+}
+
+.p-meta small { color: var(--p-suave); }
+
+.p-meta-sub {
+    margin: 14px 0 6px;
+    font-family: var(--p-fonte-titulo);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--p-azul);
+}
+
+.p-dicas {
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.p-dicas li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--p-verde-leve);
+    font-size: 0.9rem;
+}
+
+.p-dicas li small { color: var(--p-suave); white-space: nowrap; }
+
+.p-dicas li.p-dicas-vazio {
+    padding-left: 0;
+    background: transparent;
+    color: var(--p-suave);
+}
+
+.p-dica-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.p-dica-form input {
+    flex: 1 1 220px;
+    padding: 9px 10px;
+    border: 1px solid var(--p-borda);
+    border-radius: 8px;
+    font-family: inherit;
 }
 
 /* Celular */
