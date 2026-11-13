@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Registro, Sugestao
+from .models import DicaMeta, MetaEquipe, Registro, Sugestao
 
 
 class RegistroForm(forms.ModelForm):
@@ -25,3 +25,18 @@ class SugestaoForm(forms.ModelForm):
         widgets = {
             'texto': forms.TextInput(attrs={'placeholder': 'Escreva sua sugestão'}),
         }
+
+class MetaEquipeForm(forms.ModelForm):
+    class Meta:
+        model = MetaEquipe
+        fields = ['titulo', 'prazo']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'placeholder': 'Ex.: Reduzir 10% do desperdício no mês'}),
+            'prazo': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
+        }
+
+
+class DicaMetaForm(forms.ModelForm):
+    class Meta:
+        model = DicaMeta
+        fields = ['texto']
