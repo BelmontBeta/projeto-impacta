@@ -8,9 +8,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from .forms import RegistroForm, SugestaoForm
-from .models import Apoio, Gasto, MetaConsumo, Registro, Sugestao, Treinamento
-
+from django.urls import reverse
+from .forms import DicaMetaForm, MetaEquipeForm, RegistroForm, SugestaoForm
+from .models import Apoio, DicaMeta, Gasto, MetaConsumo, MetaEquipe, Registro, Sugestao, Treinamento
 
 # ---------------------------------------------------------------
 # DASHBOARD DE GASTOS (financeiro) EXCLUIDO 
@@ -160,6 +160,8 @@ def painel(request):
         'variacao_abs': abs(variacao) if variacao is not None else None,
         'economia': round(economia, 2),
         'doados': doados,
+        'metas': MetaEquipe.objects.select_related('autor').prefetch_related('dicas__autor'),
+        'meta_form': MetaEquipeForm(),
     }
     return render(request, 'gastos/painel.html', contexto)
 
@@ -212,3 +214,32 @@ def apoiar(request, sugestao_id):
     sugestao = get_object_or_404(Sugestao, id=sugestao_id)
     Apoio.objects.get_or_create(sugestao=sugestao, usuario=request.user)
     return redirect('gastos:registrar')
+
+@login_required
+@require_POST
+def nova_meta(request):
+    form = MetaEquipeForm(request.POST)
+    if form.is_valid():
+        meta = form.save(commit=False)
+        meta.autor = request.user
+        meta.save()
+        messages.success(request, 'Meta adicionada!')
+    else:
+        messages.error(request, 'Informe um título de até 150 caracteres e um prazo válido.')
+    return redirect(reverse('gastos:painel') + '#metas')
+
+
+@login_required
+@require_POST
+def nova_dica(request, meta_id):
+    meta = get_object_or_404(MetaEquipe, id=meta_id)
+    form = DicaMetaForm(request.POST)
+    if form.is_valid():
+        dica = form.save(commit=False)
+        dica.meta = meta
+        dica.autor = request.user
+        dica.save()
+        messages.success(request, 'Dica adicionada!')
+    else:
+        messages.error(request, 'Escreva uma dica de até 300 caracteres.')
+    return redirect(reverse('gastos:painel') + '#metas')
