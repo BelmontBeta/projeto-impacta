@@ -1,4 +1,5 @@
-name: CI
+
+name: CI/CD
 
 on:
   push:
@@ -12,8 +13,7 @@ jobs:
 
     env:
       SECRET_KEY: chave-somente-para-ci
-      DEBUG: "True" # Necessario diante o settings.py exige e-mail SMTP
-      # Sem DATABASE_URL, o Django usa SQLite (suficiente para os testes)
+      DEBUG: "True"
 
     steps:
       - name: Baixar o código
@@ -33,7 +33,7 @@ jobs:
       - name: Verificar o projeto
         run: python manage.py check
 
-      - name: Coletar arquivos estáticos (build)
+      - name: Coletar arquivos estáticos
         run: python manage.py collectstatic --noinput
 
       - name: Rodar migrações
@@ -41,3 +41,11 @@ jobs:
 
       - name: Rodar testes automatizados
         run: python manage.py test --verbosity 2
+
+      - name: Deploy no Render
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl --fail --silent --show-error \
+            "$RENDER_DEPLOY_HOOK_URL"
