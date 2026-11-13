@@ -92,4 +92,33 @@ class MissaoPlano(models.Model):
 
     def __str__(self):
         return f"Semana {self.semana}: {self.missao_id}"
+    
+class MetaEquipe(models.Model):
+    titulo = models.CharField(max_length=150)
+    prazo = models.DateField(null=True, blank=True)
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-criado_em']
+        verbose_name = 'meta da equipe'
+        verbose_name_plural = 'metas da equipe'
+
+    def __str__(self):
+        return self.titulo
+
+
+class DicaMeta(models.Model):
+    meta = models.ForeignKey(MetaEquipe, on_delete=models.CASCADE, related_name='dicas')
+    texto = models.CharField(max_length=300)
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['criado_em']
+        verbose_name = 'dica de meta'
+        verbose_name_plural = 'dicas de metas'
+
+    def __str__(self):
+        return self.texto
 
