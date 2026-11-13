@@ -1,4 +1,5 @@
 {% extends "guardiao/base_guardiao.html" %}
+{% load static %}
 
 {% block title %}Painel da cozinha · Guardião ESG{% endblock %}
 
@@ -7,6 +8,7 @@
 
   <header class="p-topo">
     <div>
+      <img class="p-logo" src="{% static 'gastos/img/impacta-logo.png' %}" alt="Impacta">
       <h1 class="p-titulo">Painel da cozinha</h1>
       {% if alerta %}
         <p class="p-alerta">
@@ -90,6 +92,57 @@
     </aside>
   </section>
 
+    <section class="p-caixa p-metas" id="metas">
+    <h2>Metas</h2>
+
+    {% for msg in messages %}
+      <p class="p-mensagem {{ msg.tags }}">{{ msg }}</p>
+    {% endfor %}
+
+    <form method="post" action="{% url 'gastos:nova_meta' %}" class="p-form">
+      {% csrf_token %}
+      <div class="p-duas">
+        <div>
+          <label for="{{ meta_form.titulo.id_for_label }}">Nova meta *</label>
+          {{ meta_form.titulo }}
+        </div>
+        <div>
+          <label for="{{ meta_form.prazo.id_for_label }}">Prazo</label>
+          {{ meta_form.prazo }}
+        </div>
+      </div>
+      <button type="submit" class="p-botao">Adicionar meta</button>
+    </form>
+
+    {% for m in metas %}
+      <article class="p-meta">
+        <header class="p-meta-topo">
+          <h3>{{ m.titulo }}</h3>
+          <small>{% if m.prazo %}Prazo: {{ m.prazo|date:"d/m/Y" }} · {% endif %}{{ m.autor.first_name|default:"Equipe" }}</small>
+        </header>
+
+        <h4 class="p-meta-sub">Dicas para concluir</h4>
+        <ul class="p-dicas">
+          {% for d in m.dicas.all %}
+            <li><span>{{ d.texto }}</span><small>{{ d.autor.first_name|default:"Equipe" }}</small></li>
+          {% empty %}
+            <li class="p-dicas-vazio">Nenhuma dica ainda.</li>
+          {% endfor %}
+        </ul>
+
+        <form method="post" action="{% url 'gastos:nova_dica' m.id %}" class="p-dica-form">
+          {% csrf_token %}
+          <input type="text" name="texto" maxlength="300" required
+                 placeholder="Escreva uma dica para concluir esta meta"
+                 aria-label="Nova dica para a meta {{ m.titulo }}">
+          <button type="submit" class="p-botao-leve">Adicionar dica</button>
+        </form>
+      </article>
+    {% empty %}
+      <p>Nenhuma meta cadastrada ainda. Adicione a primeira acima.</p>
+    {% endfor %}
+  </section>
+
   <p><a class="p-botao" href="{% url 'gastos:registrar' %}">Registrar consumo e equipe</a></p>
 
   {{ labels|json_script:"dados-labels" }}
@@ -105,14 +158,15 @@
     var labels = JSON.parse(document.getElementById('dados-labels').textContent);
     var valores = JSON.parse(document.getElementById('dados-valores').textContent);
     var meta = JSON.parse(document.getElementById('dados-meta').textContent);
+    Chart.defaults.font.family = "'Open Sans', Arial, sans-serif";
 
     new Chart(document.getElementById('grafico-canvas'), {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [
-          { type: 'bar', label: 'Consumo ({{ unidade_grafico }})', data: valores, backgroundColor: '#2563a8' },
-          { type: 'line', label: 'Meta', data: meta, borderColor: '#1a3556', borderDash: [6, 6], pointRadius: 0 }
+          { type: 'bar', label: 'Consumo ({{ unidade_grafico }})', data: valores, backgroundColor: '#497ECC' },
+          { type: 'line', label: 'Meta', data: meta, borderColor: '#000000', borderDash: [6, 6], pointRadius: 0 }
         ]
       },
       options: {
