@@ -664,7 +664,8 @@ Configurar uma pipeline no GitHub para executar os testes e automatizar o build 
 
 ### 📅 Sprint 04 no Jira
 
-![Sprint 04 Jira]()
+![Sprint 04 Jira](<img width="1533" height="696" alt="image" src="https://github.com/user-attachments/assets/5e0cf234-ec8e-4e71-9638-72c5fcffbeda" />
+)
 
 ---
 
