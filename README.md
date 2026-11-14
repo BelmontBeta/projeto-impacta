@@ -664,16 +664,16 @@ Configurar uma pipeline no GitHub para executar os testes e automatizar o build 
 
 ### 📅 Sprint 04 no Jira
 
-![Sprint 04 Jira](<img width="1533" height="696" alt="image" src="https://github.com/user-attachments/assets/5e0cf234-ec8e-4e71-9638-72c5fcffbeda" />
-)
+![Sprint 04 Jira] <img width="1533" height="696" alt="image" src="https://github.com/user-attachments/assets/5e0cf234-ec8e-4e71-9638-72c5fcffbeda" />
+
 
 ---
 
 ### 📂 Evidências da entrega
 
-- [ ] Screenshot do quadro atualizado da Sprint 04;
-- [ ] Evidência dos testes automatizados com Selenium;
-- [ ] Evidência da pipeline de CI/CD e do deploy;
+- [X] Screenshot do quadro atualizado da Sprint 04;
+- [X] Evidência dos testes automatizados com Selenium;
+- [X] Evidência da pipeline de CI/CD e do deploy;
 - [ ] Screencast das histórias implementadas;
 - [ ] Screencast da execução dos testes, com áudio;
 - [ ] Screencast de CI/CD, build e deploy, com áudio;
