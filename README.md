@@ -607,9 +607,13 @@ Nesta entrega, serão implementadas as histórias restantes, com no mínimo trê
 
 ## 📝 Histórias implementadas
 
-- **História 1:** [adicionar descrição]
-- **História 2:** [adicionar descrição]
-- **História 3:** [adicionar descrição]
+- História 2.1 — Registrar consumo e desperdício
+- História 2.2 — Acompanhar metas e consultar dicas
+- História 3.1 — Encontrar produtores locais
+- História 3.2 — Encontrar entidades para destinação
+- História 4.1 — Cadastrar o passaporte do restaurante
+- História 4.2 — Cadastrar a origem dos ingredientes
+- História 4.4 — Atualizar as informações do passaporte
 
 ---
 
@@ -631,9 +635,9 @@ Implementar testes automatizados de sistema com Selenium para validar as histór
 - [x] Automatizar os cenários das histórias desta entrega;
 - [x] Confirmar a execução dos testes na pipeline;
 - [x] Gravar um screencast da execução dos testes, com áudio;
-- [ ] Adicionar o link do screencast abaixo.
+- [x] Adicionar o link do screencast abaixo.
 
-[Vídeo Teste Selenium]()
+[Vídeo Teste Selenium](https://youtu.be/aXpYjNYQ5BY)
 
 ---
 
@@ -650,15 +654,11 @@ Configurar uma pipeline no GitHub para executar os testes e automatizar o build 
 - [ ] Adicionar o link do screencast abaixo.
 
 ### Screencast de CI/CD e deploy 
-[Vídeo CI/CD e Deploy]()
-
-### 🎥 Screencast das histórias implementadas
-
-[Screencast das histórias]()
+[Vídeo CI/CD e Deploy](https://youtu.be/vcrQ2Nih5kQ)
 
 ### 🎥 Screencast de explicação do código Django
 
-[Screencast código]()
+[Screencast código](https://youtu.be/qw3hL7DmOUw)
 
 ---
 
