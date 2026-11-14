@@ -28,7 +28,6 @@
         {% endif %}
 
         <div class="perfil-acoes">
-
             <button
                 class="perfil-link"
                 type="button"
@@ -48,16 +47,24 @@
             <section class="perfil-formulario">
                 <h2>Editar nome</h2>
 
+                {% for erro in erros_perfil %}
+                    <p class="erro">{{ erro }}</p>
+                {% endfor %}
+
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="acao" value="perfil">
 
-                    {{ perfil_form.non_field_errors }}
-
                     <div class="form-grupo">
-                        {{ perfil_form.first_name.label_tag }}
-                        {{ perfil_form.first_name }}
-                        {{ perfil_form.first_name.errors }}
+                        <label for="id_nome">Nome</label>
+                        <input
+                            type="text"
+                            id="id_nome"
+                            name="nome"
+                            maxlength="150"
+                            value="{{ usuario.first_name }}"
+                            autocomplete="name"
+                            required>
                     </div>
 
                     <button class="perfil-botao-salvar" type="submit">
@@ -69,23 +76,43 @@
             <section class="perfil-formulario">
                 <h2>Alterar senha</h2>
 
+                {% for erro in erros_senha %}
+                    <p class="erro">{{ erro }}</p>
+                {% endfor %}
+
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="acao" value="senha">
 
-                    {{ senha_form.non_field_errors }}
+                    <div class="form-grupo">
+                        <label for="id_senha_atual">Senha atual</label>
+                        <input
+                            type="password"
+                            id="id_senha_atual"
+                            name="senha_atual"
+                            autocomplete="current-password"
+                            required>
+                    </div>
 
-                    {% for campo in senha_form %}
-                        <div class="form-grupo">
-                            {{ campo.label_tag }}
-                            {{ campo }}
-                            {{ campo.errors }}
+                    <div class="form-grupo">
+                        <label for="id_nova_senha">Nova senha</label>
+                        <input
+                            type="password"
+                            id="id_nova_senha"
+                            name="nova_senha"
+                            autocomplete="new-password"
+                            required>
+                    </div>
 
-                            {% if campo.help_text %}
-                                <small>{{ campo.help_text|safe }}</small>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+                    <div class="form-grupo">
+                        <label for="id_confirmar_senha">Confirmar nova senha</label>
+                        <input
+                            type="password"
+                            id="id_confirmar_senha"
+                            name="confirmar_senha"
+                            autocomplete="new-password"
+                            required>
+                    </div>
 
                     <button class="perfil-botao-salvar" type="submit">
                         Alterar senha
