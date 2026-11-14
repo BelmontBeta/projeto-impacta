@@ -588,7 +588,7 @@ Nesta entrega, serão implementadas as histórias restantes, com no mínimo trê
 
 ### 📆 Data
 
-09/11/2026
+13/11/2026
 
 ---
 
