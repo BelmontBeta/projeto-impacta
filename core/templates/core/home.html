@@ -6,6 +6,43 @@
 
 {% block content %}
 
+<style>
+    .card-esg {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        grid-template-areas:
+            "titulo titulo"
+            "icone  texto";
+        align-items: center;
+        column-gap: 20px;
+        row-gap: 10px;
+        min-height: 118px;
+        padding: 18px 24px;
+    }
+    .card-esg-texto { display: contents; }
+    .card-esg-titulo {
+        grid-area: titulo;
+        margin: 0;
+        color: #fff;
+        font-family: var(--fonte-texto);
+        font-size: 0.85rem;
+        font-weight: 400;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+    .card-esg-icone { grid-area: icone; width: 56px; height: 56px; }
+    .card-esg-icone i {
+        font-size: 2.8rem;
+        color: transparent;
+        -webkit-text-stroke: 1.6px #fff;
+    }
+    .card-esg p {
+        grid-area: texto;
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+</style>
+
 <section class="hero">
     <div class="container hero-layout">
         <div class="hero-conteudo">
@@ -53,30 +90,39 @@
                 <span class="card-esg-icone" aria-hidden="true">
                     <i class="fa-solid fa-leaf"></i>
                 </span>
-                <p>
-                    Refere-se ao cuidado com o meio ambiente e os recursos
-                    naturais.
-                </p>
+                <div class="card-esg-texto">
+                    <h3 class="card-esg-titulo">Ambiental</h3>
+                    <p>
+                        Refere-se ao cuidado com o meio ambiente e os recursos
+                        naturais.
+                    </p>
+                </div>
             </article>
 
             <article class="card-esg card-esg-social">
                 <span class="card-esg-icone" aria-hidden="true">
                     <i class="fa-solid fa-users"></i>
                 </span>
-                <p>
-                    Refere-se ao respeito às pessoas e ao bem-estar da
-                    sociedade.
-                </p>
+                <div class="card-esg-texto">
+                    <h3 class="card-esg-titulo">Social</h3>
+                    <p>
+                        Refere-se ao respeito às pessoas e ao bem-estar da
+                        sociedade.
+                    </p>
+                </div>
             </article>
 
             <article class="card-esg card-esg-governanca">
                 <span class="card-esg-icone" aria-hidden="true">
                     <i class="fa-solid fa-building-columns"></i>
                 </span>
-                <p>
-                    Refere-se à ética, transparência e responsabilidade na
-                    gestão.
-                </p>
+                <div class="card-esg-texto">
+                    <h3 class="card-esg-titulo">Governança</h3>
+                    <p>
+                        Refere-se à ética, transparência e responsabilidade na
+                        gestão.
+                    </p>
+                </div>
             </article>
         </div>
     </div>

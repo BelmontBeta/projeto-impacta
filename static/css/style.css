@@ -411,6 +411,52 @@ main {
     line-height: 1.4;
 }
 
+.card-esg {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    grid-template-areas:
+        "titulo titulo"
+        "icone  texto";
+    align-items: center;
+    column-gap: 20px;
+    row-gap: 10px;
+    min-height: 118px;
+    padding: 18px 24px;
+}
+
+.card-esg-texto {
+    display: contents;
+}
+
+.card-esg-titulo {
+    grid-area: titulo;
+    margin: 0;
+    color: var(--branco);
+    font-family: var(--fonte-texto);
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.card-esg-icone {
+    grid-area: icone;
+    width: 56px;
+    height: 56px;
+}
+
+.card-esg-icone i {
+    font-size: 2.8rem;
+    color: transparent;
+    -webkit-text-stroke: 1.6px var(--branco);
+}
+
+.card-esg p {
+    grid-area: texto;
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
 /* Seção "Por que estudar ESG?" */
 
 .section-desafios-home {
