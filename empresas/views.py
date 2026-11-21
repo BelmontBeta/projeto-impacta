@@ -2,20 +2,33 @@ import hashlib
 import json
 import logging
 import os
+from pathlib import Path
 import urllib.error
 import urllib.parse
 import urllib.request
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render
+from dotenv import dotenv_values
 
 from .models import EmpresaESG, Parceiro
+
+
+logger = logging.getLogger(__name__)
+
+USER_AGENT = os.environ.get(
+    "MAPA_USER_AGENT",
+    "ImpactaESG/1.0 (contato: SEU_EMAIL@DOMINIO.COM)",
+).strip()
+
 
 @login_required
 def mapa_esg(request):
     return render(request, "guardiao/mapa_esg.html")
+
 
 def api_empresas(request):
     empresas = EmpresaESG.objects.all()
@@ -45,6 +58,7 @@ def api_empresas(request):
     ]
 
     return JsonResponse({"empresas": dados})
+
 
 def api_parceiros(request):
     parceiros = Parceiro.objects.all()
@@ -78,16 +92,25 @@ def api_parceiros(request):
 
     return JsonResponse({"parceiros": dados})
 
-logger = logging.getLogger(__name__)
 
-USER_AGENT = os.environ.get(
-    "MAPA_USER_AGENT",
-    "ImpactaESG/1.0 (projeto academico)",
-).strip()
+def _obter_overpass_base_url():
+    """Prioriza OVERPASS_BASE_URL do .env local e usa o ambiente como fallback."""
+    try:
+        configuracoes_locais = dotenv_values(
+            Path(settings.BASE_DIR) / ".env"
+        )
+    except (OSError, UnicodeError):
+        configuracoes_locais = {}
 
-OVERPASS_BASE_URL = (
-    os.environ.get("OVERPASS_BASE_URL", "").strip().rstrip("/")
-)
+    url_local = str(
+        configuracoes_locais.get("OVERPASS_BASE_URL") or ""
+    ).strip()
+
+    if url_local:
+        return url_local.rstrip("/")
+
+    return os.environ.get("OVERPASS_BASE_URL", "").strip().rstrip("/")
+
 
 LOJAS_FORNECEDORES = {
     "farm": "Fazenda / produtor",
@@ -102,9 +125,11 @@ TIMEOUT_REQUISICAO = 15
 TIMEOUT_OVERPASS = 45
 
 CACHE_RESULTADO = 3600
+CACHE_NOMINATIM = 60 * 60 * 24
 LIMITE_RESULTADOS = 300
 
 CHAVE_RATE_LIMIT = "overpass_ch:rate_limit"
+CHAVE_NOMINATIM_RATE_LIMIT = "nominatim:rate_limit"
 
 
 class OverpassConfiguracaoError(RuntimeError):
@@ -116,11 +141,34 @@ class OverpassRateLimitError(RuntimeError):
 
     def __init__(self, retry_after=60):
         self.retry_after = retry_after
-        super().__init__(
-            "Limite de consultas do Overpass.ch atingido."
-        )
+        super().__init__("Limite de consultas do Overpass.ch atingido.")
+
+
+class NominatimRateLimitError(RuntimeError):
+    """Erro quando o Nominatim limita temporariamente as consultas."""
+
+    def __init__(self, retry_after=60):
+        self.retry_after = retry_after
+        super().__init__("Limite de consultas do Nominatim atingido.")
+
 
 def _consultar(url, dados=None, timeout=TIMEOUT_REQUISICAO):
+    eh_nominatim = "nominatim.openstreetmap.org" in url.lower()
+    chave_cache = None
+
+    if eh_nominatim and dados is None:
+        chave_cache = (
+            "nominatim:"
+            + hashlib.sha256(url.encode("utf-8")).hexdigest()
+        )
+
+        resultado_cache = cache.get(chave_cache)
+        if resultado_cache is not None:
+            return resultado_cache
+
+        if cache.get(CHAVE_NOMINATIM_RATE_LIMIT):
+            raise NominatimRateLimitError(60)
+
     pedido = urllib.request.Request(
         url,
         data=dados,
@@ -130,24 +178,49 @@ def _consultar(url, dados=None, timeout=TIMEOUT_REQUISICAO):
         },
     )
 
-    with urllib.request.urlopen(pedido, timeout=timeout) as resposta:
-        return json.loads(resposta.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(pedido, timeout=timeout) as resposta:
+            resultado = json.loads(resposta.read().decode("utf-8"))
+
+    except urllib.error.HTTPError as erro:
+        if eh_nominatim and erro.code == 429:
+            try:
+                retry_after = int(erro.headers.get("Retry-After", "60"))
+            except (TypeError, ValueError):
+                retry_after = 60
+
+            retry_after = max(1, retry_after)
+
+            cache.set(
+                CHAVE_NOMINATIM_RATE_LIMIT,
+                True,
+                timeout=retry_after,
+            )
+
+            raise NominatimRateLimitError(retry_after) from erro
+
+        raise
+
+    if chave_cache:
+        cache.set(chave_cache, resultado, CACHE_NOMINATIM)
+
+    return resultado
 
 
 def _overpass(consulta):
-    if not OVERPASS_BASE_URL:
+    overpass_base_url = _obter_overpass_base_url()
+
+    if not overpass_base_url:
         raise OverpassConfiguracaoError(
             "Configure OVERPASS_BASE_URL nas variáveis de ambiente."
         )
 
-    # Evita repetir chamadas enquanto o serviço estiver
-    # temporariamente bloqueado por limite de consultas.
     if cache.get(CHAVE_RATE_LIMIT):
         raise OverpassRateLimitError(60)
 
     # A URL-base configurada deve conter a chave.
     # Acrescentamos /interpreter para realizar a consulta.
-    url = f"{OVERPASS_BASE_URL}/interpreter"
+    url = f"{overpass_base_url}/interpreter"
 
     corpo = urllib.parse.urlencode(
         {"data": consulta}
@@ -163,7 +236,6 @@ def _overpass(consulta):
         )
 
     except urllib.error.HTTPError as erro:
-
         if erro.code == 429:
             try:
                 retry_after = int(
@@ -192,11 +264,8 @@ def _overpass(consulta):
             "Overpass.ch respondeu com HTTP %s",
             erro.code,
         )
-
         raise
 
-    # O serviço pode retornar HTTP 200 mesmo quando
-    # a consulta não foi concluída.
     remark = str(dados.get("remark", "")).lower()
 
     if "timed out" in remark or "out of memory" in remark:
@@ -217,10 +286,7 @@ def _classificar(tags):
 
     if local == "place_of_worship":
         igreja = tags.get("religion") == "christian"
-
-        return "doacao", (
-            "Igreja" if igreja else "Local de culto"
-        )
+        return "doacao", "Igreja" if igreja else "Local de culto"
 
     if local == "social_facility":
         if tags.get("social_facility") == "food_bank":
@@ -233,10 +299,6 @@ def _classificar(tags):
 
     return None, None
 
-
-# ---------------------------------------------------------------
-# Monta o endereço do estabelecimento
-# ---------------------------------------------------------------
 
 def _endereco(tags):
     rua = " ".join(
@@ -257,10 +319,6 @@ def _endereco(tags):
     return ", ".join(p for p in partes if p)
 
 
-# ---------------------------------------------------------------
-# API de busca de fornecedores e pontos de doação
-# ---------------------------------------------------------------
-
 @login_required
 def api_locais(request):
     q = request.GET.get("q", "").strip()
@@ -272,7 +330,7 @@ def api_locais(request):
             status=400,
         )
 
-    if not OVERPASS_BASE_URL:
+    if not _obter_overpass_base_url():
         return JsonResponse(
             {
                 "erro": (
@@ -290,23 +348,17 @@ def api_locais(request):
 
     raio = max(500, min(raio, 20000))
 
-    # Cria uma chave de cache a partir da busca.
     bruto = f"{q.lower()}|{raio}|{insumo}"
-
     chave = (
         "locais:overpass_ch:"
         + hashlib.md5(bruto.encode("utf-8")).hexdigest()
     )
 
     resultado = cache.get(chave)
-
     if resultado is not None:
         return JsonResponse(resultado)
 
-    # -----------------------------------------------------------
-    # Primeiro: encontra as coordenadas pelo Nominatim
-    # -----------------------------------------------------------
-
+    # Primeiro, encontra as coordenadas pelo Nominatim.
     try:
         geo = _consultar(
             "https://nominatim.openstreetmap.org/search?"
@@ -328,11 +380,22 @@ def api_locais(request):
         lat = float(geo[0]["lat"])
         lon = float(geo[0]["lon"])
 
-    except Exception:
-        logger.exception(
-            "Falha ao localizar %r no Nominatim",
-            q,
+    except NominatimRateLimitError as erro:
+        resposta = JsonResponse(
+            {
+                "erro": (
+                    "O serviço de localização está temporariamente "
+                    "limitando as consultas. Tente novamente em "
+                    f"{erro.retry_after} segundos."
+                )
+            },
+            status=503,
         )
+        resposta["Retry-After"] = str(erro.retry_after)
+        return resposta
+
+    except Exception:
+        logger.exception("Falha ao localizar %r no Nominatim", q)
 
         return JsonResponse(
             {
@@ -343,10 +406,6 @@ def api_locais(request):
             },
             status=502,
         )
-
-    # -----------------------------------------------------------
-    # Consulta fornecedores e pontos de doação
-    # -----------------------------------------------------------
 
     consulta = f"""
     [out:json][timeout:25];
@@ -364,15 +423,8 @@ def api_locais(request):
         dados = _overpass(consulta)
 
     except OverpassConfiguracaoError as erro:
-        logger.error(
-            "Configuração do Overpass.ch: %s",
-            erro,
-        )
-
-        return JsonResponse(
-            {"erro": str(erro)},
-            status=503,
-        )
+        logger.error("Configuração do Overpass.ch: %s", erro)
+        return JsonResponse({"erro": str(erro)}, status=503)
 
     except OverpassRateLimitError as erro:
         resposta = JsonResponse(
@@ -384,18 +436,14 @@ def api_locais(request):
             },
             status=429,
         )
-
         resposta["Retry-After"] = str(erro.retry_after)
-
         return resposta
 
     except urllib.error.HTTPError as erro:
-        # Não registrar a URL, pois ela pode conter a chave da API.
         logger.error(
             "Erro HTTP na consulta ao Overpass.ch: %s",
             erro.code,
         )
-
         return JsonResponse(
             {
                 "erro": (
@@ -407,30 +455,22 @@ def api_locais(request):
         )
 
     except Exception as erro:
-        # Registra apenas o tipo do erro, sem expor a URL.
         logger.error(
             "Falha na busca de locais para %r (%s)",
             q,
             type(erro).__name__,
         )
-
         return JsonResponse(
             {
                 "erro": (
                     "O serviço de mapas não respondeu "
-                    "corretamente. Tente novamente em "
-                    "alguns minutos."
+                    "corretamente. Tente novamente em alguns minutos."
                 )
             },
             status=502,
         )
 
-    # -----------------------------------------------------------
-    # Organiza os resultados
-    # -----------------------------------------------------------
-
     todos = dados.get("elements", [])
-
     limite_atingido = len(todos) > LIMITE_RESULTADOS
     elementos = todos[:LIMITE_RESULTADOS]
 
@@ -439,9 +479,7 @@ def api_locais(request):
 
     for el in elementos:
         tags = el.get("tags", {})
-
         categoria, tipo = _classificar(tags)
-
         ponto = el if "lat" in el else el.get("center")
 
         if not categoria or not ponto:
@@ -449,7 +487,6 @@ def api_locais(request):
 
         nome = tags.get("name") or tipo
 
-        # Filtro de insumos.
         if insumo and categoria == "fornecedor":
             texto_busca = (
                 f"{nome} {tipo} "
@@ -481,10 +518,6 @@ def api_locais(request):
             }
         )
 
-    # -----------------------------------------------------------
-    # Avisos para o usuário
-    # -----------------------------------------------------------
-
     avisos = []
 
     if limite_atingido:
@@ -492,10 +525,6 @@ def api_locais(request):
             "A consulta atingiu o limite de resultados. "
             "Reduza o raio para ver resultados mais detalhados."
         )
-
-    # -----------------------------------------------------------
-    # Resposta para o JavaScript
-    # -----------------------------------------------------------
 
     resultado = {
         "centro": {
@@ -513,10 +542,5 @@ def api_locais(request):
         "aviso": " ".join(avisos),
     }
 
-    cache.set(
-        chave,
-        resultado,
-        CACHE_RESULTADO,
-    )
-
+    cache.set(chave, resultado, CACHE_RESULTADO)
     return JsonResponse(resultado)
