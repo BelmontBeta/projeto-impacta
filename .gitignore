@@ -11,7 +11,6 @@ ENV/
 
 # Variáveis de ambiente e segredos
 .env
-.env.*
 !.env.example
 
 # Banco de dados local
