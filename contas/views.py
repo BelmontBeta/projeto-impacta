@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import (
     authenticate,
@@ -24,6 +26,8 @@ from django.utils.http import (
 )
 from django.views.decorators.http import require_POST
 
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -225,6 +229,9 @@ def esqueci_senha(request):
                 is_active=True,
             ).first()
 
+            if not usuario:
+                logger.error("DIAGNOSTICO: nenhuma conta ativa para o e-mail informado")
+
             if usuario:
                 uid = urlsafe_base64_encode(force_bytes(usuario.pk))
                 token = password_token_generator.make_token(usuario)
@@ -235,18 +242,26 @@ def esqueci_senha(request):
                 )
                 link = request.build_absolute_uri(caminho)
 
-                send_mail(
-                    subject="Redefinição de senha",
-                    message=(
-                        "Recebemos uma solicitação para redefinir a senha "
-                        "da sua conta.\n\n"
-                        f"Acesse este link para criar uma nova senha:\n{link}\n\n"
-                        "Se você não solicitou essa alteração, ignore este e-mail."
-                    ),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[usuario.email],
-                    fail_silently=False,
-                )
+                try:
+                    send_mail(
+                        subject="Redefinição de senha",
+                        message=(
+                            "Recebemos uma solicitação para redefinir a senha "
+                            "da sua conta.\n\n"
+                            f"Acesse este link para criar uma nova senha:\n{link}\n\n"
+                            "Se você não solicitou essa alteração, ignore este e-mail."
+                        ),
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[usuario.email],
+                        fail_silently=False,
+                    )
+                    logger.error(
+                        "DIAGNOSTICO: e-mail entregue ao backend (usuario %s)",
+                        usuario.pk,
+                    )
+                except Exception:
+                    # Registra o motivo real no log sem derrubar a página (erro 500).
+                    logger.exception("Falha ao enviar e-mail de redefinição de senha")
 
             # Não revela se o endereço existe ou não.
             return redirect("esqueci_senha_enviado")
