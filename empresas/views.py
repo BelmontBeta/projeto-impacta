@@ -207,6 +207,79 @@ def _consultar(url, dados=None, timeout=TIMEOUT_REQUISICAO):
     return resultado
 
 
+def _geocodificar(q):
+    """Nominatim primeiro; se falhar ou limitar, usa o Photon.
+
+    Retorna (lat, lon, nome) ou None se o local não for encontrado.
+    Se os dois serviços falharem, relança o erro original do Nominatim.
+    """
+    erro_original = None
+
+    try:
+        geo = _consultar(
+            "https://nominatim.openstreetmap.org/search?"
+            + urllib.parse.urlencode(
+                {"q": q, "format": "jsonv2", "limit": 1}
+            )
+        )
+
+        if not geo:
+            return None
+
+        return (
+            float(geo[0]["lat"]),
+            float(geo[0]["lon"]),
+            geo[0]["display_name"],
+        )
+
+    except Exception as erro:  # inclui NominatimRateLimitError
+        erro_original = erro
+        logger.warning(
+            "Nominatim falhou (%s); tentando Photon",
+            type(erro).__name__,
+        )
+
+    chave = (
+        "photon:"
+        + hashlib.sha256(q.lower().encode("utf-8")).hexdigest()
+    )
+    em_cache = cache.get(chave)
+    if em_cache:
+        return em_cache
+
+    try:
+        dados = _consultar(
+            "https://photon.komoot.io/api/?"
+            + urllib.parse.urlencode({"q": q, "limit": 1})
+        )
+
+        itens = dados.get("features", [])
+        if not itens:
+            return None
+
+        lon, lat = itens[0]["geometry"]["coordinates"]
+        props = itens[0].get("properties", {})
+
+        nome = ", ".join(
+            x
+            for x in [
+                props.get("name"),
+                props.get("city"),
+                props.get("state"),
+                props.get("country"),
+            ]
+            if x
+        )
+
+        resultado = (float(lat), float(lon), nome or q)
+        cache.set(chave, resultado, CACHE_NOMINATIM)
+        return resultado
+
+    except Exception:
+        logger.exception("Photon também falhou para %r", q)
+        raise erro_original
+
+
 def _overpass(consulta):
     overpass_base_url = _obter_overpass_base_url()
 
@@ -358,27 +431,17 @@ def api_locais(request):
     if resultado is not None:
         return JsonResponse(resultado)
 
-    # Primeiro, encontra as coordenadas pelo Nominatim.
+    # Primeiro, encontra as coordenadas (Nominatim, com Photon de reserva).
     try:
-        geo = _consultar(
-            "https://nominatim.openstreetmap.org/search?"
-            + urllib.parse.urlencode(
-                {
-                    "q": q,
-                    "format": "jsonv2",
-                    "limit": 1,
-                }
-            )
-        )
+        achado = _geocodificar(q)
 
-        if not geo:
+        if not achado:
             return JsonResponse(
                 {"erro": "Local não encontrado."},
                 status=404,
             )
 
-        lat = float(geo[0]["lat"])
-        lon = float(geo[0]["lon"])
+        lat, lon, nome_centro = achado
 
     except NominatimRateLimitError as erro:
         resposta = JsonResponse(
@@ -395,7 +458,7 @@ def api_locais(request):
         return resposta
 
     except Exception:
-        logger.exception("Falha ao localizar %r no Nominatim", q)
+        logger.exception("Falha ao localizar %r", q)
 
         return JsonResponse(
             {
@@ -528,7 +591,7 @@ def api_locais(request):
 
     resultado = {
         "centro": {
-            "nome": geo[0]["display_name"],
+            "nome": nome_centro,
             "latitude": lat,
             "longitude": lon,
             "raio": raio,

@@ -375,18 +375,31 @@
             contador.textContent = "Buscando...";
             avisoLimite.textContent = "";
 
-            try {
-                const url = `${URL_API_LOCAIS}?q=${encodeURIComponent(q)}&raio=${campoRaio.value}&insumo=${encodeURIComponent(insumo)}`;
-                const resposta = await fetch(url);
-                const dados = await resposta.json();
-                if (!resposta.ok) throw new Error(dados.erro || "Erro " + resposta.status);
-                centro = dados.centro;
-                locais = dados.locais;
-                avisoAtual = dados.aviso || "";
-                desenhar(true);
-            } catch (erro) {
-                console.error(erro);
-                contador.textContent = erro.message;
+            for (let tentativa = 0; tentativa < 3; tentativa++) {
+                try {
+                    const url = `${URL_API_LOCAIS}?q=${encodeURIComponent(q)}&raio=${campoRaio.value}&insumo=${encodeURIComponent(insumo)}`;
+                    const resposta = await fetch(url);
+                    const dados = await resposta.json();
+
+                    if ((resposta.status === 503 || resposta.status === 429) && tentativa < 2) {
+                        const espera = Math.max(2, parseInt(resposta.headers.get("Retry-After") || "2", 10));
+                        contador.textContent = `Serviço ocupado, tentando de novo em ${espera}s...`;
+                        await new Promise(r => setTimeout(r, espera * 1000));
+                        contador.textContent = "Buscando...";
+                        continue;
+                    }
+
+                    if (!resposta.ok) throw new Error(dados.erro || "Erro " + resposta.status);
+                    centro = dados.centro;
+                    locais = dados.locais;
+                    avisoAtual = dados.aviso || "";
+                    desenhar(true);
+                    break;
+                } catch (erro) {
+                    console.error(erro);
+                    contador.textContent = erro.message;
+                    break;
+                }
             }
         }
 
