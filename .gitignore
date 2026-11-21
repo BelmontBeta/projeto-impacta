@@ -21,6 +21,8 @@ staticfiles/
 
 # Uploads gerados localmente
 media/
+
+# Documentação gerada
 gerar_documentacao.py
 DOCUMENTACAO_COMPLETA.txt
 
