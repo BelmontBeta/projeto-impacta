@@ -97,7 +97,7 @@ main {
 .logo img {
     display: block;
     width: auto;
-    height: 48px;
+    height: 100px;
     max-width: 200px;
     object-fit: contain;
 }
