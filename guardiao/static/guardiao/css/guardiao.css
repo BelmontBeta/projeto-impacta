@@ -78,8 +78,8 @@ body.guardiao summary:focus-visible {
 }
 
 .g-logo img {
-    width: 70px;
-    height: 70px;
+    width: 150px;
+    height: 100px;
     object-fit: contain;
     border-radius: 5px;
 }
